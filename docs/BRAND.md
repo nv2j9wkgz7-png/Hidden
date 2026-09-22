@@ -1,12 +1,12 @@
 # Hidden brand
 
-The app name is **Hidden**. The mark is a bold capital H with a blurred photograph inside and a transparent background. The letter remains sharp so that the hidden-image effect belongs to its contents.
+The app name is **Hidden**. The mark is a bold capital H with a blurred photograph inside and a transparent background. The photographic content is blurred until no scene is identifiable. A subtle outer blur softens the H silhouette while keeping the letter readable.
 
 - Header asset: `public/hidden-logo.svg` (self-contained SVG)
 - Browser icon: `src/app/icon.svg`
 - Generated with the built-in image-generation tool; no external API key used.
 
-The SVG supplies an exact geometric H clipping path over the unchanged generated photograph, ensuring clean transparent edges at every display size. The raster source is retained at `public/hidden-logo.png`.
+The SVG supplies an exact geometric H clipping path over the unchanged generated photograph, defining the letter before the final soft-edge blur. The raster source is retained at `public/hidden-logo.png`.
 
 ## Initial prompt
 
@@ -15,3 +15,7 @@ Use case: logo-brand. Create a production logo asset for an image delivery app n
 ## Final refinement prompt
 
 Refine this exact Hidden H logo only by cleaning its silhouette and transparent background. Preserve the same H proportions and blurred purple/peach sunset landscape inside the H. Make every external and internal edge geometrically straight, smooth and sharply defined. Remove ALL stray speckles, blue/pink fringe and white remnants around the edges and in the openings. Outside the H and in both openings must be completely empty transparent alpha, no visible colored or white pixels. No shadow or glow. Preserve the blur and photograph entirely inside the H. Transparent PNG.
+
+## Stronger privacy treatment
+
+The SVG applies a 110-unit Gaussian blur to the embedded photograph before clipping it to the H, followed by a 6-unit blur on the letter edge. Both are native SVG filters; transparency is preserved and no new image generation was needed for this refinement.
