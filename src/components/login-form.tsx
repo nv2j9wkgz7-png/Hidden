@@ -103,7 +103,7 @@ export function LoginForm() {
       >
         {signup
           ? 'Already have an account? Log in'
-          : 'New to Still? Create an account'}
+          : 'New to Hidden? Create an account'}
       </button>
     </div>
   );

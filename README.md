@@ -1,4 +1,4 @@
-# Still — payment-gated image drops (V0)
+# Hidden — payment-gated image drops (V0)
 
 Next.js + TypeScript + Supabase Auth/Postgres/Storage + Stripe. Vercel-ready.
 
@@ -181,7 +181,7 @@ git remote add origin YOUR_PRIVATE_REPOSITORY_URL
 git push -u origin main
 ```
 
-A local commit alone cannot be pulled from another laptop. If a portable `.bundle` is provided with this handoff, transfer it and run `git clone still-v0.bundle still-image-drops` as an alternative. Then configure a shared remote. The bundle includes committed source and history, but no secrets, dependencies, or service data.
+A local commit alone cannot be pulled from another laptop. If a portable `.bundle` is provided with this handoff, transfer it and run `git clone hidden-v0.bundle hidden-image-drops` as an alternative. Then configure a shared remote. The bundle includes committed source and history, but no secrets, dependencies, or service data.
 
 ## Reference documentation
 

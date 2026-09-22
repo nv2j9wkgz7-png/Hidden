@@ -133,7 +133,7 @@ export function Buyer({
         );
         saveBlob(
           new Blob([archive], { type: 'application/zip' }),
-          'still-drop.zip',
+          'hidden-drop.zip',
         );
       }
     } catch (error) {
