@@ -29,7 +29,9 @@ export const POST = handler(async (request) => {
     .from('purchases')
     .select('status')
     .eq('drop_id', drop_id)
-    .eq('access_token', hashToken(token))
+    .or(
+      `access_token.eq.${hashToken(token)},email_access_token.eq.${hashToken(token)}`,
+    )
     .maybeSingle();
   if (error) throw error;
   if (!data) throw new HttpError(403, 'This access link is invalid.');

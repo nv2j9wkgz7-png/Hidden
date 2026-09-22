@@ -21,6 +21,12 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
   );
   const creator = crypto.randomUUID(),
     other = crypto.randomUUID();
+  await db.exec(
+    await readFile(
+      'supabase/migrations/20260922230000_purchase_email.sql',
+      'utf8',
+    ),
+  );
   await db.query('insert into auth.users values($1,$2),($3,$4)', [
     creator,
     'creator@example.com',
@@ -204,6 +210,40 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
       ).rows[0];
       assert.equal(p.status, 'REFUNDED');
       assert.equal(canDownload(p, drop), false);
+    },
+  );
+  await t.test(
+    'email recovery preserves checkout access and still enforces payment status and drop ownership',
+    async () => {
+      const emailToken = newToken();
+      const original = (
+        await db.query<{ access_token: string }>(
+          'select access_token from public.purchases where id=$1',
+          [purchaseId],
+        )
+      ).rows[0].access_token;
+      await db.query(
+        'update public.purchases set email_access_token=$1 where id=$2',
+        [hashToken(emailToken), purchaseId],
+      );
+      const lookup = async (dropId: string, hash: string) =>
+        (
+          await db.query<{ status: string; drop_id: string }>(
+            'select status,drop_id from public.purchases where drop_id=$1 and (access_token=$2 or email_access_token=$2)',
+            [dropId, hash],
+          )
+        ).rows[0] || null;
+      assert.ok(await lookup(drop, original));
+      assert.ok(await lookup(drop, hashToken(emailToken)));
+      assert.equal(
+        canDownload(await lookup(drop, hashToken(emailToken)), drop),
+        false,
+      ); // Refunded above.
+      assert.equal(
+        await lookup(crypto.randomUUID(), hashToken(emailToken)),
+        null,
+      );
+      assert.equal(await lookup(drop, hashToken(newToken())), null);
     },
   );
   await t.test(

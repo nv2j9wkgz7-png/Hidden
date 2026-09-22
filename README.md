@@ -147,7 +147,7 @@ All payments settle to the configured platform Stripe account. **Creator payouts
 
 Purchase status is exactly PENDING, PAID, or REFUNDED. Full refunds revoke future access; partial refunds retain access in V0. Payment and refund events are applied transactionally and deduplicated. A late success event never reverses REFUNDED. Refunds are initiated in Stripe's dashboard; there is no public refund endpoint.
 
-Buyer recovery tokens travel in a URL fragment (not a query string) and are exchanged for HttpOnly, SameSite=Lax cookies. Fragments are removed from the address bar after exchange. Shareable drop links and private access links are different: anyone with a private access link can use the purchase. Save it before clearing browser data. Automatic recovery emails are not implemented.
+Buyer recovery tokens travel in a URL fragment (not a query string) and are exchanged for HttpOnly, SameSite=Lax cookies. Fragments are removed from the address bar after exchange. Shareable drop links and private access links are different: anyone with a private access link can use the purchase. Save it before clearing browser data. Purchase recovery emails are available when Resend is configured (below).
 
 Private URLs expire after 60 seconds. Original buckets have no browser RLS policies. The service role stays server-only. Mutations require the configured same origin; no cross-origin API access is enabled. Public pages serialize explicit preview-only projections, never full drop/asset/purchase rows. Access endpoints return `private, no-store` and pages use a no-referrer policy.
 
@@ -211,3 +211,28 @@ Dashboard cards show separate blurred previews behind the H watermark; they neve
 Creators can select **Stop sales** and confirm from their drop page. `CLOSING` immediately blocks checkout creation and resumption; the server expires every registered unpaid checkout through the payment-provider abstraction, then marks the drop `CLOSED`. Failed expiration leaves the drop in `CLOSING` with a retry control. Checkout creation rechecks the sales state and expires its session before returning a link if closure occurred concurrently. The database trigger serializes purchase reservations with changes to the drop state. Completed or already-processing payments are honored; paid purchases and recovery links retain original-file access. No images or purchases are deleted, and this action does not refund payments.
 
 Apply `supabase/migrations/20260922213000_stop_sales.sql` after the initial migration. The live Supabase project has this migration applied. Regression coverage checks that CLOSING/CLOSED prevent new reservations without revoking PAID access. A sandbox integration check also verified expiration of an actual open Stripe Checkout Session and retained downloads for a simulated paid entitlement.
+
+### Purchase emails (Resend)
+
+After the payment event is validated and committed, Hidden sends the checkout email address a private return link. The email contains the drop title, amount paid, and a “View my images” button. It does not attach originals or expose storage URLs. Email links use a separate HMAC-derived token; only its hash is stored, and existing checkout cookies still work. Every download checks PAID status, so refunds revoke both types of access and stopping sales preserves them.
+
+Setup:
+
+1. Apply `supabase/migrations/20260922230000_purchase_email.sql` after the other migrations (already applied to the current Supabase project).
+2. Create a [Resend account](https://resend.com/signup), add a sending domain you own, and add the DNS records Resend provides. Use a subdomain such as `mail.your-domain.com` if preferred. Verify the domain in Resend.
+3. Create a sending API key and save it as `RESEND_API_KEY` in `.env.local` and your hosting environment. Set `EMAIL_FROM` to `Hidden <purchases@mail.your-domain.com>` using your verified domain.
+4. Generate two independent secrets with `openssl rand -hex 32`, saving them as `EMAIL_ACCESS_SECRET` and `EMAIL_RETRY_SECRET`. Keep them in a password manager and use the same values on every deployment. Do not commit them. Keep EMAIL_ACCESS_SECRET stable; changing it changes tokens generated for unsent/retried messages.
+5. Set `APP_URL` to the public HTTPS Hidden origin, and redeploy/restart. Email delivery deliberately refuses HTTP URLs. Localhost is not a usable destination for buyers.
+6. Disable click and open tracking for the sending domain: private access links should not be rewritten or tracked. Make a sandbox purchase with your own email address and open the email on another browser/device. Verify download access, stop-sales retention, and refund revocation.
+
+Missing email configuration leaves checkout/unlock working and messages unsent. Once configured, backfill up to five unsent PAID purchases per invocation:
+
+```sh
+node --env-file=.env.local scripts/retry-purchase-emails.mjs
+```
+
+The operator endpoint is `POST /api/internal/purchase-emails`, protected by EMAIL_RETRY_SECRET. It accepts no custom recipient or link. Repeat to drain a backlog; it reports only counts. No scheduler is required for normal delivery: email failures return a webhook error so Stripe retries, while the committed purchase stays unlocked. Use the retry script after webhook retries are exhausted or to backfill purchases made before configuration.
+
+`email_sent_at` means Resend accepted the message, not guaranteed inbox delivery; inspect Resend for bounces. A stable per-purchase idempotency key prevents concurrent/retried sends within Resend's 24-hour window. The durable sent marker skips later webhooks. In the rare case where Resend accepts a message but persisting the sent marker fails, a retry after 24 hours can duplicate the email; reconcile the provider ID/logs before retrying such a failure. Keep sender, APP_URL, and email template stable during retries inside that window, because Resend rejects a changed payload under the same key.
+
+Validation uses mocked email delivery plus Postgres authorization/payment tests; actual inbox delivery requires the setup above. References: [Resend send API](https://resend.com/docs/api-reference/emails/send-email), [idempotency](https://resend.com/docs/dashboard/emails/idempotency-keys).

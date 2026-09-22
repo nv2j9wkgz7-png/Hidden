@@ -1,6 +1,7 @@
 import 'server-only';
 import { admin } from '@/lib/supabase/admin';
 import type { PaymentEvent } from './types';
+import { sendPurchaseEmail } from '../email/service';
 export async function paymentSucceeded(provider: string, event: PaymentEvent) {
   const { error } = await admin().rpc('apply_payment_event', {
     p_provider: provider,
@@ -13,4 +14,6 @@ export async function paymentSucceeded(provider: string, event: PaymentEvent) {
     p_email: event.customerEmail,
   });
   if (error) throw error;
+  // Retry even for duplicate webhook events. Payment is committed before email.
+  if (event.kind === 'paid') await sendPurchaseEmail(event.purchaseId);
 }

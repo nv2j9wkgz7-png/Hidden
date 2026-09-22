@@ -18,7 +18,9 @@ export async function purchaseAccess(dropId: string) {
       'id,drop_id,status,payment_provider,payment_provider_transaction_id',
     )
     .eq('drop_id', dropId)
-    .eq('access_token', hashToken(raw))
+    .or(
+      `access_token.eq.${hashToken(raw)},email_access_token.eq.${hashToken(raw)}`,
+    )
     .maybeSingle();
   if (error) throw error;
   return data;
