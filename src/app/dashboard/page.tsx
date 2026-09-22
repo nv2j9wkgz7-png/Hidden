@@ -1,6 +1,12 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { Images, ShoppingBag, DollarSign } from 'lucide-react';
+import {
+  Images,
+  ShoppingBag,
+  DollarSign,
+  ListFilter,
+  Check,
+} from 'lucide-react';
 import { configured } from '@/lib/env';
 import { Setup } from '@/components/setup';
 import { supabase } from '@/lib/supabase/server';
@@ -8,7 +14,40 @@ import { admin } from '@/lib/supabase/admin';
 import { money } from '@/lib/format';
 import { CopyButton } from '@/components/copy-button';
 export const dynamic = 'force-dynamic';
-export default async function Dashboard() {
+const sortOptions = [
+  {
+    value: 'newest',
+    label: 'Date: newest first',
+    column: 'created_at',
+    ascending: false,
+  },
+  {
+    value: 'oldest',
+    label: 'Date: oldest first',
+    column: 'created_at',
+    ascending: true,
+  },
+  {
+    value: 'price-low',
+    label: 'Price: low to high',
+    column: 'price_cents',
+    ascending: true,
+  },
+  {
+    value: 'price-high',
+    label: 'Price: high to low',
+    column: 'price_cents',
+    ascending: false,
+  },
+];
+export default async function Dashboard({
+  searchParams,
+}: {
+  searchParams: Promise<{ sort?: string }>;
+}) {
+  const requested = (await searchParams).sort;
+  const sort =
+    sortOptions.find((option) => option.value === requested) || sortOptions[0];
   if (!configured()) return <Setup />;
   const {
     data: { user },
@@ -23,7 +62,8 @@ export default async function Dashboard() {
           'id,title,slug,price_cents,status,created_at,assets(id,preview_path)',
         )
         .eq('creator_id', user.id)
-        .order('created_at', { ascending: false })
+        .order(sort.column, { ascending: sort.ascending })
+        .order('id', { ascending: true })
         .limit(100),
       db.rpc('creator_stats', { p_creator: user.id }),
     ]);
@@ -71,7 +111,25 @@ export default async function Dashboard() {
             / {drops?.length || 0}
           </span>
         </h2>
-        <span className="hint">Newest first</span>
+        <details className="drop-sort" key={sort.value}>
+          <summary aria-label={`Sort drops. ${sort.label}`} title="Sort drops">
+            <ListFilter size={23} />
+          </summary>
+          <div className="drop-sort-options">
+            <span className="hint">Sort by</span>
+            {sortOptions.map((option) => (
+              <Link
+                key={option.value}
+                href={`/dashboard?sort=${option.value}`}
+                scroll={false}
+                aria-current={sort.value === option.value ? 'true' : undefined}
+              >
+                {option.label}
+                {sort.value === option.value && <Check size={16} />}
+              </Link>
+            ))}
+          </div>
+        </details>
       </div>
       <div className="drop-grid">
         <Link
@@ -156,7 +214,7 @@ export default async function Dashboard() {
       </div>
       <p className="hint" style={{ marginTop: 20 }}>
         Sales count purchases, not individual images. Gross revenue is before
-        fees and refunds. Showing your latest 100 drops.
+        fees and refunds. Showing up to 100 drops in your selected order.
       </p>
     </>
   );
