@@ -4,6 +4,8 @@ Next.js + TypeScript + Supabase Auth/Postgres/Storage + Stripe. Vercel-ready.
 
 **Upload → set price → share link → buyer pays → originals unlock.**
 
+Publishing opens an owner-only sharing page with a purchase link, editable message, SMS and WhatsApp sharing, Instagram/Snapchat copy-to-paste, and the device share menu where supported. Multiple recipients are selected in the messaging app. Creators can explicitly preview the buyer page; opening their own drop otherwise returns to sharing. Localhost links only work on the development computer; configure `APP_URL` to the deployed address before sharing externally.
+
 ## What is implemented
 
 - Email/password creator signup and login, email confirmation, logout, session refresh.

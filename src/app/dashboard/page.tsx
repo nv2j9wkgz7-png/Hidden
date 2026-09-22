@@ -127,7 +127,9 @@ export default async function Dashboard() {
                   <div className="card-actions">
                     {drop.status === 'PUBLISHED' ? (
                       <>
-                        <Link href={`/d/${drop.slug}`}>View drop ↗</Link>
+                        <Link href={`/dashboard/drops/${drop.slug}/share`}>
+                          Share drop ↗
+                        </Link>
                         <CopyButton path={`/d/${drop.slug}`} />
                       </>
                     ) : (

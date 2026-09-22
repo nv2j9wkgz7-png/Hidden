@@ -183,7 +183,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
       }
       setProgress('Creating your shareable link…');
       const published = await api('/api/creator/publish', { drop_id: id });
-      router.push(published.url);
+      router.push(published.share_url);
       router.refresh();
     } catch (error) {
       setError(

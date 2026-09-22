@@ -13,5 +13,8 @@ export const POST = handler(async (request) => {
     p_creator: user.id,
   });
   if (error) throw error;
-  return json({ url: `/d/${drop.slug}` });
+  return json({
+    url: `/d/${drop.slug}`,
+    share_url: `/dashboard/drops/${drop.slug}/share`,
+  });
 });
