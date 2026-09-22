@@ -1360,3 +1360,15 @@ progress {
   outline: 3px solid var(--accent);
   outline-offset: 4px;
 }
+
+/* Keep dashboard marks crisp; put the glow around their silhouettes. */
+.private-drop-cover .private-drop-mark {
+  width: 56px;
+  height: 64px;
+  filter: saturate(1.65) contrast(1.22) drop-shadow(0 0 2px white) drop-shadow(0 0 9px #fff) drop-shadow(0 0 18px #bda0ef);
+}
+.create-drop-plus {
+  font-size: 120px;
+  background-image: linear-gradient(135deg, #ad87eb 8%, #ce75a6 38%, #7961c5 65%, #4e3a8b);
+  filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 10px #d6b1f4) drop-shadow(0 0 24px #c5a0ee);
+}
