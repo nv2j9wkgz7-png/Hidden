@@ -16,6 +16,18 @@ import { CopyButton } from '@/components/copy-button';
 export const dynamic = 'force-dynamic';
 const sortOptions = [
   {
+    value: 'revenue-high',
+    label: 'Revenue: high to low',
+    column: 'created_at',
+    ascending: false,
+  },
+  {
+    value: 'revenue-low',
+    label: 'Revenue: low to high',
+    column: 'created_at',
+    ascending: true,
+  },
+  {
     value: 'newest',
     label: 'Date: newest first',
     column: 'created_at',
@@ -47,24 +59,28 @@ export default async function Dashboard({
 }) {
   const requested = (await searchParams).sort;
   const sort =
-    sortOptions.find((option) => option.value === requested) || sortOptions[0];
+    sortOptions.find((option) => option.value === requested) ||
+    sortOptions.find((option) => option.value === 'newest')!;
   if (!configured()) return <Setup />;
   const {
     data: { user },
   } = await (await supabase()).auth.getUser();
   if (!user) redirect('/login');
   const db = admin();
+  const revenueSort = sort.value.startsWith('revenue-');
   const [{ data: drops, error }, { data: stats, error: statsError }] =
     await Promise.all([
-      db
-        .from('drops')
-        .select(
-          'id,title,slug,price_cents,status,created_at,assets(id,preview_path)',
-        )
-        .eq('creator_id', user.id)
-        .order(sort.column, { ascending: sort.ascending })
-        .order('id', { ascending: true })
-        .limit(100),
+      revenueSort
+        ? Promise.resolve({ data: null, error: null })
+        : db
+            .from('drops')
+            .select(
+              'id,title,slug,price_cents,status,created_at,assets(id,preview_path)',
+            )
+            .eq('creator_id', user.id)
+            .order(sort.column, { ascending: sort.ascending })
+            .order('id', { ascending: true })
+            .limit(100),
       db.rpc('creator_stats', { p_creator: user.id }),
     ]);
   if (error || statsError)
@@ -74,6 +90,33 @@ export default async function Dashboard({
     sales: number;
     gross_cents: number;
   }[];
+  let displayedDrops = drops || [];
+  if (revenueSort) {
+    const ranked = [...rows]
+      .sort(
+        (a, b) =>
+          (Number(a.gross_cents) - Number(b.gross_cents)) *
+            (sort.ascending ? 1 : -1) || a.drop_id.localeCompare(b.drop_id),
+      )
+      .slice(0, 100);
+    if (ranked.length) {
+      const { data, error } = await db
+        .from('drops')
+        .select(
+          'id,title,slug,price_cents,status,created_at,assets(id,preview_path)',
+        )
+        .eq('creator_id', user.id)
+        .in(
+          'id',
+          ranked.map((row) => row.drop_id),
+        );
+      if (error) throw new Error('Could not sort your drops by revenue.');
+      const rank = new Map(ranked.map((row, index) => [row.drop_id, index]));
+      displayedDrops = (data || []).sort(
+        (a, b) => rank.get(a.id)! - rank.get(b.id)!,
+      );
+    }
+  }
   const totalSales = rows.reduce((n, r) => n + Number(r.sales), 0),
     gross = rows.reduce((n, r) => n + Number(r.gross_cents), 0);
   return (
@@ -108,7 +151,7 @@ export default async function Dashboard({
           All drops{' '}
           <span className="muted" style={{ fontSize: 14, fontWeight: 400 }}>
             {' '}
-            / {drops?.length || 0}
+            / {displayedDrops.length}
           </span>
         </h2>
         <details className="drop-sort" key={sort.value}>
@@ -143,7 +186,7 @@ export default async function Dashboard({
           <strong>New drop</strong>
           <span className="hint">Upload images. Set a price. Share.</span>
         </Link>
-        {(drops || []).map((drop) => {
+        {displayedDrops.map((drop) => {
           const stat = rows.find((r) => r.drop_id === drop.id);
 
           const cover = drop.assets.find((a) => a.preview_path)?.preview_path;
