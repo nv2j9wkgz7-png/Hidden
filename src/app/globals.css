@@ -1311,3 +1311,52 @@ progress {
   border-radius: 20px;
   color: #51465e;
 }
+
+.create-drop-card {
+  min-height: 330px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  background: radial-gradient(
+    ellipse at 45% 40%,
+    #f3e8f5 0%,
+    #f7f5fb 55%,
+    #fff 100%
+  );
+  border: 1px dashed #c8b9dc;
+  padding: 30px 20px;
+}
+.create-drop-plus {
+  display: block;
+  font-family: Arial, sans-serif;
+  font-size: 120px;
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(
+    135deg,
+    #c2b2ee 10%,
+    #d5a3bf 40%,
+    #928bc9 65%,
+    #5a597f
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 13px #c6abe780);
+  transform: skewX(-5deg);
+}
+.create-drop-card strong {
+  color: #695582;
+  font-size: 18px;
+}
+.create-drop-card:hover {
+  border-color: #9f83c5;
+  box-shadow: 0 8px 30px #b396d522;
+}
+.create-drop-card:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}

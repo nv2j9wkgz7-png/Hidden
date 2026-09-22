@@ -24,9 +24,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </Link>
           <nav>
             <Link href="/dashboard">My drops</Link>
-            <Link className="button small" href="/new">
-              New drop <span aria-hidden>＋</span>
-            </Link>
             <Suspense fallback={null}>
               <AccountMenu />
             </Suspense>

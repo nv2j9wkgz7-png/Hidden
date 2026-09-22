@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { Images, ShoppingBag, DollarSign, Plus } from 'lucide-react';
+import { Images, ShoppingBag, DollarSign } from 'lucide-react';
 import { configured } from '@/lib/env';
 import { Setup } from '@/components/setup';
 import { supabase } from '@/lib/supabase/server';
@@ -44,11 +44,6 @@ export default async function Dashboard() {
           <h1>Your drops</h1>
           <p>A little less admin. A little more creating.</p>
         </div>
-        <div className="dashboard-actions">
-          <Link className="button" href="/new">
-            <Plus size={17} /> New drop
-          </Link>
-        </div>
       </div>
       <div className="stats">
         {[
@@ -78,96 +73,87 @@ export default async function Dashboard() {
         </h2>
         <span className="hint">Newest first</span>
       </div>
-      {!drops?.length ? (
-        <section className="panel empty">
-          <div className="empty-icon">
-            <Images size={28} />
-          </div>
-          <h2>Your next handoff starts here.</h2>
-          <p>
-            Upload your images, set a price, and give your buyer one simple
-            link.
-          </p>
-          <Link href="/new" className="button">
-            Create a drop <Plus size={16} />
-          </Link>
-        </section>
-      ) : (
-        <div className="drop-grid">
-          {drops.map((drop) => {
-            const stat = rows.find((r) => r.drop_id === drop.id);
+      <div className="drop-grid">
+        <Link
+          href="/new"
+          className="drop-card create-drop-card"
+          aria-label="Create a new drop"
+        >
+          <span className="create-drop-plus" aria-hidden="true">
+            +
+          </span>
+          <strong>New drop</strong>
+          <span className="hint">Upload images. Set a price. Share.</span>
+        </Link>
+        {(drops || []).map((drop) => {
+          const stat = rows.find((r) => r.drop_id === drop.id);
 
-            const cover = drop.assets.find((a) => a.preview_path)?.preview_path;
-            return (
-              <article className="drop-card" key={drop.id}>
-                <Link
-                  className="drop-cover private-drop-cover"
-                  href={
-                    drop.status !== 'DRAFT'
-                      ? `/dashboard/drops/${drop.slug}/share`
-                      : `/new?drop=${drop.id}`
-                  }
-                  aria-label={`Open ${drop.title}`}
-                >
-                  {cover && (
-                    <img
-                      className="private-drop-background"
-                      src={
-                        db.storage.from('previews').getPublicUrl(cover).data
-                          .publicUrl
-                      }
-                      alt=""
-                    />
-                  )}
+          const cover = drop.assets.find((a) => a.preview_path)?.preview_path;
+          return (
+            <article className="drop-card" key={drop.id}>
+              <Link
+                className="drop-cover private-drop-cover"
+                href={
+                  drop.status !== 'DRAFT'
+                    ? `/dashboard/drops/${drop.slug}/share`
+                    : `/new?drop=${drop.id}`
+                }
+                aria-label={`Open ${drop.title}`}
+              >
+                {cover && (
                   <img
-                    src="/hidden-logo.svg"
+                    className="private-drop-background"
+                    src={
+                      db.storage.from('previews').getPublicUrl(cover).data
+                        .publicUrl
+                    }
                     alt=""
-                    className="private-drop-mark"
-                    width={56}
-                    height={64}
                   />
-                  <span className="private-drop-label">
-                    Open to view images
-                  </span>
-                  <span
-                    className={`badge ${drop.status !== 'DRAFT' ? 'paid' : ''}`}
-                  >
-                    {drop.status !== 'DRAFT'
-                      ? drop.status === 'PUBLISHED'
-                        ? 'Live'
-                        : 'Sales stopped'
-                      : 'Draft'}
-                  </span>
-                </Link>
-                <div className="drop-info">
-                  <h3>{drop.title}</h3>
-                  <span className="hint">
-                    {drop.assets.length} images · {money(drop.price_cents)}
-                  </span>
-                  <div className="row">
-                    <span>{stat?.sales || 0} sales</span>
-                    <strong>{money(Number(stat?.gross_cents || 0))}</strong>
-                  </div>
-                  <div className="card-actions">
-                    {drop.status !== 'DRAFT' ? (
-                      <>
-                        <Link href={`/dashboard/drops/${drop.slug}/share`}>
-                          Open drop ↗
-                        </Link>
-                        <CopyButton path={`/d/${drop.slug}`} />
-                      </>
-                    ) : (
-                      <Link href={`/new?drop=${drop.id}`}>
-                        Continue draft →
-                      </Link>
-                    )}
-                  </div>
+                )}
+                <img
+                  src="/hidden-logo.svg"
+                  alt=""
+                  className="private-drop-mark"
+                  width={56}
+                  height={64}
+                />
+                <span className="private-drop-label">Open to view images</span>
+                <span
+                  className={`badge ${drop.status !== 'DRAFT' ? 'paid' : ''}`}
+                >
+                  {drop.status !== 'DRAFT'
+                    ? drop.status === 'PUBLISHED'
+                      ? 'Live'
+                      : 'Sales stopped'
+                    : 'Draft'}
+                </span>
+              </Link>
+              <div className="drop-info">
+                <h3>{drop.title}</h3>
+                <span className="hint">
+                  {drop.assets.length} images · {money(drop.price_cents)}
+                </span>
+                <div className="row">
+                  <span>{stat?.sales || 0} sales</span>
+                  <strong>{money(Number(stat?.gross_cents || 0))}</strong>
                 </div>
-              </article>
-            );
-          })}
-        </div>
-      )}
+                <div className="card-actions">
+                  {drop.status !== 'DRAFT' ? (
+                    <>
+                      <Link href={`/dashboard/drops/${drop.slug}/share`}>
+                        Open drop ↗
+                      </Link>
+                      <CopyButton path={`/d/${drop.slug}`} />
+                    </>
+                  ) : (
+                    <Link href={`/new?drop=${drop.id}`}>Continue draft →</Link>
+                  )}
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
       <p className="hint" style={{ marginTop: 20 }}>
         Sales count purchases, not individual images. Gross revenue is before
         fees and refunds. Showing your latest 100 drops.
