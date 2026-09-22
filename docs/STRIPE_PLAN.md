@@ -48,3 +48,7 @@ For deployment, use a public HTTPS webhook URL and that destination's own signin
 - https://docs.stripe.com/connect/direct-charges
 - https://docs.stripe.com/connect/destination-charges
 - https://docs.stripe.com/checkout/fulfillment
+
+## Payment setup completed
+
+Sandbox API credentials and the local webhook listener are now configured. Checkout, webhook-driven unlock, original downloads, duplicate-event handling and full-refund revocation passed. See `docs/STRIPE_VERIFICATION.md` for results and restart instructions. Production deployment and creator payouts remain outside this completed sandbox setup.

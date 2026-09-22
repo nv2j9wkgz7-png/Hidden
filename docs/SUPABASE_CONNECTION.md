@@ -25,3 +25,7 @@ Auth URL configuration is complete and was verified in the Supabase dashboard: S
 Live verification passed against the real Supabase project and local production server: temporary creator authentication, create drop, two signed uploads, preview generation, publish, public preview access, rejection of public original access, and HTTP 403 for unpaid downloads. Temporary test user, drop and files were removed. No live payment was attempted without Stripe credentials.
 
 `npm run build` passed. The app runs at http://127.0.0.1:3000 using `npm start`; development mode encountered the machine's file-watcher limit.
+
+## Payment setup completed
+
+Sandbox API credentials and the local webhook listener are now configured. Checkout, webhook-driven unlock, original downloads, duplicate-event handling and full-refund revocation passed. See `docs/STRIPE_VERIFICATION.md` for results and restart instructions. Production deployment and creator payouts remain outside this completed sandbox setup.

@@ -189,3 +189,7 @@ A local commit alone cannot be pulled from another laptop. If a portable `.bundl
 - [Supabase signed uploads](https://supabase.com/docs/reference/javascript/storage-from-createsigneduploadurl)
 - [Stripe checkout fulfillment](https://docs.stripe.com/checkout/fulfillment)
 - [Stripe Cash App Pay](https://docs.stripe.com/payments/cash-app-pay)
+
+## Verified local Stripe setup
+
+The complete sandbox payment/unlock/refund flow has passed. See [Stripe verification](docs/STRIPE_VERIFICATION.md). Restart webhook forwarding with `node --env-file=.env.local scripts/stripe-listen.mjs`, then run the app in another terminal. Credentials remain in ignored `.env.local`.
