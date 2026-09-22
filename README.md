@@ -206,7 +206,7 @@ References: [Snapchat share flow](https://developers.snap.com/api/snapchat-for-w
 
 ### Stop sales and creator viewing
 
-Dashboard cards contain no photo previews. Opening a published drop shows an owner-only gallery using original URLs signed for 60 seconds. Original storage paths are never serialized as standalone fields to the gallery client.
+Dashboard cards show separate blurred previews behind the H watermark; they never receive originals. Opening a published drop shows an owner-only gallery using original URLs signed for 60 seconds. Original storage paths are never serialized as standalone fields to the gallery client.
 
 Creators can select **Stop sales** and confirm from their drop page. `CLOSING` immediately blocks checkout creation and resumption; the server expires every registered unpaid checkout through the payment-provider abstraction, then marks the drop `CLOSED`. Failed expiration leaves the drop in `CLOSING` with a retry control. Checkout creation rechecks the sales state and expires its session before returning a link if closure occurred concurrently. The database trigger serializes purchase reservations with changes to the drop state. Completed or already-processing payments are honored; paid purchases and recovery links retain original-file access. No images or purchases are deleted, and this action does not refund payments.
 

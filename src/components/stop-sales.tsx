@@ -38,23 +38,48 @@ export function StopSales({
       </p>
       {status !== 'CLOSED' &&
         (confirm || status === 'CLOSING' ? (
-          <>
-            <p>Stop accepting payments for this drop?</p>
-            <button className="secondary" disabled={busy} onClick={stop}>
-              {busy ? 'Closing checkouts…' : 'Stop sales now'}
-            </button>
-            {status !== 'CLOSING' && (
-              <button
-                className="text-button"
-                disabled={busy}
-                onClick={() => setConfirm(false)}
-              >
-                Cancel
+          <div
+            className="stop-confirm"
+            role="region"
+            aria-label="Confirm stopping sales"
+          >
+            <h3>Stop sales for this drop?</h3>
+            <ul>
+              <li>No one new can buy through this link.</li>
+              <li>Unpaid checkout links will expire.</li>
+              <li>
+                Buyers who already paid keep their images and access links.
+              </li>
+              <li>
+                Completed or processing payments are honored. No refunds are
+                issued.
+              </li>
+            </ul>
+            <p>
+              This drop cannot be reopened for sales. You can create a new drop
+              if you want to sell again.
+            </p>
+            <div className="stop-confirm-actions">
+              {status !== 'CLOSING' && (
+                <button
+                  className="secondary"
+                  disabled={busy}
+                  onClick={() => setConfirm(false)}
+                >
+                  Cancel
+                </button>
+              )}
+              <button className="danger-button" disabled={busy} onClick={stop}>
+                {busy
+                  ? 'Closing checkouts…'
+                  : status === 'CLOSING'
+                    ? 'Finish stopping sales'
+                    : 'Confirm stop sales'}
               </button>
-            )}
-          </>
+            </div>
+          </div>
         ) : (
-          <button className="secondary" onClick={() => setConfirm(true)}>
+          <button className="danger-button" onClick={() => setConfirm(true)}>
             Stop sales
           </button>
         ))}

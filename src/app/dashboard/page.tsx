@@ -19,7 +19,9 @@ export default async function Dashboard() {
     await Promise.all([
       db
         .from('drops')
-        .select('id,title,slug,price_cents,status,created_at,assets(id)')
+        .select(
+          'id,title,slug,price_cents,status,created_at,assets(id,preview_path)',
+        )
         .eq('creator_id', user.id)
         .order('created_at', { ascending: false })
         .limit(100),
@@ -95,6 +97,7 @@ export default async function Dashboard() {
           {drops.map((drop) => {
             const stat = rows.find((r) => r.drop_id === drop.id);
 
+            const cover = drop.assets.find((a) => a.preview_path)?.preview_path;
             return (
               <article className="drop-card" key={drop.id}>
                 <Link
@@ -106,6 +109,16 @@ export default async function Dashboard() {
                   }
                   aria-label={`Open ${drop.title}`}
                 >
+                  {cover && (
+                    <img
+                      className="private-drop-background"
+                      src={
+                        db.storage.from('previews').getPublicUrl(cover).data
+                          .publicUrl
+                      }
+                      alt=""
+                    />
+                  )}
                   <img
                     src="/hidden-logo.svg"
                     alt=""

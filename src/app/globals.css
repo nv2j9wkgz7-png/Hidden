@@ -1231,3 +1231,83 @@ progress {
     grid-template-columns: 1fr;
   }
 }
+
+.danger-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #c83242;
+  border: 1px solid #c83242;
+  color: white;
+  border-radius: 12px;
+  padding: 14px 22px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.danger-button:hover:not(:disabled) {
+  background: #a92433;
+  border-color: #a92433;
+}
+.danger-button:focus-visible {
+  outline: 3px solid #ef9da7;
+  outline-offset: 3px;
+}
+.danger-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.stop-confirm {
+  margin-top: 20px;
+  padding: 22px;
+  border: 1px solid #f0c8ce;
+  border-radius: 14px;
+  background: #fff6f7;
+}
+.stop-confirm h3 {
+  margin: 0 0 14px;
+  color: #922333;
+}
+.stop-confirm ul {
+  padding-left: 20px;
+  line-height: 1.7;
+  font-size: 14px;
+}
+.stop-confirm p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.stop-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.private-drop-cover {
+  isolation: isolate;
+  overflow: hidden;
+}
+.private-drop-cover .private-drop-background {
+  position: absolute;
+  inset: -12px;
+  width: calc(100% + 24px);
+  height: calc(100% + 24px);
+  object-fit: cover;
+  filter: blur(10px);
+  z-index: -2;
+}
+.private-drop-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(238, 235, 244, 0.48);
+  z-index: -1;
+}
+.private-drop-label {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: #51465e;
+}
