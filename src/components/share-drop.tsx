@@ -149,12 +149,7 @@ export function ShareDrop({
           <span>Preview, pay, and unlock. No account needed.</span>
           <small>{new URL(url).host}</small>
         </div>
-        <p className="hint">
-          Your link preview. Appearance varies by app.{' '}
-          <a href={`${url}/card?v=9`} download="hidden-preview.jpg">
-            Download preview card
-          </a>
-        </p>
+
       </div>
       <h3 className="share-label">Share your drop</h3>
       <div className="share-options">
