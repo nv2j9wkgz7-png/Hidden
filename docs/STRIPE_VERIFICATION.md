@@ -13,7 +13,7 @@ Passed against the running production build, real Supabase project, and Stripe s
 - Replaying the actual completed event with a locally generated test signature did not duplicate the sale: one sale, 500 cents gross.
 - Full sandbox refund succeeded; actual `charge.refunded` webhook changed the purchase to REFUNDED; downloads returned 403.
 
-Apple Pay was visible in Checkout but was not exercised. Cash App Pay is not enabled or verified yet. Link also displayed funding options in Stripe's hosted checkout. The app itself requests card payments; Stripe's Link configuration can affect the hosted options.
+Apple Pay was visible in Checkout but was not exercised. Cash App Pay is enabled locally and its full sandbox checkout → webhook PAID → two original downloads flow passed. The US sandbox reports Cash App Pay available. Link also displayed funding options in Stripe's hosted checkout. The app itself requests card payments; Stripe's Link configuration can affect the hosted options.
 
 ## Restart local payment testing
 
@@ -37,3 +37,7 @@ npm start
 Leave both processes running while testing. For production, configure a public HTTPS webhook destination, its separate signing secret, production environment variables, and the deployed Supabase auth callback. A localhost listener is not a deployment.
 
 Official test-card documentation: https://docs.stripe.com/testing
+
+## Hosting status
+
+Git is initialized and all completed work is committed locally. No GitHub repository or Git remote has been created; the Git bundle is an offline transfer copy, not a hosted backup. GitHub and Vercel sign-in are required before publishing a sandbox deployment.
