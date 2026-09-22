@@ -29,14 +29,22 @@ export async function GET(
       top: 0,
     });
   }
-  // Same H silhouette as the Hidden brand mark, in white for a legible watermark.
+  // Reuse the exact colored logo shown in the site header.
+  const logo = await sharp(`${process.cwd()}/public/hidden-logo.svg`)
+    .resize(180, 204, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .png()
+    .toBuffer();
   const watermark = Buffer.from(
-    `<svg width="1000" height="1000" xmlns="http://www.w3.org/2000/svg"><defs><filter id="shadow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="18"/></filter></defs><rect width="1000" height="1000" fill="#171020" opacity=".18"/><g transform="translate(324 300) scale(.4) translate(-175 -110)"><path d="M215 155H465V536H786V155H1040V1096H786V720H465V1096H215Z" fill="#171020" opacity=".6" filter="url(#shadow)"/><path d="M215 155H465V536H786V155H1040V1096H786V720H465V1096H215Z" fill="white" opacity=".9"/></g><text x="500" y="790" text-anchor="middle" font-family="sans-serif" font-weight="600" font-size="30" letter-spacing="9" fill="white">HIDDEN</text></svg>`,
+    `<svg width="1000" height="1000" xmlns="http://www.w3.org/2000/svg"><rect width="1000" height="1000" fill="#171020" opacity=".18"/></svg>`,
   );
   const output = await sharp({
     create: { width: 1000, height: 1000, channels: 3, background: '#342947' },
   })
-    .composite([...layers, { input: watermark, left: 0, top: 0 }])
+    .composite([
+      ...layers,
+      { input: watermark, left: 0, top: 0 },
+      { input: logo, left: 410, top: 398 },
+    ])
     .jpeg({ quality: 85 })
     .toBuffer();
   return new Response(new Uint8Array(output), {

@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 const config: NextConfig = {
   poweredByHeader: false,
+  outputFileTracingIncludes: { '/d/*/card': ['./public/hidden-logo.svg'] },
   serverExternalPackages: ['sharp'],
   async headers() {
     return [
