@@ -1065,3 +1065,16 @@ progress {
   color: #bdb9c9;
   font-size: 13px;
 }
+
+.brand-wordmark {
+  display: block;
+  width: 194px;
+  height: 44px;
+  object-fit: contain;
+}
+@media (max-width: 600px) {
+  .brand-wordmark {
+    width: 140px;
+    height: 36px;
+  }
+}

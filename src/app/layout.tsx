@@ -12,10 +12,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <header className="site-header">
           <Link className="brand" href="/" aria-label="Hidden home">
-            <span className="brand-icon">
-              <img src="/hidden-logo.svg" alt="" width={44} height={44} />
-            </span>
-            Hidden<span className="version">V0</span>
+            <img
+              className="brand-wordmark"
+              src="/hidden-wordmark.svg"
+              alt="Hidden"
+              width={194}
+              height={44}
+            />
           </Link>
           <nav>
             <Link href="/dashboard">My drops</Link>
