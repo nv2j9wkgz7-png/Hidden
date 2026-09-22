@@ -203,3 +203,11 @@ Published `/d/[slug]` pages expose Open Graph/Twitter metadata with title (inclu
 WhatsApp/SMS prefill the composed message. Snapchat’s documented web share URL accepts the purchase URL and opens its recipient flow, but does not accept a prefilled caption. Instagram has no equivalent general web DM composer URL: supported devices use the system share sheet, where the user selects Instagram; other browsers open Instagram with an explicit copy/paste fallback. No messages are sent automatically.
 
 References: [Snapchat share flow](https://developers.snap.com/api/snapchat-for-web/social-plugins/share-link-to-snapchat), [Web Share API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share). Social logo SVGs in `public/social` are from [Simple Icons](https://simpleicons.org/) (CC0; respective brand trademarks remain with their owners).
+
+### Stop sales and creator viewing
+
+Dashboard cards contain no photo previews. Opening a published drop shows an owner-only gallery using original URLs signed for 60 seconds. Original storage paths are never serialized as standalone fields to the gallery client.
+
+Creators can select **Stop sales** and confirm from their drop page. `CLOSING` immediately blocks checkout creation and resumption; the server expires every registered unpaid checkout through the payment-provider abstraction, then marks the drop `CLOSED`. Failed expiration leaves the drop in `CLOSING` with a retry control. Checkout creation rechecks the sales state and expires its session before returning a link if closure occurred concurrently. The database trigger serializes purchase reservations with changes to the drop state. Completed or already-processing payments are honored; paid purchases and recovery links retain original-file access. No images or purchases are deleted, and this action does not refund payments.
+
+Apply `supabase/migrations/20260922213000_stop_sales.sql` after the initial migration. The live Supabase project has this migration applied. Regression coverage checks that CLOSING/CLOSED prevent new reservations without revoking PAID access. A sandbox integration check also verified expiration of an actual open Stripe Checkout Session and retained downloads for a simulated paid entitlement.

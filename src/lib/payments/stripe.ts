@@ -48,6 +48,17 @@ export class StripeProvider implements PaymentProvider {
     const status = session.status as 'open' | 'complete' | 'expired';
     return { url: session.url, status };
   }
+  async expireCheckout(transactionId: string) {
+    const session = await this.getCheckout(transactionId);
+    if (session.status !== 'open') return;
+    try {
+      await this.stripe.checkout.sessions.expire(transactionId);
+    } catch (error) {
+      // A checkout may complete or another request may expire it concurrently.
+      if ((await this.getCheckout(transactionId)).status === 'open')
+        throw error;
+    }
+  }
   async verifyWebhook(
     body: string,
     headers: Headers,

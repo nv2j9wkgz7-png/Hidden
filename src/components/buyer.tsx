@@ -21,9 +21,11 @@ type DownloadFile = { id: string; filename: string; url: string };
 export function Buyer({
   drop,
   assets,
+  salesClosed = false,
 }: {
   drop: { id: string; title: string; price_cents: number };
   assets: Asset[];
+  salesClosed?: boolean;
 }) {
   const [status, setStatus] = useState('LOADING'),
     [busy, setBusy] = useState(''),
@@ -218,7 +220,11 @@ export function Buyer({
                   : 'Locked collection'}
           </span>
           <h2 style={{ marginTop: 18 }}>
-            {paid ? 'It’s all yours.' : 'Unlock the originals.'}
+            {paid
+              ? 'It’s all yours.'
+              : salesClosed
+                ? 'This drop is closed.'
+                : 'Unlock the originals.'}
           </h2>
           {paid ? (
             <p className="hint">
@@ -235,6 +241,13 @@ export function Buyer({
                 {fileSize(assets.reduce((n, a) => n + a.size_bytes, 0))} total.
               </p>
             </>
+          )}
+          {salesClosed && !paid && (
+            <p className="notice">
+              The creator has stopped sales. If you already paid, use your saved
+              private access link or the browser you purchased in to access your
+              images.
+            </p>
           )}
           <hr className="divider" />
           <div className="benefit">
@@ -283,16 +296,18 @@ export function Buyer({
             ) : (
               <button
                 className="primary full"
-                disabled={!!busy || status === 'LOADING'}
+                disabled={salesClosed || !!busy || status === 'LOADING'}
                 onClick={checkout}
               >
-                {status === 'LOADING'
-                  ? 'Checking access…'
-                  : busy
-                    ? 'Opening checkout…'
-                    : status === 'PENDING'
-                      ? 'Resume checkout'
-                      : `Unlock for ${money(drop.price_cents)}`}
+                {salesClosed
+                  ? 'Sales closed'
+                  : status === 'LOADING'
+                    ? 'Checking access…'
+                    : busy
+                      ? 'Opening checkout…'
+                      : status === 'PENDING'
+                        ? 'Resume checkout'
+                        : `Unlock for ${money(drop.price_cents)}`}
               </button>
             )}
           </div>

@@ -60,9 +60,9 @@ export default async function DropPage({
   const db = admin();
   const { data: drop, error } = await db
     .from('drops')
-    .select('id,title,price_cents,creator_id')
+    .select('id,title,price_cents,creator_id,status')
     .eq('slug', slug)
-    .eq('status', 'PUBLISHED')
+    .in('status', ['PUBLISHED', 'CLOSING', 'CLOSED'])
     .maybeSingle();
   if (error) throw error;
   if (!drop) notFound();
@@ -91,6 +91,7 @@ export default async function DropPage({
       )}
       <Buyer
         drop={buyerDrop}
+        salesClosed={drop.status !== 'PUBLISHED'}
         assets={(assets || []).map(({ preview_path, ...asset }) => ({
           ...asset,
           preview_url: db.storage.from('previews').getPublicUrl(preview_path)

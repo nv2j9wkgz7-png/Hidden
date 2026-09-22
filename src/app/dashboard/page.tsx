@@ -19,9 +19,7 @@ export default async function Dashboard() {
     await Promise.all([
       db
         .from('drops')
-        .select(
-          'id,title,slug,price_cents,status,created_at,assets(preview_path)',
-        )
+        .select('id,title,slug,price_cents,status,created_at,assets(id)')
         .eq('creator_id', user.id)
         .order('created_at', { ascending: false })
         .limit(100),
@@ -96,27 +94,38 @@ export default async function Dashboard() {
         <div className="drop-grid">
           {drops.map((drop) => {
             const stat = rows.find((r) => r.drop_id === drop.id);
-            const cover = drop.assets.find((a) => a.preview_path)?.preview_path;
+
             return (
               <article className="drop-card" key={drop.id}>
-                <div className="drop-cover">
-                  {cover ? (
-                    <img
-                      src={
-                        db.storage.from('previews').getPublicUrl(cover).data
-                          .publicUrl
-                      }
-                      alt="Locked drop preview"
-                    />
-                  ) : (
-                    <Images size={32} color="#958bac" />
-                  )}
-                  <span
-                    className={`badge ${drop.status === 'PUBLISHED' ? 'paid' : ''}`}
-                  >
-                    {drop.status === 'PUBLISHED' ? 'Live' : 'Draft'}
+                <Link
+                  className="drop-cover private-drop-cover"
+                  href={
+                    drop.status !== 'DRAFT'
+                      ? `/dashboard/drops/${drop.slug}/share`
+                      : `/new?drop=${drop.id}`
+                  }
+                  aria-label={`Open ${drop.title}`}
+                >
+                  <img
+                    src="/hidden-logo.svg"
+                    alt=""
+                    className="private-drop-mark"
+                    width={56}
+                    height={64}
+                  />
+                  <span className="private-drop-label">
+                    Open to view images
                   </span>
-                </div>
+                  <span
+                    className={`badge ${drop.status !== 'DRAFT' ? 'paid' : ''}`}
+                  >
+                    {drop.status !== 'DRAFT'
+                      ? drop.status === 'PUBLISHED'
+                        ? 'Live'
+                        : 'Sales stopped'
+                      : 'Draft'}
+                  </span>
+                </Link>
                 <div className="drop-info">
                   <h3>{drop.title}</h3>
                   <span className="hint">
@@ -127,10 +136,10 @@ export default async function Dashboard() {
                     <strong>{money(Number(stat?.gross_cents || 0))}</strong>
                   </div>
                   <div className="card-actions">
-                    {drop.status === 'PUBLISHED' ? (
+                    {drop.status !== 'DRAFT' ? (
                       <>
                         <Link href={`/dashboard/drops/${drop.slug}/share`}>
-                          Share drop ↗
+                          Open drop ↗
                         </Link>
                         <CopyButton path={`/d/${drop.slug}`} />
                       </>

@@ -18,6 +18,16 @@ export const POST = handler(async (request) => {
     .object({ drop_id: z.uuid() })
     .parse(await request.json());
   await rateLimit(`checkout:${requestIp(request)}`, 20);
+  const db = admin();
+  const { data: drop, error } = await db
+    .from('drops')
+    .select('id,slug,title,price_cents,currency')
+    .eq('id', drop_id)
+    .eq('status', 'PUBLISHED')
+    .maybeSingle();
+  if (error) throw error;
+  if (!drop)
+    throw new HttpError(410, 'This drop is no longer accepting purchases.');
   const existing = await purchaseAccess(drop_id);
   if (existing?.status === 'PAID')
     throw new HttpError(409, 'You already have access. Refresh this page.');
@@ -36,15 +46,6 @@ export const POST = handler(async (request) => {
         'Your checkout is complete. Please wait for payment confirmation; do not pay again.',
       );
   }
-  const db = admin();
-  const { data: drop, error } = await db
-    .from('drops')
-    .select('id,slug,title,price_cents,currency')
-    .eq('id', drop_id)
-    .eq('status', 'PUBLISHED')
-    .maybeSingle();
-  if (error) throw error;
-  if (!drop) throw new HttpError(404, 'Drop not found.');
   const provider = paymentProvider();
   const token = newToken();
   const { data: purchase, error: insertError } = await db
@@ -73,6 +74,17 @@ export const POST = handler(async (request) => {
     .eq('id', purchase.id)
     .is('payment_provider_transaction_id', null);
   if (updateError) throw updateError;
+  // If the creator closed sales while checkout was being created, revoke it
+  // before returning a URL. Stop-sales also expires all registered sessions.
+  const { data: latest, error: statusError } = await db
+    .from('drops')
+    .select('status')
+    .eq('id', drop.id)
+    .single();
+  if (statusError || latest?.status !== 'PUBLISHED') {
+    await provider.expireCheckout(checkout.id);
+    throw new HttpError(410, 'This drop is no longer accepting purchases.');
+  }
   const response = json({ url: checkout.url });
   response.cookies.set(accessCookie(drop.id), token, cookieOptions);
   return response;

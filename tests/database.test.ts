@@ -16,6 +16,9 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
   await db.exec(
     await readFile('supabase/migrations/20260922192409_initial.sql', 'utf8'),
   );
+  await db.exec(
+    await readFile('supabase/migrations/20260922213000_stop_sales.sql', 'utf8'),
+  );
   const creator = crypto.randomUUID(),
     other = crypto.randomUUID();
   await db.query('insert into auth.users values($1,$2),($3,$4)', [
@@ -303,5 +306,40 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
       false,
     );
   });
+  await t.test(
+    'stopping sales blocks new reservations and preserves paid access',
+    async () => {
+      const id = crypto.randomUUID();
+      const paidId = crypto.randomUUID();
+      await db.query(
+        "insert into public.drops(id,creator_id,title,price_cents,status) values($1,$2,'Closing test',100,'PUBLISHED')",
+        [id, creator],
+      );
+      await db.query(
+        "insert into public.purchases(id,drop_id,payment_provider,amount_cents,status,access_token) values($1,$2,'stripe',100,'PAID',$3)",
+        [paidId, id, hashToken(newToken())],
+      );
+      for (const state of ['CLOSING', 'CLOSED']) {
+        await db.query('update public.drops set status=$1 where id=$2', [
+          state,
+          id,
+        ]);
+        await assert.rejects(
+          db.query(
+            "insert into public.purchases(drop_id,payment_provider,amount_cents,access_token) values($1,'stripe',100,$2)",
+            [id, hashToken(newToken())],
+          ),
+          /closed to new purchases/,
+        );
+        const paid = (
+          await db.query<{ status: string; drop_id: string }>(
+            'select status,drop_id from public.purchases where id=$1',
+            [paidId],
+          )
+        ).rows[0];
+        assert.equal(canDownload(paid, id), true);
+      }
+    },
+  );
   await db.close();
 });

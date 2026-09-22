@@ -1174,3 +1174,60 @@ progress {
     padding: 8px 4px;
   }
 }
+
+.private-drop-cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  text-decoration: none;
+  background: #eeebf4;
+}
+.private-drop-cover .private-drop-mark {
+  width: 56px;
+  height: 64px;
+  object-fit: contain;
+}
+.private-drop-label {
+  color: #746985;
+  font-size: 13px;
+}
+.private-drop-cover:hover {
+  background: #e5dff0;
+}
+.creator-gallery-panel {
+  margin-bottom: 24px;
+}
+.creator-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.creator-gallery figure {
+  margin: 0;
+  min-width: 0;
+}
+.creator-gallery img {
+  width: 100%;
+  height: 220px;
+  object-fit: contain;
+  background: #f3f1f6;
+  border-radius: 12px;
+}
+.creator-gallery figcaption {
+  padding-top: 8px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.creator-gallery small {
+  display: block;
+  color: var(--muted);
+  margin-top: 4px;
+}
+@media (max-width: 480px) {
+  .creator-gallery {
+    grid-template-columns: 1fr;
+  }
+}

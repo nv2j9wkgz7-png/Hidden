@@ -21,6 +21,7 @@ export interface PaymentProvider {
   getCheckout(
     transactionId: string,
   ): Promise<{ url: string | null; status: 'open' | 'complete' | 'expired' }>;
+  expireCheckout(transactionId: string): Promise<void>;
   verifyWebhook(body: string, headers: Headers): Promise<PaymentEvent | null>;
   refundPayment(transactionId: string, idempotencyKey: string): Promise<void>;
 }
