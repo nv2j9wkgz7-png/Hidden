@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { UploadCloud, ImageIcon, X, ShieldCheck, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/client-api';
@@ -26,6 +26,10 @@ type Item = {
 };
 export function NewDropForm({ draft }: { draft?: Draft }) {
   const router = useRouter();
+  const imagesRef = useRef<HTMLInputElement>(null);
+  const titleRef = useRef<HTMLInputElement>(null);
+  const priceRef = useRef<HTMLInputElement>(null);
+  const [invalidField, setInvalidField] = useState('');
   const [title, setTitle] = useState(draft?.title || ''),
     [price, setPrice] = useState(
       draft ? (draft.price_cents / 100).toFixed(2) : '',
@@ -93,15 +97,27 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
   }
   async function publish(event: React.FormEvent) {
     event.preventDefault();
+    if (busy) return;
     setError('');
+    setInvalidField('');
     if (!items.length) {
-      setError('Choose at least one image.');
+      setError('Upload at least one image first.');
+      setInvalidField('images');
+      imagesRef.current?.focus();
       return;
     }
     if (items.some((i) => !i.ready && !i.file)) {
       setError(
         'Reselect the unfinished files listed below to resume your draft.',
       );
+      setInvalidField('images');
+      imagesRef.current?.focus();
+      return;
+    }
+    if (!title.trim() || title.trim().length > 100) {
+      setError('Add a title for your drop (up to 100 characters).');
+      setInvalidField('title');
+      titleRef.current?.focus();
       return;
     }
     if (
@@ -112,6 +128,8 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
       setError(
         'Set a price between $0.50 and $1,000, with at most two decimals.',
       );
+      setInvalidField('price');
+      priceRef.current?.focus();
       return;
     }
     setBusy(true);
@@ -197,7 +215,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
     }
   }
   return (
-    <form onSubmit={publish} className="editor">
+    <form noValidate onSubmit={publish} className="editor">
       <section className="panel">
         <div className="section-title" style={{ marginTop: 0 }}>
           <h2>Your images</h2>
@@ -216,6 +234,11 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
           <p>or click to choose files</p>
           <p>JPEG, PNG, WebP · up to 10 MB each</p>
           <input
+            ref={imagesRef}
+            aria-invalid={invalidField === 'images'}
+            aria-describedby={
+              invalidField === 'images' ? 'drop-error' : undefined
+            }
             aria-label="Choose images"
             type="file"
             accept="image/jpeg,image/png,image/webp"
@@ -266,6 +289,11 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
         <div className="field">
           <label htmlFor="title">Title</label>
           <input
+            ref={titleRef}
+            aria-invalid={invalidField === 'title'}
+            aria-describedby={
+              invalidField === 'title' ? 'drop-error' : undefined
+            }
             id="title"
             placeholder="e.g. The coastal collection"
             value={title}
@@ -280,6 +308,11 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
           <div className="price-input">
             <span>$</span>
             <input
+              ref={priceRef}
+              aria-invalid={invalidField === 'price'}
+              aria-describedby={
+                invalidField === 'price' ? 'drop-error' : undefined
+              }
               id="price"
               inputMode="decimal"
               placeholder="15.00"
@@ -297,7 +330,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
           same link with multiple buyers.
         </p>
         {error && (
-          <div role="alert" className="notice error">
+          <div id="drop-error" role="alert" className="notice error">
             {error}
           </div>
         )}
