@@ -32,7 +32,7 @@ export async function generateMetadata({
       type: 'website',
       images: [
         {
-          url: `${url}/card?v=6`,
+          url: `${url}/card?v=7`,
           width: 1000,
           height: 1000,
           alt: 'Blurred collection cover watermarked with the Hidden H',
@@ -43,7 +43,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title: socialTitle,
       description,
-      images: [`${url}/card?v=6`],
+      images: [`${url}/card?v=7`],
     },
   };
 }
