@@ -1,52 +1,42 @@
-import sharp from 'sharp';
+import sharp, { type OverlayOptions } from 'sharp';
 import { publicDrop } from '@/lib/public-drop';
 import { admin } from '@/lib/supabase/admin';
-import { money, fileSize } from '@/lib/format';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-const escape = (s: string) =>
-  s.replace(
-    /[<>&"']/g,
-    (c) =>
-      ({
-        '<': '&lt;',
-        '>': '&gt;',
-        '&': '&amp;',
-        '"': '&quot;',
-        "'": '&apos;',
-      })[c]!,
-  );
+
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const drop = await publicDrop((await params).slug);
   if (!drop) return new Response('Not found', { status: 404 });
-  // Only read separate, already-sanitized previews. Never read the originals bucket.
-  const tiles = await Promise.all(
-    drop.assets.slice(0, 2).map(async (asset, i) => {
-      const { data, error } = await admin()
-        .storage.from('previews')
-        .download(asset.preview_path);
-      if (error || !data) return null;
-      const input = await sharp(Buffer.from(await data.arrayBuffer()))
-        .resize(530, 300, { fit: 'cover' })
+  // The social cover only reads an already-sanitized preview, never an original.
+  const layers: OverlayOptions[] = [];
+  const cover = drop.assets[0];
+  if (cover) {
+    const { data, error } = await admin()
+      .storage.from('previews')
+      .download(cover.preview_path);
+    if (error || !data)
+      return new Response('Preview unavailable', { status: 503 });
+    layers.push({
+      input: await sharp(Buffer.from(await data.arrayBuffer()))
+        .resize(1000, 1000, { fit: 'cover' })
+        .blur(12)
         .png()
-        .toBuffer();
-      return { input, left: 50 + i * 570, top: 40 };
-    }),
-  );
-  const summary = `${drop.assets.length} hidden images · ${fileSize(drop.assets.reduce((n, a) => n + a.size_bytes, 0))} · ${money(drop.price_cents)} USD`;
-  const overlay = Buffer.from(
-    `<svg width="1200" height="630"><g font-family="sans-serif"><rect x="50" y="280" width="230" height="44" rx="12" fill="#241844"/><text x="72" y="310" font-size="20" fill="white">LOCKED PREVIEWS</text><text x="50" y="405" font-size="24" font-weight="bold" fill="#b5a2ff">HIDDEN</text><text x="50" y="468" font-size="42" font-weight="bold" fill="white">${escape(drop.title.slice(0, 42))}${drop.title.length > 42 ? '…' : ''}</text><text x="50" y="522" font-size="28" fill="#d4cfe3">${escape(summary)}</text><text x="50" y="580" font-size="24" fill="#b5a2ff">Tap to preview, pay, and unlock the originals →</text></g></svg>`,
+        .toBuffer(),
+      left: 0,
+      top: 0,
+    });
+  }
+  // Same H silhouette as the Hidden brand mark, in white for a legible watermark.
+  const watermark = Buffer.from(
+    `<svg width="1000" height="1000" xmlns="http://www.w3.org/2000/svg"><defs><filter id="shadow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="18"/></filter></defs><rect width="1000" height="1000" fill="#171020" opacity=".18"/><g transform="translate(324 300) scale(.4) translate(-175 -110)"><path d="M215 155H465V536H786V155H1040V1096H786V720H465V1096H215Z" fill="#171020" opacity=".6" filter="url(#shadow)"/><path d="M215 155H465V536H786V155H1040V1096H786V720H465V1096H215Z" fill="white" opacity=".9"/></g><text x="500" y="790" text-anchor="middle" font-family="sans-serif" font-weight="600" font-size="30" letter-spacing="9" fill="white">HIDDEN</text></svg>`,
   );
   const output = await sharp({
-    create: { width: 1200, height: 630, channels: 3, background: '#191521' },
+    create: { width: 1000, height: 1000, channels: 3, background: '#342947' },
   })
-    .composite([
-      ...tiles.filter((t) => t !== null),
-      { input: overlay, left: 0, top: 0 },
-    ])
+    .composite([...layers, { input: watermark, left: 0, top: 0 }])
     .jpeg({ quality: 85 })
     .toBuffer();
   return new Response(new Uint8Array(output), {

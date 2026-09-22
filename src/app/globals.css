@@ -1039,3 +1039,29 @@ progress {
 .share-options img {
   object-fit: contain;
 }
+
+.share-card-preview {
+  max-width: 420px;
+  margin: 24px auto;
+}
+.share-card-preview > img {
+  border-radius: 18px 18px 0 0;
+  aspect-ratio: 1;
+}
+.share-card-details {
+  display: grid;
+  gap: 8px;
+  padding: 20px;
+  background: #25242c;
+  color: white;
+  border-radius: 0 0 18px 18px;
+}
+.share-card-details strong {
+  font-size: 17px;
+  line-height: 1.4;
+}
+.share-card-details span,
+.share-card-details small {
+  color: #bdb9c9;
+  font-size: 13px;
+}

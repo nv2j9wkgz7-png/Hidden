@@ -19,30 +19,31 @@ export async function generateMetadata({
   const drop = await publicDrop(slug);
   if (!drop) return { title: 'Drop unavailable' };
   const description = `${drop.assets.length} hidden images · ${fileSize(drop.assets.reduce((n, a) => n + a.size_bytes, 0))} · ${money(drop.price_cents)} USD. Preview, pay, and unlock full-resolution originals.`;
+  const socialTitle = `Unlock ${drop.title} · ${drop.assets.length} hidden images · ${fileSize(drop.assets.reduce((n, a) => n + a.size_bytes, 0))} · ${money(drop.price_cents)} USD | Hidden`;
   const url = `${appUrl()}/d/${slug}`;
   return {
     title: drop.title,
     description,
     openGraph: {
-      title: drop.title,
+      title: socialTitle,
       description,
       url,
       siteName: 'Hidden',
       type: 'website',
       images: [
         {
-          url: `${url}/card`,
-          width: 1200,
-          height: 630,
-          alt: 'Blurred previews of this Hidden collection',
+          url: `${url}/card?v=2`,
+          width: 1000,
+          height: 1000,
+          alt: 'Blurred collection cover watermarked with the Hidden H',
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: drop.title,
+      title: socialTitle,
       description,
-      images: [`${url}/card`],
+      images: [`${url}/card?v=2`],
     },
   };
 }
