@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { fileSize } from '@/lib/format';
-import { Copy, MessageSquare, Share2 } from 'lucide-react';
+import { Copy, MessageCircle, Share2, Link2 } from 'lucide-react';
 
 export function ShareDrop({
   url,
@@ -150,38 +150,49 @@ export function ShareDrop({
       </div>
       <h3 className="share-label">Share your drop</h3>
       <div className="share-options">
+        <button onClick={() => copy(url, 'Purchase link copied!')}>
+          <span className="share-circle share-copy">
+            <Link2 size={30} />
+          </span>
+          <strong>Copy Link</strong>
+        </button>
         <a href={`sms:?body=${encodeURIComponent(text)}`}>
-          <MessageSquare size={22} />
-          <strong>SMS</strong>
-          <small>Choose recipients</small>
+          <span className="share-circle share-messages">
+            <MessageCircle size={30} fill="currentColor" />
+          </span>
+          <strong>Messages</strong>
         </a>
         <a
           href={`https://wa.me/?text=${encodeURIComponent(text)}`}
           target="_blank"
           rel="noopener noreferrer"
         >
-          <img src="/social/whatsapp.svg" alt="" width={28} height={28} />
+          <span className="share-circle share-whatsapp">
+            <img src="/social/whatsapp.svg" alt="" width={32} height={32} />
+          </span>
           <strong>WhatsApp</strong>
-          <small>Choose a chat</small>
         </a>
         <button onClick={instagram}>
-          <img src="/social/instagram.svg" alt="" width={28} height={28} />
+          <span className="share-circle share-instagram">
+            <img src="/social/instagram.svg" alt="" width={32} height={32} />
+          </span>
           <strong>Instagram</strong>
-          <small>Choose in share menu</small>
         </button>
         <a
           href={`https://www.snapchat.com/share?link=${encodeURIComponent(url)}`}
           target="_blank"
           rel="noopener noreferrer"
         >
-          <img src="/social/snapchat.svg" alt="" width={28} height={28} />
+          <span className="share-circle share-snapchat">
+            <img src="/social/snapchat.svg" alt="" width={32} height={32} />
+          </span>
           <strong>Snapchat</strong>
-          <small>Open sharing</small>
         </a>
         <button onClick={share}>
-          <Share2 size={22} />
+          <span className="share-circle share-more">
+            <Share2 size={28} />
+          </span>
           <strong>More apps</strong>
-          <small>Device share menu</small>
         </button>
       </div>
       <p className="hint">

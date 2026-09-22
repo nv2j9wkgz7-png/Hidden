@@ -911,34 +911,72 @@ progress {
 }
 .share-options {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  margin-bottom: 18px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  margin: 24px 0;
 }
 .share-options > * {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 9px;
-  padding: 18px 5px;
-  border: 1px solid #e6e5ec;
-  border-radius: 14px;
-  background: white;
-  color: #51417d;
+  gap: 12px;
+  padding: 4px 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #737078;
   cursor: pointer;
   font: inherit;
   text-decoration: none;
 }
-.share-options > *:hover {
-  background: #f4f0ff;
-  border-color: #ac97ef;
+.share-options > *:focus-visible {
+  outline: 2px solid #6b42e8;
+  outline-offset: 5px;
+}
+.share-circle {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  color: white;
+  transition: transform 150ms ease;
+}
+.share-options > *:hover .share-circle {
+  transform: translateY(-3px);
+}
+.share-copy {
+  background: #080808;
+}
+.share-messages {
+  background: linear-gradient(#40ed59, #14cd37);
+}
+.share-whatsapp {
+  background: linear-gradient(#08ee39, #00a81c);
+}
+.share-instagram {
+  background: linear-gradient(
+    180deg,
+    #ffce34 0%,
+    #ff6434 32%,
+    #e82775 62%,
+    #8228c6 100%
+  );
+}
+.share-snapchat {
+  background: #fffc00;
+}
+.share-more {
+  background: #eee9fa;
+  color: #6341aa;
+}
+.share-whatsapp img,
+.share-instagram img {
+  filter: brightness(0) invert(1);
 }
 .share-options strong {
-  font-size: 12px;
-}
-.share-options small {
-  font-size: 10px;
-  color: #757580;
+  font-size: 14px;
+  font-weight: 400;
 }
 .share-local {
   padding: 12px 14px;
