@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Suspense } from 'react';
+import { AccountMenu } from '@/components/account-menu';
 import './globals.css';
 export const metadata: Metadata = {
   title: { default: 'Hidden — image drops', template: '%s · Hidden' },
@@ -25,6 +27,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Link className="button small" href="/new">
               New drop <span aria-hidden>＋</span>
             </Link>
+            <Suspense fallback={null}>
+              <AccountMenu />
+            </Suspense>
           </nav>
         </header>
         <main>{children}</main>

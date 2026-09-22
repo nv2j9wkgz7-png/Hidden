@@ -1,14 +1,6 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import {
-  Images,
-  ShoppingBag,
-  DollarSign,
-  Plus,
-  UserRound,
-  ChevronDown,
-  LogOut,
-} from 'lucide-react';
+import { Images, ShoppingBag, DollarSign, Plus } from 'lucide-react';
 import { configured } from '@/lib/env';
 import { Setup } from '@/components/setup';
 import { supabase } from '@/lib/supabase/server';
@@ -53,20 +45,6 @@ export default async function Dashboard() {
           <p>A little less admin. A little more creating.</p>
         </div>
         <div className="dashboard-actions">
-          <details className="account-menu">
-            <summary>
-              <UserRound size={18} /> Account <ChevronDown size={14} />
-            </summary>
-            <div className="account-dropdown">
-              <span className="hint">Signed in as</span>
-              <strong>{user.email}</strong>
-              <form action="/auth/logout" method="post">
-                <button type="submit">
-                  <LogOut size={16} /> Log out
-                </button>
-              </form>
-            </div>
-          </details>
           <Link className="button" href="/new">
             <Plus size={17} /> New drop
           </Link>
