@@ -64,7 +64,7 @@ No Stripe publishable key is needed: checkout is hosted by Stripe. Never rename 
 ## Supabase setup
 
 1. Create a project. Copy the project URL, publishable key, and service role key into `.env.local`.
-2. Open **SQL Editor** and run the complete `supabase/migrations/202609220001_initial.sql` once on a fresh project. It creates the six product/support tables, auth profile trigger, RLS policies, server-only functions, and both storage buckets. Alternatively initialize/link the Supabase CLI project and run `supabase db push`.
+2. Open **SQL Editor** and run the complete `supabase/migrations/20260922192409_initial.sql` once on a fresh project. It creates the six product/support tables, auth profile trigger, RLS policies, server-only functions, and both storage buckets. Alternatively initialize/link the Supabase CLI project and run `supabase db push`.
 3. In **Authentication → Providers**, enable email/password. Keep email confirmation enabled; configure SMTP for reliable delivery outside initial testing.
 4. Set the Auth Site URL to your app's origin and allow `http://localhost:3000/auth/callback` plus your deployed `https://YOUR_DOMAIN/auth/callback` as redirect URLs. Add the 127.0.0.1 version only if you use that origin locally.
 5. Verify **Storage → originals** is **private** and **previews** is public. Do not add browser read, update, or insert policies for `originals`, and do not make it public.

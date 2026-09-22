@@ -14,7 +14,7 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
  create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);`);
   // Execute the exact shipping migration, with only auth/storage platform tables supplied above.
   await db.exec(
-    await readFile('supabase/migrations/202609220001_initial.sql', 'utf8'),
+    await readFile('supabase/migrations/20260922192409_initial.sql', 'utf8'),
   );
   const creator = crypto.randomUUID(),
     other = crypto.randomUUID();
