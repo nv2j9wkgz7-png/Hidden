@@ -20,7 +20,7 @@ Six tables, server-only functions, ownership RLS, private originals bucket and p
 
 The public configuration and service-role key are saved in ignored `.env.local`. Copy runtime secrets securely to another laptop or Vercel; they are not in Git. OAuth connects the agent and does not replace app credentials.
 
-The OAuth grant cannot read or update Auth configuration (HTTP 403). In Supabase Authentication → URL Configuration, set Site URL to `http://127.0.0.1:3000` and add `http://127.0.0.1:3000/auth/callback` and `http://localhost:3000/auth/callback`. Add the deployed site's callback when deploying. Stripe credentials and webhook configuration remain pending.
+Auth URL configuration is complete and was verified in the Supabase dashboard: Site URL is `http://127.0.0.1:3000`; allowed callbacks are `http://127.0.0.1:3000/auth/callback` and `http://localhost:3000/auth/callback`. The dashboard was used because the MCP OAuth grant cannot access Auth configuration. Add the deployed site's callback when deploying. Stripe credentials and webhook configuration remain pending; the Stripe dashboard currently requires user sign-in.
 
 Live verification passed against the real Supabase project and local production server: temporary creator authentication, create drop, two signed uploads, preview generation, publish, public preview access, rejection of public original access, and HTTP 403 for unpaid downloads. Temporary test user, drop and files were removed. No live payment was attempted without Stripe credentials.
 
