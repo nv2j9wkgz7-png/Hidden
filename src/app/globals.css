@@ -1436,3 +1436,55 @@ progress {
   background: #f2edfb;
   color: #6948b0;
 }
+.howto-page {
+  max-width: 740px;
+  margin: 0 auto;
+}
+.howto-page h1 {
+  font-size: clamp(32px, 5vw, 44px);
+  margin: 16px 0;
+}
+.howto-steps {
+  list-style: none;
+  padding: 8px 28px;
+  margin: 32px 0 24px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: white;
+}
+.howto-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 24px 0;
+}
+.howto-steps li + li {
+  border-top: 1px solid var(--line);
+}
+.howto-steps .step-number {
+  flex-shrink: 0;
+  color: var(--accent);
+  background: #f2edfb;
+}
+.howto-steps h2 {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+.howto-steps p,
+.howto-tip {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.65;
+  margin: 0;
+}
+.howto-tip {
+  margin-bottom: 24px;
+}
+@media (max-width: 560px) {
+  .howto-steps {
+    padding: 4px 18px;
+  }
+  .howto-steps li {
+    gap: 14px;
+  }
+}

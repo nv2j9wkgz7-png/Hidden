@@ -1,6 +1,15 @@
 import Link from 'next/link';
 import { ArrowUpRight, LockKeyhole, Images } from 'lucide-react';
-export default function Home() {
+import { configured } from '@/lib/env';
+import { supabase } from '@/lib/supabase/server';
+
+export default async function Home() {
+  if (configured()) {
+    const {
+      data: { user },
+    } = await (await supabase()).auth.getUser();
+    if (user) return <HowToGuide />;
+  }
   return (
     <div className="home">
       <section>
@@ -55,6 +64,53 @@ export default function Home() {
           </div>
         ))}
       </section>
+    </div>
+  );
+}
+
+function HowToGuide() {
+  return (
+    <div className="howto-page">
+      <div className="eyebrow">A quick guide</div>
+      <h1>How to use Hidden</h1>
+      <p className="lead">From your images to their inbox in a few steps.</p>
+      <ol className="howto-steps">
+        {[
+          [
+            'Upload your images',
+            'Go to My drops and select the + card. Add the images you want to sell together.',
+          ],
+          [
+            'Add a title and price',
+            'Name your drop, set a price in USD, and publish. One payment unlocks the whole collection.',
+          ],
+          [
+            'Share your link',
+            'Copy the link or choose a sharing app. Recipients see blurred previews, the image count, file size, and price.',
+          ],
+          [
+            'Your buyer pays and downloads',
+            'No Hidden account needed. Once payment is confirmed, they can download the originals individually or as a ZIP. They can save their private access link to return later.',
+          ],
+        ].map(([title, detail], i) => (
+          <li key={title}>
+            <span className="step-number" aria-hidden="true">
+              0{i + 1}
+            </span>
+            <div>
+              <h2>{title}</h2>
+              <p>{detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <p className="howto-tip">
+        <strong>Want to stop selling?</strong> Open your drop and select Stop
+        sales. New purchases stop; buyers who already paid keep access.
+      </p>
+      <Link href="/dashboard" className="button">
+        Go to my drops <ArrowUpRight size={17} />
+      </Link>
     </div>
   );
 }
