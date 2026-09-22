@@ -1,3 +1,7 @@
+import type { Metadata } from 'next';
+import { publicDrop } from '@/lib/public-drop';
+import { appUrl } from '@/lib/env';
+import { money, fileSize } from '@/lib/format';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/server';
 import { notFound, redirect } from 'next/navigation';
@@ -6,6 +10,42 @@ import { configured } from '@/lib/env';
 import { Setup } from '@/components/setup';
 import { Buyer } from '@/components/buyer';
 export const dynamic = 'force-dynamic';
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const drop = await publicDrop(slug);
+  if (!drop) return { title: 'Drop unavailable' };
+  const description = `${drop.assets.length} hidden images · ${fileSize(drop.assets.reduce((n, a) => n + a.size_bytes, 0))} · ${money(drop.price_cents)} USD. Preview, pay, and unlock full-resolution originals.`;
+  const url = `${appUrl()}/d/${slug}`;
+  return {
+    title: drop.title,
+    description,
+    openGraph: {
+      title: drop.title,
+      description,
+      url,
+      siteName: 'Hidden',
+      type: 'website',
+      images: [
+        {
+          url: `${url}/card`,
+          width: 1200,
+          height: 630,
+          alt: 'Blurred previews of this Hidden collection',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: drop.title,
+      description,
+      images: [`${url}/card`],
+    },
+  };
+}
 export default async function DropPage({
   params,
   searchParams,

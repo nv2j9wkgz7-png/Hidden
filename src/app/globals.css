@@ -988,3 +988,16 @@ progress {
     flex-wrap: wrap;
   }
 }
+
+.share-card-preview {
+  margin: 22px 0;
+}
+.share-card-preview > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+}
+.share-options img {
+  object-fit: contain;
+}

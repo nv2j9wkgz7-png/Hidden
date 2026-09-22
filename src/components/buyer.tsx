@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { zip } from 'fflate';
 import { api } from '@/lib/client-api';
-import { money } from '@/lib/format';
+import { money, fileSize } from '@/lib/format';
 type Asset = {
   id: string;
   preview_url: string;
@@ -184,7 +184,10 @@ export function Buyer({
                 height={600}
               />
               <div className="image-caption">
-                <span>Image {String(index + 1).padStart(2, '0')}</span>
+                <span>
+                  Image {String(index + 1).padStart(2, '0')} ·{' '}
+                  {fileSize(asset.size_bytes)}
+                </span>
                 {paid ? (
                   <button
                     className="text-button"
@@ -228,7 +231,8 @@ export function Buyer({
                 {money(drop.price_cents)} <small>USD</small>
               </div>
               <p className="hint">
-                One-time payment. All {assets.length} images.
+                One-time payment. All {assets.length} images ·{' '}
+                {fileSize(assets.reduce((n, a) => n + a.size_bytes, 0))} total.
               </p>
             </>
           )}

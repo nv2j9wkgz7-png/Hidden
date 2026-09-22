@@ -4,7 +4,7 @@ Next.js + TypeScript + Supabase Auth/Postgres/Storage + Stripe. Vercel-ready.
 
 **Upload → set price → share link → buyer pays → originals unlock.**
 
-Publishing opens an owner-only sharing page with a purchase link, editable message, SMS and WhatsApp sharing, Instagram/Snapchat copy-to-paste, and the device share menu where supported. Multiple recipients are selected in the messaging app. Creators can explicitly preview the buyer page; opening their own drop otherwise returns to sharing. Localhost links only work on the development computer; configure `APP_URL` to the deployed address before sharing externally.
+Publishing opens an owner-only sharing page with a purchase link, editable message, SMS and WhatsApp sharing, Snapchat’s web share flow, and Instagram via the device share menu where supported (desktop fallback opens the inbox and copies the message). Multiple recipients are selected in the messaging app. Creators can explicitly preview the buyer page; opening their own drop otherwise returns to sharing. Localhost links only work on the development computer; configure `APP_URL` to the deployed address before sharing externally.
 
 ## What is implemented
 
@@ -195,3 +195,11 @@ A local commit alone cannot be pulled from another laptop. If a portable `.bundl
 ## Verified local Stripe setup
 
 The complete sandbox payment/unlock/refund flow has passed. See [Stripe verification](docs/STRIPE_VERIFICATION.md). Restart webhook forwarding with `node --env-file=.env.local scripts/stripe-listen.mjs`, then run the app in another terminal. Credentials remain in ignored `.env.local`.
+
+### Rich sharing
+
+Published `/d/[slug]` pages expose Open Graph/Twitter metadata with title, image count, total original file size, price, and a 1200×630 JPEG at `/d/[slug]/card`. The card combines at most two **separate safe preview assets**; it never reads originals. Unpublished or invalid drops return 404. The same card appears on the creator share page and can be downloaded. Instagram sharing supplies the card as a file when the device supports it. Messaging apps control whether they retain text, URLs, or display rich previews; verify on target phones after deploying to a publicly reachable HTTPS URL.
+
+WhatsApp/SMS prefill the composed message. Snapchat’s documented web share URL accepts the purchase URL and opens its recipient flow, but does not accept a prefilled caption. Instagram has no equivalent general web DM composer URL: supported devices use the system share sheet, where the user selects Instagram; other browsers open Instagram with an explicit copy/paste fallback. No messages are sent automatically.
+
+References: [Snapchat share flow](https://developers.snap.com/api/snapchat-for-web/social-plugins/share-link-to-snapchat), [Web Share API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share). Social logo SVGs in `public/social` are from [Simple Icons](https://simpleicons.org/) (CC0; respective brand trademarks remain with their owners).

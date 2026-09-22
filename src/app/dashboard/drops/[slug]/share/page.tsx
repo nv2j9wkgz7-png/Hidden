@@ -23,7 +23,7 @@ export default async function SharePage({
   if (!/^[a-f0-9]{24}$/.test(slug)) notFound();
   const { data: drop, error } = await admin()
     .from('drops')
-    .select('title,price_cents,assets(id)')
+    .select('title,price_cents,assets(id,size_bytes)')
     .eq('slug', slug)
     .eq('creator_id', user.id)
     .eq('status', 'PUBLISHED')
@@ -60,6 +60,8 @@ export default async function SharePage({
           url={`${appUrl()}/d/${slug}`}
           title={drop.title}
           price={money(drop.price_cents)}
+          count={drop.assets.length}
+          bytes={drop.assets.reduce((n, a) => n + a.size_bytes, 0)}
         />
       </section>
       <div className="share-footer">
