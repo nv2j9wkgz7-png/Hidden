@@ -30,8 +30,13 @@ export function EditDropDetails({
       </div>
       {editing ? (
         <form
+          id="drop-details-form"
           onSubmit={async (event) => {
             event.preventDefault();
+            const action = (
+              (event.nativeEvent as SubmitEvent)
+                .submitter as HTMLButtonElement | null
+            )?.value;
             const form = new FormData(event.currentTarget);
             setBusy(true);
             setError('');
@@ -46,7 +51,10 @@ export function EditDropDetails({
                 },
                 'PATCH',
               );
+              if (action === 'publish')
+                await api('/api/creator/publish', { drop_id: drop.id });
               setEditing(false);
+              if (action === 'save-draft') router.push('/dashboard');
               router.refresh();
             } catch (e) {
               setError(

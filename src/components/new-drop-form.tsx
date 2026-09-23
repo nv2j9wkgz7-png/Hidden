@@ -207,15 +207,15 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
         item.ready = true;
         setItems([...working]);
       }
-      setProgress('Creating your shareable link…');
-      const published = await api('/api/creator/publish', { drop_id: id });
-      router.push(`${published.share_url}?created=1`);
+      setProgress('Preparing your review…');
+      const review = await api('/api/creator/review', { drop_id: id });
+      router.push(review.review_url);
       router.refresh();
     } catch (error) {
       setError(
         error instanceof Error
           ? error.message
-          : 'Unable to publish. Please retry.',
+          : 'Unable to save. Please retry.',
       );
     } finally {
       setBusy(false);
@@ -371,11 +371,8 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
           </div>
         )}
         <button className="primary full" disabled={busy}>
-          {busy ? 'Preparing your drop…' : 'Publish drop'} {!busy && '↗'}
+          {busy ? 'Preparing your drop…' : 'Review drop'} {!busy && '↗'}
         </button>
-        <p className="payment-note">
-          Your link is ready as soon as you publish.
-        </p>
       </aside>
     </form>
   );

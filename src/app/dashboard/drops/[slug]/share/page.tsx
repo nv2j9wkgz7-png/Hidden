@@ -6,19 +6,17 @@ import { admin } from '@/lib/supabase/admin';
 import { appUrl, configured } from '@/lib/env';
 import { money, fileSize } from '@/lib/format';
 import { Setup } from '@/components/setup';
-import { StopSales } from '@/components/stop-sales';
+import { ReviewActions } from '@/components/review-actions';
+import { PublishDrop } from '@/components/publish-drop';
 import { CreatorGallery } from '@/components/creator-gallery';
 import { ShareDrop } from '@/components/share-drop';
 
 export const dynamic = 'force-dynamic';
 export default async function SharePage({
   params,
-  searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ created?: string }>;
 }) {
-  const justCreated = (await searchParams).created === '1';
   if (!configured()) return <Setup />;
   const {
     data: { user },
@@ -33,7 +31,7 @@ export default async function SharePage({
     )
     .eq('slug', slug)
     .eq('creator_id', user.id)
-    .in('status', ['PUBLISHED', 'CLOSING', 'CLOSED'])
+    .in('status', ['DRAFT', 'PUBLISHED', 'CLOSING', 'CLOSED'])
     .maybeSingle();
   if (error) throw error;
   if (!drop) notFound();
@@ -71,7 +69,11 @@ export default async function SharePage({
           </p>
         </div>
         <span className="badge paid">
-          {drop.status === 'PUBLISHED' ? 'Ready to share' : 'Sales stopped'}
+          {drop.status === 'DRAFT'
+            ? 'Draft'
+            : drop.status === 'PUBLISHED'
+              ? 'Ready to share'
+              : 'Sales stopped'}
         </span>
       </div>
       <EditDropDetails
@@ -90,24 +92,19 @@ export default async function SharePage({
         <CreatorGallery images={originals} />
       </section>
       <section className="panel share-panel">
-        <ShareDrop
-          url={`${appUrl()}/d/${slug}`}
-          title={drop.title}
-          price={money(drop.price_cents)}
-          count={drop.assets.length}
-          bytes={drop.assets.reduce((n, a) => n + a.size_bytes, 0)}
-        />
+        {drop.status === 'DRAFT' ? (
+          <PublishDrop id={drop.id} />
+        ) : (
+          <ShareDrop
+            url={`${appUrl()}/d/${slug}`}
+            title={drop.title}
+            price={money(drop.price_cents)}
+            count={drop.assets.length}
+            bytes={drop.assets.reduce((n, a) => n + a.size_bytes, 0)}
+          />
+        )}
       </section>
-      {!justCreated && (
-        <details className="drop-management">
-          <summary>Manage drop</summary>
-          <StopSales dropId={drop.id} status={drop.status} />
-        </details>
-      )}
-      <div className="share-footer">
-        <Link href={`/d/${slug}?preview=buyer`}>Preview buyer page ↗</Link>
-        <Link href="/dashboard">Back to my drops</Link>
-      </div>
+      <ReviewActions draft={drop.status === 'DRAFT'} />
     </div>
   );
 }

@@ -1,17 +1,28 @@
 import { admin } from '@/lib/supabase/admin';
-import { creator, handler, HttpError, json, sameOrigin } from '@/lib/http';
+import {
+  creator,
+  handler,
+  HttpError,
+  json,
+  sameOrigin,
+  ownedDrop,
+} from '@/lib/http';
 import { dropInput, uuid } from '@/lib/validation';
 export const PATCH = handler(async (request) => {
   sameOrigin(request);
   const user = await creator();
   const input = dropInput.extend({ id: uuid }).parse(await request.json());
-  const { error } = await admin().rpc('update_drop_details', {
-    p_drop: input.id,
-    p_creator: user.id,
-    p_title: input.title,
-    p_description: input.description,
-    p_price: input.price_cents,
-  });
+  const drop = await ownedDrop(input.id, user.id);
+  const { error } = await admin().rpc(
+    drop.status === 'DRAFT' ? 'update_draft' : 'update_drop_details',
+    {
+      p_drop: input.id,
+      p_creator: user.id,
+      p_title: input.title,
+      p_description: input.description,
+      p_price: input.price_cents,
+    },
+  );
   if (error?.message === 'Price is locked after checkout starts')
     throw new HttpError(
       409,

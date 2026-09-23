@@ -259,6 +259,9 @@ export default async function Dashboard({
                       <Link href={`/dashboard/drops/${drop.slug}/share`}>
                         Open drop ↗
                       </Link>
+                      <Link href={`/dashboard/drops/${drop.slug}/manage`}>
+                        Manage
+                      </Link>
                       <CopyButton path={`/d/${drop.slug}`} />
                     </>
                   ) : (

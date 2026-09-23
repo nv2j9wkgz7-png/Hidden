@@ -1671,3 +1671,14 @@ body:has(.image-viewer[open]) {
     scroll-behavior: auto;
   }
 }
+
+.review-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 20px;
+  margin-top: 20px;
+}
+body:has(.share-page) > footer {
+  display: none;
+}
