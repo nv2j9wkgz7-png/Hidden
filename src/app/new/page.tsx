@@ -44,11 +44,11 @@ export default async function NewDrop({
       </Link>
       <div className="page-heading">
         <div>
-          <div className="eyebrow">Create something worth unlocking</div>
+          <div className="eyebrow">The next reveal starts here</div>
           <h1>{draft ? 'Continue your drop' : 'New drop'}</h1>
-          <p>Your images, a price, and a link. That’s all you need.</p>
+          <p>Gather your images. Make them a drop.</p>
         </div>
-        <span className="badge">{draft ? 'Saved draft' : '01 / Create'}</span>
+        <span className="badge">{draft ? 'Saved draft' : 'Step 1 of 2'}</span>
       </div>
       <NewDropForm draft={draft} />
     </>

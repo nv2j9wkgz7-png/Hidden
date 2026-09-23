@@ -61,7 +61,11 @@ export default async function SharePage({
       </Link>
       <div className="page-heading review-heading">
         <div>
-          <div className="eyebrow">Review & share</div>
+          <div className="eyebrow">
+            {drop.status === 'DRAFT'
+              ? 'Step 2 · The final look'
+              : 'Your drop, ready to travel'}
+          </div>
           <h1>{drop.title}</h1>
           <p>
             {originals.length} images ·{' '}

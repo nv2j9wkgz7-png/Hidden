@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowUpRight, LockKeyhole, Images } from 'lucide-react';
 import { configured } from '@/lib/env';
 import { supabase } from '@/lib/supabase/server';
+import { BrandArt } from '@/components/brand-art';
 
 export default async function Home() {
   if (configured()) {
@@ -11,39 +12,40 @@ export default async function Home() {
     if (user) return <HowToGuide />;
   }
   return (
-    <div className="home">
-      <section>
-        <div className="eyebrow">
-          <span>Made to share. Yours to sell.</span>
-        </div>
-        <h1>
-          Your images.
-          <br />
-          One link.
-          <br />
-          <em>Paid & delivered.</em>
-        </h1>
-        <p className="lead">
-          Turn a collection of images into a paid drop. Share the link, and let
-          the unlock do the rest.
-        </p>
-        <div className="actions">
-          <Link href="/new" className="button">
-            Create your first drop <ArrowUpRight size={17} />
-          </Link>
-          <Link href="/login" className="button secondary">
-            Log in
-          </Link>
-        </div>
-        <p className="home-note">
-          <LockKeyhole size={14} /> Originals stay private until payment is
-          confirmed.
-        </p>
-      </section>
-      <section className="flow" aria-label="How drops work">
+    <div className="brand-home">
+      <div className="home">
+        <section>
+          <div className="eyebrow">
+            <span>Made to share. Yours to sell.</span>
+          </div>
+          <h1>
+            A little hidden.
+            <br />
+            <em>All yours.</em>
+          </h1>
+          <p className="lead">
+            Your images deserve their own moment. Create a private drop, set
+            your price, and share one beautiful link.
+          </p>
+          <div className="actions">
+            <Link href="/new" className="button">
+              Create your first drop <ArrowUpRight size={17} />
+            </Link>
+            <Link href="/login" className="button secondary">
+              Log in
+            </Link>
+          </div>
+          <p className="home-note">
+            <LockKeyhole size={14} /> Originals stay private until payment is
+            confirmed.
+          </p>
+        </section>
+        <BrandArt />
+      </div>
+      <section className="brand-process" aria-label="How drops work">
         <div className="flow-top">
           <strong style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-            <Images size={20} /> A simpler handoff
+            <Images size={20} /> From your camera to their collection.
           </strong>
           <span className="badge">3 steps</span>
         </div>
@@ -64,6 +66,11 @@ export default async function Home() {
           </div>
         ))}
       </section>
+      <div className="brand-promise">
+        <span>Yours to create.</span>
+        <span>Yours to price.</span>
+        <span>Theirs to keep.</span>
+      </div>
     </div>
   );
 }
@@ -71,9 +78,12 @@ export default async function Home() {
 function HowToGuide() {
   return (
     <div className="howto-page">
-      <div className="eyebrow">A quick guide</div>
-      <h1>How to use Hidn</h1>
-      <p className="lead">From your images to their inbox in a few steps.</p>
+      <div className="guide-intro">
+        <img src="/hidn-arrow-mark.svg" alt="" width={92} height={92} />
+        <div className="eyebrow">A quick guide</div>
+        <h1>How to use Hidn</h1>
+        <p className="lead">From your images to their inbox in a few steps.</p>
+      </div>
       <ol className="howto-steps">
         {[
           [

@@ -2,11 +2,9 @@
 export default function ErrorPage({ reset }: { reset: () => void }) {
   return (
     <section className="panel setup">
+      <img src="/hidn-arrow-mark.svg" alt="" width={72} height={72} />
       <h1>Something didn’t load.</h1>
-      <p>
-        Please try again. If this is a new installation, check the service
-        credentials and database migration.
-      </p>
+      <p>We couldn’t load this page. Try again in a moment.</p>
       <button className="primary" onClick={reset}>
         Try again
       </button>

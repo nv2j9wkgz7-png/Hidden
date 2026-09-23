@@ -176,12 +176,23 @@ export function Buyer({
   return (
     <>
       <div className="buyer-heading">
+        <img
+          className="buyer-brand-mark"
+          src="/hidn-arrow-mark.svg"
+          alt=""
+          width={64}
+          height={64}
+        />
         <div className="eyebrow">A private image drop</div>
         <h1>{drop.title}</h1>
         {drop.description && (
           <p className="drop-description">{drop.description}</p>
         )}
-        <p>{assets.length} images. One collection. Yours to keep.</p>
+        <p>
+          {assets.length} images ·{' '}
+          {fileSize(assets.reduce((n, a) => n + a.size_bytes, 0))} · One
+          collection, yours to keep.
+        </p>
       </div>
       <div className="buyer-layout">
         <div className="image-grid">
@@ -348,7 +359,7 @@ export function Buyer({
           <p className="payment-note">
             {paid
               ? 'Signed download links expire after 60 seconds.'
-              : 'Secure checkout powered by Stripe'}
+              : 'No account needed · Secure checkout by Stripe'}
           </p>
         </aside>
       </div>

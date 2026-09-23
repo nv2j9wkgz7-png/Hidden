@@ -16,12 +16,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <header className="site-header">
           <Link className="brand" href="/" aria-label="Hidn home">
             <img
-              className="brand-wordmark"
-              src="/hidden-wordmark.svg?v=hidn1"
-              alt="Hidn"
-              width={132}
-              height={44}
+              className="brand-ribbon"
+              src="/hidn-arrow-mark.svg"
+              alt=""
+              width={48}
+              height={48}
             />
+            <span className="brand-lettering" aria-hidden="true">
+              idn
+            </span>
           </Link>
           <nav>
             <Link href="/dashboard">My drops</Link>
@@ -32,8 +35,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </header>
         <main>{children}</main>
         <footer>
-          <span>Good images. A simple exchange.</span>
-          <span>Hidn / Image delivery</span>
+          <Link href="/" className="footer-brand">
+            Hidn <span>Made to be discovered.</span>
+          </Link>
+          <span>Private drops. Beautifully delivered.</span>
         </footer>
       </body>
     </html>
