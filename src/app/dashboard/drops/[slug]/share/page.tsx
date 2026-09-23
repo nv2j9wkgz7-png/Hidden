@@ -82,6 +82,16 @@ export default async function SharePage({
               : 'Sales stopped'}
         </span>
       </div>
+      {drop.status === 'DRAFT' && (
+        <ol className="creation-steps" aria-label="Create a drop">
+          <li>
+            <span>1</span> Create
+          </li>
+          <li aria-current="step">
+            <span>2</span> Review & share
+          </li>
+        </ol>
+      )}
       <EditDropDetails
         drop={{
           id: drop.id,

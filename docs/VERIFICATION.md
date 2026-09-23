@@ -29,3 +29,11 @@ No remote repository URL was supplied during implementation. A local commit and 
 ## Follow-pointer drag interaction — September 23, 2026
 
 Replaced immediate row swapping with dnd-kit sorting and a body-portal drag overlay. The lifted card follows pointer/touch movement, neighbouring rows animate into place, a dashed destination shows the drop position, and release animates the card into its slot. The grip is 44px wide; ordinary thumbnail/removal clicks and touch scrolling outside the grip remain available. Keyboard uses Space to pick up/drop, arrows to move, and Escape to cancel. Reduced-motion preferences disable decorative tilt and settling animation. Browser checks verified visible lift/placeholder, pointer last-to-first reorder and cover update, keyboard reorder/drop, and Escape preserving the original order. No database or upload behavior changed.
+
+## Arrow 2 UI refinement — September 23, 2026
+
+Used Arrow 2 in the existing Hidn branding conversation to generate a complete mobile upload-screen concept, then requested a focused typography and label correction. Adapted the compact upload controls, file hierarchy, cover badge, and progressive disclosure into responsive React components. Existing ribbon artwork, photo/video upload behavior and drag overlay remain in place.
+
+The first-drop CTA now opens signup directly and preserves new-drop intent through login. Confirmation routing accepts only the literal `next=new` intent; arbitrary redirect URLs are never used. Added a password visibility toggle and an eight-character signup hint. Authentication form state resets when navigating between login/signup entry URLs.
+
+Verification: all 47 automated tests and the production build passed. Browser checks at 390px and 320px plus desktop confirmed file selection, thumbnails, drag reorder and cover update, full-size preview, file-limit disclosure, and password show/hide. Narrow-screen overflow was found and corrected; the 320px document width is 320px. Grip, preview and remove targets measured 44x48, 56x56 and 44x44px. Verified guest CTA destination, default signup, and navigation back to login. Temporary UI fixture removed before production build. No real signup email or new paid transaction was triggered; physical iOS behavior still needs device confirmation.

@@ -274,77 +274,76 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
       : [],
   );
   return (
-    <form noValidate onSubmit={publish} className="editor">
+    <form noValidate onSubmit={publish} className="editor drop-editor">
       <section className="panel">
         <div className="section-title" style={{ marginTop: 0 }}>
-          <h2>Your photos & videos</h2>
+          <h2>Your files</h2>
           <span className="hint">{items.length} / 20</span>
         </div>
-        <label
-          className="upload-zone"
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={async (e) => {
-            e.preventDefault();
-            if (busy) return;
-            setBusy(true);
-            try {
-              select(await droppedFiles(e.dataTransfer));
-            } catch (error) {
-              setError(
-                error instanceof Error
-                  ? error.message
-                  : 'Could not read this folder.',
-              );
-            } finally {
-              setBusy(false);
-            }
-          }}
-        >
-          <UploadCloud size={30} />
-          <strong>Add photos & videos</strong>
-          <p>Tap to choose files, or drag them here</p>
-          <p>Photos up to 10 MB · Videos up to 50 MB</p>
-          <input
-            ref={imagesRef}
-            aria-invalid={invalidField === 'images'}
-            aria-describedby={
-              invalidField === 'images' ? 'drop-error' : undefined
-            }
-            aria-label="Choose photos and videos"
-            type="file"
-            accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm,.mov"
-            multiple
-            disabled={busy}
-            onChange={(e) => {
-              select(e.target.files);
-              e.target.value = '';
+        <div className={`upload-options ${items.length ? 'has-files' : ''}`}>
+          <label
+            className="upload-zone"
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={async (e) => {
+              e.preventDefault();
+              if (busy) return;
+              setBusy(true);
+              try {
+                select(await droppedFiles(e.dataTransfer));
+              } catch (error) {
+                setError(
+                  error instanceof Error
+                    ? error.message
+                    : 'Could not read this folder.',
+                );
+              } finally {
+                setBusy(false);
+              }
             }}
-          />
-        </label>
-        <label className="folder-upload button secondary">
-          Choose folder
-          <input
-            type="file"
-            multiple
-            disabled={busy}
-            aria-label="Choose folder"
-            ref={(element) => {
-              element?.setAttribute('webkitdirectory', '');
-            }}
-            onChange={(event) => {
-              select(event.target.files);
-              event.target.value = '';
-            }}
-          />
-        </label>
-        <p className="hint">
-          JPEG, PNG, WebP · MP4, MOV, WebM. Up to 20 files / 200 MB.
-        </p>
-        {items.length > 0 && (
-          <p className="hint">
-            Tap a thumbnail to view the photo or play the video.
-          </p>
-        )}
+          >
+            <UploadCloud size={30} />
+            <strong>Add photos & videos</strong>
+            <p>Tap to choose files, or drag them here</p>
+            <input
+              ref={imagesRef}
+              aria-invalid={invalidField === 'images'}
+              aria-describedby={
+                invalidField === 'images' ? 'drop-error' : undefined
+              }
+              aria-label="Choose photos and videos"
+              type="file"
+              accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm,.mov"
+              multiple
+              disabled={busy}
+              onChange={(e) => {
+                select(e.target.files);
+                e.target.value = '';
+              }}
+            />
+          </label>
+          <label className="folder-upload button secondary">
+            Choose folder
+            <input
+              type="file"
+              multiple
+              disabled={busy}
+              aria-label="Choose folder"
+              ref={(element) => {
+                element?.setAttribute('webkitdirectory', '');
+              }}
+              onChange={(event) => {
+                select(event.target.files);
+                event.target.value = '';
+              }}
+            />
+          </label>
+        </div>
+        <details className="upload-limits">
+          <summary>File types & limits</summary>
+          <p>Photos: JPEG, PNG, WebP · up to 10 MB each.</p>
+          <p>Videos: MP4, MOV, WebM · up to 50 MB each.</p>
+          <p>Up to 20 files and 200 MB per drop. Subfolders are included.</p>
+        </details>
         <CreatorGallery
           images={previewImages}
           renderItems={(openImage) => (
@@ -391,11 +390,14 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
                   ) : (
                     <ImageIcon size={20} color="#8b7bc2" />
                   )}
-                  <span>
-                    {i === 0 && <small className="cover-label">Cover · </small>}
-                    {item.name}
-                    <br />
+                  <span className="file-details">
+                    <span className="file-name" title={item.name}>
+                      {item.name}
+                    </span>
                     <small>
+                      {i === 0 && (
+                        <span className="file-cover-badge">Cover</span>
+                      )}
                       {(item.size / 1024 / 1024).toFixed(1)} MB
                       {item.ready
                         ? ' · Preview ready'
@@ -421,8 +423,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
         <div className="tip">
           <ShieldCheck size={18} />
           <span>
-            Originals are private. Buyers see reduced, watermarked previews
-            until payment is confirmed.
+            Originals stay private. Buyers see blurred previews until they pay.
           </span>
         </div>
       </section>
@@ -487,10 +488,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
           <EarningsEstimate cents={Math.round(Number(price) * 100)} />
         </div>
         <hr className="divider" />
-        <p className="hint">
-          Review your drop and make final edits next. You can share the same
-          link with multiple buyers.
-        </p>
+        <p className="hint">You can make final edits before publishing.</p>
         {error && (
           <div id="drop-error" role="alert" className="notice error">
             {error}

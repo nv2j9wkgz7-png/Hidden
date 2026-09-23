@@ -123,10 +123,13 @@ export function SortableFiles<T>({
   };
   return (
     <div className="sortable-files">
-      <p className="hint">
-        Grab the grip and move your file. First file is your cover. Order saves
-        when you review your drop.
-      </p>
+      {items.length > 0 && (
+        <p className="hint file-help">
+          {items.length > 1 ? 'Drag the grip to reorder. ' : ''}Tap a thumbnail
+          to preview.
+          <span>First file is the cover. Changes save on Review.</span>
+        </p>
+      )}
       <DndContext
         id={contextId}
         sensors={sensors}

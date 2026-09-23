@@ -2,8 +2,16 @@
 import { createBrowserClient } from '@supabase/ssr';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-export function LoginForm() {
-  const [signup, setSignup] = useState(false),
+import { Eye, EyeOff } from 'lucide-react';
+export function LoginForm({
+  initialSignup = false,
+  destination = '/dashboard',
+}: {
+  initialSignup?: boolean;
+  destination?: '/new' | '/dashboard';
+}) {
+  const [signup, setSignup] = useState(initialSignup),
+    [showPassword, setShowPassword] = useState(false),
     [busy, setBusy] = useState(false),
     [message, setMessage] = useState(''),
     [error, setError] = useState('');
@@ -27,17 +35,17 @@ export function LoginForm() {
         ? await client.auth.signUp({
             ...credentials,
             options: {
-              emailRedirectTo: `${window.location.origin}/auth/callback`,
+              emailRedirectTo: `${window.location.origin}/auth/callback${destination === '/new' ? '?next=new' : ''}`,
             },
           })
         : await client.auth.signInWithPassword(credentials);
       if (error) throw error;
       if (data.session) {
-        router.push('/dashboard');
+        router.push(destination);
         router.refresh();
       } else
         setMessage(
-          'Check your email to confirm your account, then come back to log in.',
+          'Check your email and open the confirmation link to continue.',
         );
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Unable to log in.');
@@ -79,15 +87,26 @@ export function LoginForm() {
           <label htmlFor={signup ? 'new-password' : 'current-password'}>
             Password
           </label>
-          <input
-            id={signup ? 'new-password' : 'current-password'}
-            name="password"
-            type="password"
-            autoComplete={signup ? 'new-password' : 'current-password'}
-            minLength={8}
-            maxLength={128}
-            required
-          />
+          <div className="password-control">
+            <input
+              id={signup ? 'new-password' : 'current-password'}
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete={signup ? 'new-password' : 'current-password'}
+              minLength={8}
+              maxLength={128}
+              required
+            />
+            <button
+              type="button"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              aria-pressed={showPassword}
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+            </button>
+          </div>
+          {signup && <small>Use at least 8 characters.</small>}
         </div>
         {error && (
           <div role="alert" className="notice error">
@@ -108,6 +127,7 @@ export function LoginForm() {
         className="text-button"
         onClick={() => {
           setSignup(!signup);
+          setShowPassword(false);
           setError('');
           setMessage('');
         }}

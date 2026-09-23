@@ -28,7 +28,7 @@ export default async function Home() {
             price, share a link, and sell directly to your audience.
           </p>
           <div className="actions">
-            <Link href="/new" className="button">
+            <Link href="/login?mode=signup&next=new" className="button">
               Create your first drop <ArrowUpRight size={17} />
             </Link>
             <Link href="/login" className="button secondary">

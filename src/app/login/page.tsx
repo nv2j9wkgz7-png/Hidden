@@ -5,7 +5,7 @@ import { ExampleDrops } from '@/components/example-drops';
 export default async function Login({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; mode?: string; next?: string }>;
 }) {
   if (!configured()) return <Setup />;
   const params = await searchParams;
@@ -19,7 +19,7 @@ export default async function Login({
           <em>Make it yours.</em>
         </h2>
         <ExampleDrops />
-        <p>Upload your images. Set your price. Share your link.</p>
+        <p>Add your photos and videos. Set your price. Share your link.</p>
       </div>
       <div className="auth-form-wrap">
         {params.error && (
@@ -28,7 +28,11 @@ export default async function Login({
             in or request a new signup confirmation.
           </div>
         )}
-        <LoginForm />
+        <LoginForm
+          key={`${params.mode === 'signup' ? 'signup' : 'login'}-${params.next === 'new' ? 'new' : 'dashboard'}`}
+          initialSignup={params.mode === 'signup'}
+          destination={params.next === 'new' ? '/new' : '/dashboard'}
+        />
       </div>
     </section>
   );

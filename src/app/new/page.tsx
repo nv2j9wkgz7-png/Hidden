@@ -16,7 +16,7 @@ export default async function NewDrop({
   const {
     data: { user },
   } = await (await supabase()).auth.getUser();
-  if (!user) redirect('/login');
+  if (!user) redirect('/login?mode=signup&next=new');
   const params = await searchParams;
   let draft: Draft | undefined;
   if (params.drop) {
@@ -65,12 +65,20 @@ export default async function NewDrop({
       </Link>
       <div className="page-heading">
         <div>
-          <div className="eyebrow">The next reveal starts here</div>
+          <div className="eyebrow">Your creator studio</div>
           <h1>{draft ? 'Continue your drop' : 'New drop'}</h1>
-          <p>Gather your photos and videos. Make them a drop.</p>
+          <p>Add your files. Set your price.</p>
         </div>
         <span className="badge">{draft ? 'Saved draft' : 'Step 1 of 2'}</span>
       </div>
+      <ol className="creation-steps" aria-label="Create a drop">
+        <li aria-current="step">
+          <span>1</span> Create
+        </li>
+        <li>
+          <span>2</span> Review & share
+        </li>
+      </ol>
       <NewDropForm draft={draft} />
     </>
   );
