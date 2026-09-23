@@ -441,3 +441,27 @@ details[open] .share-card-preview,
   .compact-link-preview > img { width: 88px; height: 88px; }
   .compact-preview-caption { display: none; }
 }
+
+.account-payout-link { display: block; padding: 12px; margin-bottom: 8px; border-radius: 8px; background: #f5f0fa; color: var(--accent); font-size: 14px; }
+.payout-page { max-width: 900px; margin: auto; }
+.payout-setup { display: flex; gap: 24px; align-items: flex-start; margin: 24px 0; }
+.payout-setup > img { flex-shrink: 0; }
+.payout-setup h2 { margin-top: 0; }
+.payout-setup p { color: var(--muted); line-height: 1.6; }
+.payout-balances { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.payout-test { padding: 12px 16px; background: #f0e8f8; border-radius: 12px; font-size: 14px; }
+.payout-history { list-style: none; padding: 0; margin: 0; }
+.payout-history li { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+.payout-history li:last-child { border-bottom: none; }
+.payout-history li > div { display: grid; gap: 6px; }
+.payout-history li > div > span { font-size: 13px; color: var(--muted); }
+.payout-history .badge { position: static; text-transform: capitalize; }
+@media (max-width:600px) {
+  .payout-setup { gap: 14px; }
+  .payout-setup > img { width: 40px; height: 46px; }
+  .payout-setup h2 { font-size: 21px; }
+  .payout-balances .stat-value { font-size: 26px; }
+}
+
+.payout-country { display: grid; gap: 8px; margin: 16px 0; max-width: 340px; font-size: 14px; }
+.payout-country select { padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: white; color: var(--ink); font: inherit; }

@@ -478,5 +478,46 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
       }
     },
   );
+  await t.test(
+    'payout identities are server-only and isolate sandbox from live',
+    async () => {
+      await db.exec(
+        await readFile(
+          'supabase/migrations/20260923200000_creator_payouts.sql',
+          'utf8',
+        ),
+      );
+      await db.query(
+        "insert into public.creator_payout_accounts(creator_id,livemode,stripe_account_id) values($1,false,'acct_test'),($1,true,'acct_live')",
+        [creator],
+      );
+      for (const role of ['anon', 'authenticated']) {
+        await db.exec(`set role ${role}`);
+        await assert.rejects(
+          db.query('select * from public.creator_payout_accounts'),
+          /permission denied/,
+        );
+        await assert.rejects(
+          db.query(
+            "update public.creator_payout_accounts set stripe_account_id='acct_attacker'",
+          ),
+          /permission denied/,
+        );
+        await db.exec('reset role');
+      }
+      await assert.rejects(
+        db.query(
+          "insert into public.creator_payout_accounts(creator_id,livemode,stripe_account_id) values($1,false,'acct_duplicate')",
+          [creator],
+        ),
+        /duplicate key/,
+      );
+      const identities = await db.query(
+        'select * from public.creator_payout_accounts where creator_id=$1',
+        [creator],
+      );
+      assert.equal(identities.rows.length, 2);
+    },
+  );
   await db.close();
 });

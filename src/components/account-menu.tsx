@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { UserRound, ChevronDown, LogOut } from 'lucide-react';
 import { configured } from '@/lib/env';
 import { supabase } from '@/lib/supabase/server';
@@ -16,6 +17,9 @@ export async function AccountMenu() {
       <div className="account-dropdown">
         <span className="hint">Signed in as</span>
         <strong>{user.email}</strong>
+        <Link className="account-payout-link" href="/dashboard/payouts">
+          Earnings & payouts ↗
+        </Link>
         <form action="/auth/logout" method="post">
           <button type="submit">
             <LogOut size={16} /> Log out
