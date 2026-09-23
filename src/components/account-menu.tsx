@@ -20,6 +20,9 @@ export async function AccountMenu() {
         <div className="account-dropdown">
           <span className="hint">Signed in as</span>
           <strong>{user.email}</strong>
+          <Link className="account-payout-link" href="/dashboard">
+            My drops ↗
+          </Link>
           <Link className="account-payout-link" href="/dashboard/payouts">
             Earnings & payouts ↗
           </Link>
