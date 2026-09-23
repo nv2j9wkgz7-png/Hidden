@@ -22,7 +22,7 @@ export function ShareDrop({
   const [card, setCard] = useState<File>();
   useEffect(() => {
     const controller = new AbortController();
-    fetch(`${url}/card?v=10`, { signal: controller.signal })
+    fetch(`${url}/card?v=11`, { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) return;
         const blob = await response.blob();
@@ -171,7 +171,7 @@ export function ShareDrop({
       </div>
       <section className="compact-link-preview" aria-label="Link preview">
         <img
-          src={`${url}/card?v=10`}
+          src={`${url}/card?v=11`}
           alt="Blurred collection cover with the Hidn H watermark"
           width={112}
           height={112}

@@ -15,9 +15,21 @@ export class StripeProvider implements PaymentProvider {
     const session = await this.stripe.checkout.sessions.create(
       {
         mode: 'payment',
+        branding_settings: {
+          display_name: 'Hidn',
+          background_color: '#faf8f6',
+          button_color: '#7545cd',
+          border_style: 'rounded',
+          ...(input.logoUrl
+            ? { logo: { type: 'url' as const, url: input.logoUrl } }
+            : {}),
+        },
         payment_method_types: this.cashApp ? ['card', 'cashapp'] : ['card'],
         client_reference_id: input.purchaseId,
-        metadata: { purchase_id: input.purchaseId },
+        metadata: {
+          purchase_id: input.purchaseId,
+          presentation_version: 'hidn-1',
+        },
         payment_intent_data: { metadata: { purchase_id: input.purchaseId } },
         line_items: [
           {
@@ -25,7 +37,13 @@ export class StripeProvider implements PaymentProvider {
             price_data: {
               currency: input.currency,
               unit_amount: input.amountCents,
-              product_data: { name: input.title },
+              product_data: {
+                name: input.title,
+                ...(input.description
+                  ? { description: input.description }
+                  : {}),
+                ...(input.previewUrl ? { images: [input.previewUrl] } : {}),
+              },
             },
           },
         ],
@@ -46,7 +64,11 @@ export class StripeProvider implements PaymentProvider {
     )
       throw new Error('Unknown checkout state. Please try again later.');
     const status = session.status as 'open' | 'complete' | 'expired';
-    return { url: session.url, status };
+    return {
+      url: session.url,
+      status,
+      presentationReady: session.metadata?.presentation_version === 'hidn-1',
+    };
   }
   async expireCheckout(transactionId: string) {
     const session = await this.getCheckout(transactionId);

@@ -136,6 +136,9 @@ test('checkout restricts payment methods and supplies price from its server inpu
     await provider.createCheckout({
       purchaseId: 'purchase',
       title: 'Collection',
+      description: '4 images · Full-resolution originals + ZIP download.',
+      previewUrl: 'https://example.com/public/preview.jpg',
+      logoUrl: 'https://example.com/hidn-checkout-logo.png',
       amountCents: 1250,
       currency: 'usd',
       successUrl: 'https://example.com/success',
@@ -144,6 +147,17 @@ test('checkout restricts payment methods and supplies price from its server inpu
     assert.deepEqual(
       (captured.a as { payment_method_types: string[] }).payment_method_types,
       cashApp ? ['card', 'cashapp'] : ['card'],
+    );
+    const params = captured.a as Stripe.Checkout.SessionCreateParams;
+    assert.deepEqual(params.line_items?.[0].price_data?.product_data, {
+      name: 'Collection',
+      description: '4 images · Full-resolution originals + ZIP download.',
+      images: ['https://example.com/public/preview.jpg'],
+    });
+    assert.equal(params.branding_settings?.display_name, 'Hidn');
+    assert.equal(
+      params.branding_settings?.logo?.url,
+      'https://example.com/hidn-checkout-logo.png',
     );
     assert.deepEqual(captured.b, { idempotencyKey: 'checkout:purchase' });
   }

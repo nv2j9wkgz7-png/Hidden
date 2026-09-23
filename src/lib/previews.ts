@@ -23,12 +23,29 @@ export async function createPreview(original: Buffer) {
     .blur(8)
     .jpeg({ quality: 55 })
     .toBuffer();
-  const watermark = Buffer.from(
-    '<svg width="800" height="600"><rect x="280" y="266" width="240" height="68" rx="34" fill="#111827" fill-opacity=".75"/><text x="400" y="308" font-family="sans-serif" font-size="22" text-anchor="middle" fill="white">LOCKED PREVIEW</text></svg>',
-  );
+  // Vector paths render consistently without relying on server-installed fonts.
+  const watermark = await sharp(`${process.cwd()}/public/hidn-arrow-mark.svg`)
+    .resize(104, 118, { fit: 'contain', background: '#00000000' })
+    .modulate({ brightness: 1.2 })
+    .png()
+    .toBuffer();
+  const glow = await sharp(watermark)
+    .extend({
+      top: 16,
+      bottom: 16,
+      left: 16,
+      right: 16,
+      background: '#00000000',
+    })
+    .blur(8)
+    .png()
+    .toBuffer();
   return {
     preview: await sharp(blurred)
-      .composite([{ input: watermark }])
+      .composite([
+        { input: glow, left: 332, top: 225 },
+        { input: watermark, left: 348, top: 241 },
+      ])
       .jpeg({ quality: 65 })
       .toBuffer(),
     mime: `image/${metadata.format}`,

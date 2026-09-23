@@ -1,7 +1,10 @@
 import type { NextConfig } from 'next';
 const config: NextConfig = {
   poweredByHeader: false,
-  outputFileTracingIncludes: { '/d/*/card': ['./public/hidn-arrow-mark.svg'] },
+  outputFileTracingIncludes: {
+    '/d/*/card': ['./public/hidn-arrow-mark.svg'],
+    '/api/creator/finalize': ['./public/hidn-arrow-mark.svg'],
+  },
   serverExternalPackages: ['sharp'],
   async headers() {
     return [

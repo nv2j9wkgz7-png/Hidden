@@ -1,6 +1,9 @@
 export type CheckoutInput = {
   purchaseId: string;
   title: string;
+  description?: string;
+  previewUrl?: string;
+  logoUrl?: string;
   amountCents: number;
   currency: 'usd';
   successUrl: string;
@@ -20,7 +23,11 @@ export interface PaymentProvider {
   createCheckout(input: CheckoutInput): Promise<{ id: string; url: string }>;
   getCheckout(
     transactionId: string,
-  ): Promise<{ url: string | null; status: 'open' | 'complete' | 'expired' }>;
+  ): Promise<{
+    url: string | null;
+    status: 'open' | 'complete' | 'expired';
+    presentationReady?: boolean;
+  }>;
   expireCheckout(transactionId: string): Promise<void>;
   verifyWebhook(body: string, headers: Headers): Promise<PaymentEvent | null>;
   refundPayment(transactionId: string, idempotencyKey: string): Promise<void>;
