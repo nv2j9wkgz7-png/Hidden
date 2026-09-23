@@ -67,7 +67,7 @@ export default async function NewDrop({
         <div>
           <div className="eyebrow">The next reveal starts here</div>
           <h1>{draft ? 'Continue your drop' : 'New drop'}</h1>
-          <p>Gather your images. Make them a drop.</p>
+          <p>Gather your photos and videos. Make them a drop.</p>
         </div>
         <span className="badge">{draft ? 'Saved draft' : 'Step 1 of 2'}</span>
       </div>

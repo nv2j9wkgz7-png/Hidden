@@ -28,7 +28,7 @@ export default async function SharePage({
   const { data: drop, error } = await admin()
     .from('drops')
     .select(
-      'id,status,title,description,price_cents,assets(id,size_bytes,storage_path,original_filename,status,sort_order)',
+      'id,status,title,description,price_cents,assets(id,mime_type,size_bytes,storage_path,original_filename,status,sort_order)',
     )
     .eq('slug', slug)
     .eq('creator_id', user.id)
@@ -51,6 +51,7 @@ export default async function SharePage({
           name: asset.original_filename,
           size: asset.size_bytes,
           url: data.signedUrl,
+          mime: asset.mime_type,
         };
       }),
   );
@@ -68,7 +69,7 @@ export default async function SharePage({
           </div>
           <h1>{drop.title}</h1>
           <p>
-            {originals.length} images ·{' '}
+            {originals.length} files ·{' '}
             {fileSize(originals.reduce((n, a) => n + a.size, 0))} ·{' '}
             {money(drop.price_cents)} USD
           </p>
@@ -89,10 +90,16 @@ export default async function SharePage({
           price_cents: drop.price_cents,
         }}
       />
+      {drop.status === 'DRAFT' && (
+        <Link href={`/new?drop=${drop.id}`} className="text-button">
+          Add files or drag to reorder ↗
+        </Link>
+      )}
       <section className="panel creator-gallery-panel">
-        <h2>Your images</h2>
+        <h2>Your photos & videos</h2>
         <p className="hint">
-          Tap an image to view it. Buyers see blurred previews until they pay.
+          Tap a photo or video to view it. Buyers see blurred previews until
+          they pay.
         </p>
         <CreatorGallery images={originals} />
       </section>

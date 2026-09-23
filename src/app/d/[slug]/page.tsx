@@ -18,8 +18,8 @@ export async function generateMetadata({
   const { slug } = await params;
   const drop = await publicDrop(slug);
   if (!drop) return { title: 'Drop unavailable' };
-  const description = `${drop.assets.length} hidden images · ${fileSize(drop.assets.reduce((n, a) => n + a.size_bytes, 0))} · ${money(drop.price_cents)} USD. Preview, pay, and unlock full-resolution originals.`;
-  const socialTitle = `Unlock ${drop.title} · ${drop.assets.length} hidden images · ${fileSize(drop.assets.reduce((n, a) => n + a.size_bytes, 0))} · ${money(drop.price_cents)} USD | Hidn`;
+  const description = `${drop.assets.length} private files · ${fileSize(drop.assets.reduce((n, a) => n + a.size_bytes, 0))} · ${money(drop.price_cents)} USD. Preview, pay, and unlock full-resolution originals.`;
+  const socialTitle = `Unlock ${drop.title} · ${drop.assets.length} private files · ${fileSize(drop.assets.reduce((n, a) => n + a.size_bytes, 0))} · ${money(drop.price_cents)} USD | Hidn`;
   const url = `${appUrl()}/d/${slug}`;
   return {
     title: drop.title,
@@ -75,7 +75,7 @@ export default async function DropPage({
   const { creator_id, ...buyerDrop } = drop;
   const { data: assets, error: assetError } = await db
     .from('assets')
-    .select('id,preview_path,original_filename,size_bytes')
+    .select('id,preview_path,original_filename,size_bytes,mime_type')
     .eq('drop_id', drop.id)
     .eq('status', 'READY')
     .order('sort_order');

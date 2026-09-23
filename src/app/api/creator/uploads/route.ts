@@ -13,7 +13,7 @@ export const POST = handler(async (request) => {
   sameOrigin(request);
   const user = await creator();
   const input = uploadInput
-    .extend({ asset_id: z.uuid().optional() })
+    .safeExtend({ asset_id: z.uuid().optional() })
     .parse(await request.json());
   const drop = await ownedDrop(input.drop_id, user.id);
   if (drop.status !== 'DRAFT')
@@ -32,7 +32,8 @@ export const POST = handler(async (request) => {
       throw new HttpError(404, 'Unfinished upload not found.');
     if (
       data.size_bytes !== input.size_bytes ||
-      data.original_filename !== input.original_filename
+      data.original_filename !== input.original_filename ||
+      data.mime_type !== input.mime_type
     )
       throw new HttpError(400, 'Select the same file to resume this upload.');
     asset = data;

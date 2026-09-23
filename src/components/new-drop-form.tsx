@@ -1,11 +1,13 @@
 'use client';
+import { SortableFiles } from './sortable-files';
+import { uploadMime, droppedFiles } from '@/lib/upload-files';
 import { CreatorGallery } from './creator-gallery';
 import { EarningsEstimate } from './earnings-estimate';
 import { useEffect, useRef, useState } from 'react';
 import { UploadCloud, ImageIcon, X, ShieldCheck, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/client-api';
-import { MAX_BYTES, MAX_IMAGES } from '@/lib/validation';
+import { MAX_IMAGES, MAX_DROP_BYTES, mediaLimit } from '@/lib/validation';
 export type Draft = {
   id: string;
   title: string;
@@ -21,6 +23,7 @@ export type Draft = {
   }[];
 };
 type Item = {
+  key: string;
   file?: File;
   name: string;
   size: number;
@@ -56,6 +59,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
     [dropId, setDropId] = useState(draft?.id);
   const [items, setItems] = useState<Item[]>(
     draft?.assets.map((a) => ({
+      key: a.id,
       id: a.id,
       name: a.original_filename,
       size: a.size_bytes,
@@ -88,16 +92,15 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
       setBusy(false);
     }
   }
-  function select(files: FileList | null) {
+  function select(files: FileList | File[] | null) {
     if (!files) return;
     setError('');
     const next = [...items];
+    let skipped = 0;
     for (const file of Array.from(files)) {
-      if (
-        file.size > MAX_BYTES ||
-        !['image/jpeg', 'image/png', 'image/webp'].includes(file.type)
-      ) {
-        setError('Choose JPEG, PNG, or WebP images up to 10 MB each.');
+      const mime = uploadMime(file);
+      if (!mime || file.size < 1 || file.size > mediaLimit(mime)) {
+        skipped++;
         continue;
       }
       const pending = next.findIndex(
@@ -106,18 +109,26 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
       );
       if (pending >= 0)
         next[pending] = { ...next[pending], file, preview: localPreview(file) };
-      else if (next.length < MAX_IMAGES)
+      else if (
+        next.length < MAX_IMAGES &&
+        next.reduce((n, item) => n + item.size, 0) + file.size <= MAX_DROP_BYTES
+      )
         next.push({
+          key: crypto.randomUUID(),
           file,
           preview: localPreview(file),
           name: file.name,
           size: file.size,
-          mime: file.type,
+          mime,
           ready: false,
         });
-      else setError('A drop can contain up to 20 images.');
+      else skipped++;
     }
     setItems(next);
+    if (skipped)
+      setError(
+        `${skipped} file(s) skipped. Use JPEG, PNG, WebP (10 MB) or MP4, MOV, WebM (50 MB). Maximum 20 files and 200 MB per drop.`,
+      );
   }
   async function publish(event: React.FormEvent) {
     event.preventDefault();
@@ -125,7 +136,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
     setError('');
     setInvalidField('');
     if (!items.length) {
-      setError('Upload at least one image first.');
+      setError('Add at least one photo or video first.');
       setInvalidField('images');
       imagesRef.current?.focus();
       return;
@@ -185,7 +196,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
       for (let index = 0; index < working.length; index++) {
         const item = working[index];
         if (item.ready) continue;
-        setProgress(`Uploading image ${index + 1} of ${working.length}…`);
+        setProgress(`Uploading file ${index + 1} of ${working.length}…`);
         // A previous request may have uploaded successfully but lost its response.
         if (item.id) {
           try {
@@ -229,6 +240,11 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
         item.ready = true;
         setItems([...working]);
       }
+      setProgress('Saving file order…');
+      await api('/api/creator/reorder', {
+        drop_id: id,
+        asset_ids: working.map((item) => item.id),
+      });
       setProgress('Preparing your review…');
       const review = await api('/api/creator/review', { drop_id: id });
       router.push(review.review_url);
@@ -252,6 +268,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
             name: item.name,
             size: item.size,
             url: item.preview,
+            mime: item.mime,
           },
         ]
       : [],
@@ -260,30 +277,42 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
     <form noValidate onSubmit={publish} className="editor">
       <section className="panel">
         <div className="section-title" style={{ marginTop: 0 }}>
-          <h2>Your images</h2>
+          <h2>Your photos & videos</h2>
           <span className="hint">{items.length} / 20</span>
         </div>
         <label
           className="upload-zone"
           onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
+          onDrop={async (e) => {
             e.preventDefault();
-            if (!busy) select(e.dataTransfer.files);
+            if (busy) return;
+            setBusy(true);
+            try {
+              select(await droppedFiles(e.dataTransfer));
+            } catch (error) {
+              setError(
+                error instanceof Error
+                  ? error.message
+                  : 'Could not read this folder.',
+              );
+            } finally {
+              setBusy(false);
+            }
           }}
         >
           <UploadCloud size={30} />
-          <strong>Drop your images here</strong>
+          <strong>Drop photos, videos, or a folder here</strong>
           <p>or click to choose files</p>
-          <p>JPEG, PNG, WebP · up to 10 MB each</p>
+          <p>Photos up to 10 MB · Videos up to 50 MB</p>
           <input
             ref={imagesRef}
             aria-invalid={invalidField === 'images'}
             aria-describedby={
               invalidField === 'images' ? 'drop-error' : undefined
             }
-            aria-label="Choose images"
+            aria-label="Choose photos and videos"
             type="file"
-            accept="image/jpeg,image/png,image/webp"
+            accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm,.mov"
             multiple
             disabled={busy}
             onChange={(e) => {
@@ -292,60 +321,103 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
             }}
           />
         </label>
+        <label className="folder-upload button secondary">
+          Choose folder
+          <input
+            type="file"
+            multiple
+            disabled={busy}
+            aria-label="Choose folder"
+            ref={(element) => {
+              element?.setAttribute('webkitdirectory', '');
+            }}
+            onChange={(event) => {
+              select(event.target.files);
+              event.target.value = '';
+            }}
+          />
+        </label>
+        <p className="hint">
+          JPEG, PNG, WebP · MP4, MOV, WebM. Up to 20 files / 200 MB. Folder
+          contents are added to one drop, including subfolders.
+        </p>
         {items.length > 0 && (
-          <p className="hint">Tap a thumbnail to see the full image.</p>
+          <p className="hint">
+            Tap a thumbnail to view the photo or play the video.
+          </p>
         )}
         <CreatorGallery
           images={previewImages}
-          renderItems={(openImage) =>
-            items.map((item, i) => (
-              <div className="file-row" key={item.id || `${item.name}-${i}`}>
-                {item.preview ? (
+          renderItems={(openImage) => (
+            <SortableFiles
+              items={items}
+              identify={(item) => item.key}
+              label={(item) => item.name}
+              disabled={busy}
+              onChange={setItems}
+              render={(item, i) => (
+                <>
+                  {item.preview ? (
+                    <button
+                      type="button"
+                      className="upload-thumbnail"
+                      aria-label={`View ${item.name}`}
+                      onClick={() =>
+                        openImage(
+                          previewImages.findIndex(
+                            (image) => image.url === item.preview,
+                          ),
+                        )
+                      }
+                    >
+                      {item.mime.startsWith('video/') ? (
+                        <>
+                          <video
+                            src={item.preview}
+                            muted
+                            playsInline
+                            preload="metadata"
+                          />
+                          <span className="video-badge">▶</span>
+                        </>
+                      ) : (
+                        <img
+                          src={item.preview}
+                          alt=""
+                          referrerPolicy="no-referrer"
+                          draggable={false}
+                        />
+                      )}
+                    </button>
+                  ) : (
+                    <ImageIcon size={20} color="#8b7bc2" />
+                  )}
+                  <span>
+                    {i === 0 && <small className="cover-label">Cover · </small>}
+                    {item.name}
+                    <br />
+                    <small>
+                      {(item.size / 1024 / 1024).toFixed(1)} MB
+                      {item.ready
+                        ? ' · Preview ready'
+                        : !item.file
+                          ? ' · Reselect this file to resume'
+                          : ''}
+                    </small>
+                  </span>
+                  {item.ready && <Check size={17} color="#267251" />}
                   <button
                     type="button"
-                    className="upload-thumbnail"
-                    aria-label={`View ${item.name}`}
-                    onClick={() =>
-                      openImage(
-                        previewImages.findIndex(
-                          (image) => image.url === item.preview,
-                        ),
-                      )
-                    }
+                    aria-label={`Remove ${item.name}`}
+                    disabled={busy}
+                    onClick={() => remove(i)}
                   >
-                    <img
-                      src={item.preview}
-                      alt=""
-                      referrerPolicy="no-referrer"
-                    />
+                    <X size={18} />
                   </button>
-                ) : (
-                  <ImageIcon size={20} color="#8b7bc2" />
-                )}
-                <span>
-                  {item.name}
-                  <br />
-                  <small>
-                    {(item.size / 1024 / 1024).toFixed(1)} MB
-                    {item.ready
-                      ? ' · Preview ready'
-                      : !item.file
-                        ? ' · Reselect this file to resume'
-                        : ''}
-                  </small>
-                </span>
-                {item.ready && <Check size={17} color="#267251" />}
-                <button
-                  type="button"
-                  aria-label={`Remove ${item.name}`}
-                  disabled={busy}
-                  onClick={() => remove(i)}
-                >
-                  <X size={18} />
-                </button>
-              </div>
-            ))
-          }
+                </>
+              )}
+            />
+          )}
         />
         <div className="tip">
           <ShieldCheck size={18} />

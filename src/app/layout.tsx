@@ -26,9 +26,9 @@ const outfit = localFont({
   display: 'swap',
 });
 export const metadata: Metadata = {
-  title: { default: 'Hidn — image drops', template: '%s · Hidn' },
+  title: { default: 'Hidn — private content drops', template: '%s · Hidn' },
   description:
-    'Share and sell private photo, artwork, and image collections with one simple link.',
+    'Share and sell private photo, video, and artwork collections with one simple link.',
   robots: { index: false, follow: false },
 };
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -46,7 +46,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             />
           </Link>
           <nav>
-            <Link href="/dashboard">My drops</Link>
             <Suspense fallback={null}>
               <AccountMenu />
             </Suspense>

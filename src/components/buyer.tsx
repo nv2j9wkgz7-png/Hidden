@@ -16,6 +16,7 @@ type Asset = {
   preview_url: string;
   original_filename: string;
   size_bytes: number;
+  mime_type?: string;
 };
 type DownloadFile = { id: string; filename: string; url: string };
 export function Buyer({
@@ -183,13 +184,13 @@ export function Buyer({
           width={64}
           height={64}
         />
-        <div className="eyebrow">A private image drop</div>
+        <div className="eyebrow">A private content drop</div>
         <h1>{drop.title}</h1>
         {drop.description && (
           <p className="drop-description">{drop.description}</p>
         )}
         <p>
-          {assets.length} images ·{' '}
+          {assets.length} files ·{' '}
           {fileSize(assets.reduce((n, a) => n + a.size_bytes, 0))} · One
           collection, yours to keep.
         </p>
@@ -206,7 +207,8 @@ export function Buyer({
               />
               <div className="image-caption">
                 <span>
-                  Image {String(index + 1).padStart(2, '0')} ·{' '}
+                  {asset.mime_type?.startsWith('video/') ? 'Video' : 'Photo'}{' '}
+                  {String(index + 1).padStart(2, '0')} ·{' '}
                   {fileSize(asset.size_bytes)}
                 </span>
                 {paid ? (
@@ -214,7 +216,7 @@ export function Buyer({
                     className="text-button"
                     disabled={!!busy}
                     onClick={() => download(asset.id)}
-                    aria-label={`Download image ${index + 1}`}
+                    aria-label={`Download file ${index + 1}`}
                   >
                     <Download size={17} />
                   </button>
@@ -256,7 +258,7 @@ export function Buyer({
                 {money(drop.price_cents)} <small>USD</small>
               </div>
               <p className="hint">
-                One-time payment. All {assets.length} images ·{' '}
+                One-time payment. All {assets.length} files ·{' '}
                 {fileSize(assets.reduce((n, a) => n + a.size_bytes, 0))} total.
               </p>
             </>
@@ -265,7 +267,7 @@ export function Buyer({
             <p className="notice">
               The creator has stopped sales. If you already paid, use your saved
               private access link or the browser you purchased in to access your
-              images.
+              files.
             </p>
           )}
           <hr className="divider" />

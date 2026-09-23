@@ -3,9 +3,12 @@ const config: NextConfig = {
   poweredByHeader: false,
   outputFileTracingIncludes: {
     '/d/*/card': ['./public/hidn-arrow-mark.svg'],
-    '/api/creator/finalize': ['./public/hidn-arrow-mark.svg'],
+    '/api/creator/finalize': [
+      './public/hidn-arrow-mark.svg',
+      './node_modules/ffmpeg-static/ffmpeg',
+    ],
   },
-  serverExternalPackages: ['sharp'],
+  serverExternalPackages: ['sharp', 'ffmpeg-static'],
   async headers() {
     return [
       {

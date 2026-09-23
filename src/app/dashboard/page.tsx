@@ -90,7 +90,7 @@ export default async function Dashboard({
         : db
             .from('drops')
             .select(
-              'id,title,slug,price_cents,status,created_at,assets(id,preview_path)',
+              'id,title,slug,price_cents,status,created_at,assets(id,preview_path,sort_order)',
             )
             .eq('creator_id', user.id)
             .order(sort.column, { ascending: sort.ascending })
@@ -118,7 +118,7 @@ export default async function Dashboard({
       const { data, error } = await db
         .from('drops')
         .select(
-          'id,title,slug,price_cents,status,created_at,assets(id,preview_path)',
+          'id,title,slug,price_cents,status,created_at,assets(id,preview_path,sort_order)',
         )
         .eq('creator_id', user.id)
         .in(
@@ -202,12 +202,16 @@ export default async function Dashboard({
             <img src="/hidn-ribbon-plus.svg" alt="" width={90} height={90} />
           </span>
           <strong>New drop</strong>
-          <span className="hint">Upload images. Set a price. Share.</span>
+          <span className="hint">
+            Add photos or videos. Set a price. Share.
+          </span>
         </Link>
         {displayedDrops.map((drop) => {
           const stat = rows.find((r) => r.drop_id === drop.id);
 
-          const cover = drop.assets.find((a) => a.preview_path)?.preview_path;
+          const cover = [...drop.assets]
+            .sort((a, b) => a.sort_order - b.sort_order)
+            .find((a) => a.preview_path)?.preview_path;
           return (
             <article className="drop-card openable-drop-card" key={drop.id}>
               <Link
@@ -237,7 +241,7 @@ export default async function Dashboard({
                   width={56}
                   height={64}
                 />
-                <span className="private-drop-label">Open to view images</span>
+                <span className="private-drop-label">Open to view files</span>
                 <span
                   className={`badge ${drop.status !== 'DRAFT' ? 'paid' : ''}`}
                 >
@@ -251,7 +255,7 @@ export default async function Dashboard({
               <div className="drop-info">
                 <h3>{drop.title}</h3>
                 <span className="hint">
-                  {drop.assets.length} images · {money(drop.price_cents)}
+                  {drop.assets.length} files · {money(drop.price_cents)}
                 </span>
                 <div className="row">
                   <span>{stat?.sales || 0} sales</span>
@@ -281,7 +285,7 @@ export default async function Dashboard({
         })}
       </div>
       <p className="hint" style={{ marginTop: 20 }}>
-        Sales count purchases, not individual images. Gross revenue is before
+        Sales count purchases, not individual files. Gross revenue is before
         fees and refunds. Showing up to 100 drops in your selected order.
       </p>
     </>

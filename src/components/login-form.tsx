@@ -52,7 +52,7 @@ export function LoginForm() {
       <p>
         {signup
           ? 'Create an account to publish your first drop.'
-          : 'Log in to manage your image drops.'}
+          : 'Log in to manage your drops.'}
       </p>
       <form
         key={signup ? 'signup' : 'login'}

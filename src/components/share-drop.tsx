@@ -18,7 +18,7 @@ export function ShareDrop({
 }) {
   const [notice, setNotice] = useState('');
   const [manual, setManual] = useState(false);
-  const message = `${title} — ${count} hidden images · ${fileSize(bytes)} · ${price} USD. Preview, pay, and unlock the originals.`;
+  const message = `${title} — ${count} hidden files · ${fileSize(bytes)} · ${price} USD. Preview, pay, and unlock the originals.`;
   const [card, setCard] = useState<File>();
   useEffect(() => {
     const controller = new AbortController();
@@ -179,8 +179,12 @@ export function ShareDrop({
         <div>
           <small>{new URL(url).host}</small>
           <strong>{title}</strong>
-          <span>{count} images · {price} USD</span>
-          <span className="compact-preview-caption">Preview, pay, and unlock.</span>
+          <span>
+            {count} files · {price} USD
+          </span>
+          <span className="compact-preview-caption">
+            Preview, pay, and unlock.
+          </span>
         </div>
       </section>
       <p className="share-notice" role="status" aria-live="polite">

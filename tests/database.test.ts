@@ -569,5 +569,81 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
       );
     },
   );
+  await t.test(
+    'media migration preserves security and saves complete draft order atomically',
+    async () => {
+      await db.exec(
+        await readFile(
+          'supabase/migrations/20260924010000_media_and_order.sql',
+          'utf8',
+        ),
+      );
+      const mediaDrop = crypto.randomUUID(),
+        foreignDrop = crypto.randomUUID();
+      await db.query(
+        "insert into public.drops(id,creator_id,title,price_cents) values($1,$2,'Media',100),($3,$4,'Other',100)",
+        [mediaDrop, creator, foreignDrop, other],
+      );
+      const reserve = async (
+        id: string,
+        owner: string,
+        size = 1024,
+        mime = 'video/mp4',
+      ) =>
+        (
+          await db.query<{ id: string }>(
+            'select * from public.reserve_asset($1,$2,$3,$4,$5)',
+            [id, owner, 'clip.mp4', mime, size],
+          )
+        ).rows[0].id;
+      const a = await reserve(mediaDrop, creator),
+        b = await reserve(mediaDrop, creator),
+        c = await reserve(foreignDrop, other);
+      const order = (ids: string[], owner = creator) =>
+        db.query('select public.reorder_draft_assets($1,$2,$3)', [
+          mediaDrop,
+          owner,
+          ids,
+        ]);
+      await order([b, a]);
+      assert.deepEqual(
+        (
+          await db.query<{ id: string }>(
+            'select id from public.assets where drop_id=$1 order by sort_order',
+            [mediaDrop],
+          )
+        ).rows.map((r) => r.id),
+        [b, a],
+      );
+      await assert.rejects(order([a, a]));
+      await assert.rejects(order([a]));
+      await assert.rejects(order([a, c]));
+      await assert.rejects(order([a, b], other));
+      await assert.rejects(reserve(mediaDrop, creator, 52428801));
+      await assert.rejects(reserve(mediaDrop, creator, 10485761, 'image/jpeg'));
+      for (let i = 0; i < 3; i++) await reserve(mediaDrop, creator, 52428800);
+      await assert.rejects(
+        reserve(mediaDrop, creator, 52428800),
+        /Maximum 200 MB/,
+      );
+      for (const role of ['anon', 'authenticated']) {
+        await db.exec(`set role ${role}`);
+        await assert.rejects(order([a, b]), /permission denied/);
+        await db.exec('reset role');
+      }
+      await db.query("update public.drops set status='PUBLISHED' where id=$1", [
+        mediaDrop,
+      ]);
+      await assert.rejects(order([a, b]), /not editable/);
+      assert.equal(
+        (
+          await db.query<{ public: boolean }>(
+            "select public from storage.buckets where id='originals'",
+          )
+        ).rows[0].public,
+        false,
+      );
+    },
+  );
   await db.close();
 });

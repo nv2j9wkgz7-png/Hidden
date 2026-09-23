@@ -5,7 +5,13 @@ import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { fileSize } from '@/lib/format';
 
-type Image = { id: string; name: string; size: number; url: string };
+type Image = {
+  id: string;
+  name: string;
+  size: number;
+  url: string;
+  mime?: string;
+};
 
 export function CreatorGallery({
   images,
@@ -22,6 +28,12 @@ export function CreatorGallery({
   const [failed, setFailed] = useState<Set<string>>(() => new Set());
   const currentIndex = Math.min(selected, Math.max(0, images.length - 1));
   const image = images[currentIndex];
+  function pauseVideos() {
+    dialog.current?.querySelectorAll('video').forEach((video) => video.pause());
+  }
+  useEffect(() => {
+    pauseVideos();
+  }, [currentIndex]);
   function openImage(index: number) {
     setSelected(index);
     dialog.current?.showModal();
@@ -48,14 +60,26 @@ export function CreatorGallery({
               type="button"
               className="creator-thumbnail"
               key={asset.id}
-              aria-label={`View image ${index + 1}: ${asset.name}`}
+              aria-label={`View file ${index + 1}: ${asset.name}`}
               onClick={() => openImage(index)}
             >
-              <img
-                src={asset.url}
-                alt={asset.name}
-                referrerPolicy="no-referrer"
-              />
+              {asset.mime?.startsWith('video/') ? (
+                <>
+                  <video
+                    src={`${asset.url}#t=0.001`}
+                    muted
+                    playsInline
+                    preload="metadata"
+                  />
+                  <span className="video-badge">▶</span>
+                </>
+              ) : (
+                <img
+                  src={asset.url}
+                  alt={asset.name}
+                  referrerPolicy="no-referrer"
+                />
+              )}
             </button>
           ))}
         </div>
@@ -65,8 +89,10 @@ export function CreatorGallery({
           <dialog
             ref={dialog}
             className="image-viewer"
-            aria-label="Your uploaded image"
+            aria-label="Your uploaded media"
+            onClose={pauseVideos}
             onKeyDown={(event) => {
+              if ((event.target as HTMLElement).tagName === 'VIDEO') return;
               if (event.key === 'ArrowLeft') {
                 event.preventDefault();
                 move(-1);
@@ -85,7 +111,7 @@ export function CreatorGallery({
                   </span>
                   <button
                     type="button"
-                    aria-label="Close image"
+                    aria-label="Close preview"
                     onClick={() => dialog.current?.close()}
                   >
                     <X />
@@ -112,9 +138,31 @@ export function CreatorGallery({
                     <div className="image-viewer-stage" key={asset.id}>
                       {failed.has(asset.id) ? (
                         <p role="alert">
-                          This image link has expired. Close the viewer and
+                          This file link has expired. Close the viewer and
                           refresh the page to try again.
                         </p>
+                      ) : asset.mime?.startsWith('video/') ? (
+                        <div className="video-viewer-stage">
+                          <video
+                            src={asset.url}
+                            controls
+                            playsInline
+                            preload="metadata"
+                            aria-label={asset.name}
+                          />
+                          <small>
+                            If this browser cannot play the video, download the
+                            original to view it.
+                          </small>
+                          <a
+                            href={asset.url}
+                            download={asset.name}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Open original video ↗
+                          </a>
+                        </div>
                       ) : (
                         <img
                           src={asset.url}
@@ -134,7 +182,7 @@ export function CreatorGallery({
                 <footer>
                   <button
                     type="button"
-                    aria-label="Previous image"
+                    aria-label="Previous file"
                     disabled={images.length < 2}
                     onClick={() => move(-1)}
                   >
@@ -146,7 +194,7 @@ export function CreatorGallery({
                   </div>
                   <button
                     type="button"
-                    aria-label="Next image"
+                    aria-label="Next file"
                     disabled={images.length < 2}
                     onClick={() => move(1)}
                   >

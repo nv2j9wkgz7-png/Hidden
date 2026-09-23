@@ -9,7 +9,8 @@ import {
   sameOrigin,
 } from '@/lib/http';
 import { createPreview } from '@/lib/previews';
-import { MAX_BYTES } from '@/lib/validation';
+import { mediaLimit } from '@/lib/validation';
+import { createVideoPreview } from '@/lib/video-preview';
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 export const POST = handler(async (request) => {
@@ -26,7 +27,7 @@ export const POST = handler(async (request) => {
     .eq('id', asset_id)
     .eq('drop_id', drop.id)
     .single();
-  if (error || !asset) throw new HttpError(404, 'Image not found.');
+  if (error || !asset) throw new HttpError(404, 'File not found.');
   if (asset.status === 'READY') return json({ ready: true });
   if (drop.status !== 'DRAFT')
     throw new HttpError(409, 'Published drops cannot be changed.');
@@ -35,19 +36,22 @@ export const POST = handler(async (request) => {
     .download(asset.storage_path);
   if (downloadError || !file)
     throw new HttpError(409, 'Upload the original file first.');
-  if (file.size > MAX_BYTES || file.size !== asset.size_bytes)
-    throw new HttpError(400, 'The image size does not match the upload.');
+  if (file.size > mediaLimit(asset.mime_type) || file.size !== asset.size_bytes)
+    throw new HttpError(400, 'The file size does not match the upload.');
   let result;
   try {
-    result = await createPreview(Buffer.from(await file.arrayBuffer()));
+    const bytes = Buffer.from(await file.arrayBuffer());
+    result = asset.mime_type.startsWith('video/')
+      ? await createVideoPreview(bytes, asset.mime_type)
+      : await createPreview(bytes);
   } catch {
     throw new HttpError(
       400,
-      'Use a valid single-frame JPEG, PNG, or WebP image under 50 megapixels.',
+      'Could not process this file. Use a JPEG, PNG, WebP image or a playable MP4, MOV, or WebM video.',
     );
   }
   if (result.mime !== asset.mime_type)
-    throw new HttpError(400, 'The image content does not match its file type.');
+    throw new HttpError(400, 'The file content does not match its file type.');
   const previewPath = `${drop.id}/${asset.id}.jpg`;
   const { error: previewError } = await db.storage
     .from('previews')

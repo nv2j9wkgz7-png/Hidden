@@ -24,8 +24,8 @@ export default async function Home() {
             <em>Your price.</em>
           </h1>
           <p className="lead">
-            Turn your photos, artwork, and image collections into a private
-            drop. Set a price, share a link, and sell directly to your audience.
+            Turn your photos, videos, and artwork into a private drop. Set a
+            price, share a link, and sell directly to your audience.
           </p>
           <div className="actions">
             <Link href="/new" className="button">
@@ -50,7 +50,10 @@ export default async function Home() {
           <span className="badge">3 steps</span>
         </div>
         {[
-          ['Add your content', 'Photos, artwork, or a collection of images.'],
+          [
+            'Add your content',
+            'Photos, videos, artwork, or a mixed collection.',
+          ],
           ['Set a price. Share a link.', 'Your drop, ready for your buyer.'],
           [
             'Get paid. Originals unlock.',
@@ -82,13 +85,13 @@ function HowToGuide() {
         <img src="/hidn-arrow-mark.svg" alt="" width={92} height={92} />
         <div className="eyebrow">A quick guide</div>
         <h1>How to use Hidn</h1>
-        <p className="lead">From your images to their inbox in a few steps.</p>
+        <p className="lead">From your content to their inbox in a few steps.</p>
       </div>
       <ol className="howto-steps">
         {[
           [
-            'Upload your images',
-            'Go to My drops and select the + card. Add the images you want to sell together.',
+            'Upload your photos and videos',
+            'Go to My drops and select the + card. Add the files you want to sell together.',
           ],
           [
             'Add a title and price',
@@ -96,7 +99,7 @@ function HowToGuide() {
           ],
           [
             'Share your link',
-            'Copy the link or choose a sharing app. Recipients see blurred previews, the image count, file size, and price.',
+            'Copy the link or choose a sharing app. Recipients see blurred previews, the file count, file size, and price.',
           ],
           [
             'Your buyer pays and downloads',
