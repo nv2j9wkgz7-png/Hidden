@@ -9,11 +9,15 @@ type Image = { id: string; name: string; size: number; url: string };
 export function CreatorGallery({ images }: { images: Image[] }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [selected, setSelected] = useState(0);
-  const [failed, setFailed] = useState(false);
+  const track = useRef<HTMLDivElement>(null);
+  const [failed, setFailed] = useState<Set<string>>(() => new Set());
   const image = images[selected];
   function move(offset: number) {
-    setFailed(false);
-    setSelected((index) => (index + offset + images.length) % images.length);
+    const index = (selected + offset + images.length) % images.length;
+    track.current?.scrollTo({
+      left: index * track.current.clientWidth,
+      behavior: 'smooth',
+    });
   }
   return (
     <>
@@ -26,8 +30,9 @@ export function CreatorGallery({ images }: { images: Image[] }) {
             aria-label={`View image ${index + 1}: ${asset.name}`}
             onClick={() => {
               setSelected(index);
-              setFailed(false);
               dialog.current?.showModal();
+              if (track.current)
+                track.current.scrollLeft = index * track.current.clientWidth;
             }}
           >
             <img
@@ -67,21 +72,43 @@ export function CreatorGallery({ images }: { images: Image[] }) {
                 <X />
               </button>
             </header>
-            <div className="image-viewer-stage">
-              {failed ? (
-                <p role="alert">
-                  This image link has expired. Close the viewer and refresh the
-                  page to try again.
-                </p>
-              ) : (
-                <img
-                  key={image.id}
-                  src={image.url}
-                  alt={image.name}
-                  referrerPolicy="no-referrer"
-                  onError={() => setFailed(true)}
-                />
-              )}
+            <div
+              ref={track}
+              className="image-viewer-track"
+              onScroll={(event) => {
+                const el = event.currentTarget;
+                if (el.clientWidth)
+                  setSelected(
+                    Math.max(
+                      0,
+                      Math.min(
+                        images.length - 1,
+                        Math.round(el.scrollLeft / el.clientWidth),
+                      ),
+                    ),
+                  );
+              }}
+            >
+              {images.map((asset) => (
+                <div className="image-viewer-stage" key={asset.id}>
+                  {failed.has(asset.id) ? (
+                    <p role="alert">
+                      This image link has expired. Close the viewer and refresh
+                      the page to try again.
+                    </p>
+                  ) : (
+                    <img
+                      src={asset.url}
+                      alt={asset.name}
+                      referrerPolicy="no-referrer"
+                      draggable={false}
+                      onError={() =>
+                        setFailed((previous) => new Set(previous).add(asset.id))
+                      }
+                    />
+                  )}
+                </div>
+              ))}
             </div>
             <footer>
               <button
