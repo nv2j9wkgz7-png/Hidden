@@ -1,6 +1,87 @@
 'use client';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+
+import { useEffect, useId, useState, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import { GripVertical } from 'lucide-react';
+import {
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  defaultDropAnimationSideEffects,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+function SortableFile({
+  id,
+  name,
+  disabled,
+  reducedMotion,
+  children,
+}: {
+  id: string;
+  name: string;
+  disabled: boolean;
+  reducedMotion: boolean;
+  children: ReactNode;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id,
+    disabled,
+    transition: reducedMotion
+      ? null
+      : { duration: 220, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' },
+  });
+  return (
+    <div
+      ref={setNodeRef}
+      data-sort-id={id}
+      className={`file-row sortable-file ${isDragging ? 'file-drop-slot' : ''}`}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      onPointerDown={(event) => {
+        // Keep thumbnail viewing and removal independent. The grip also works
+        // on touch; the rest of the row remains available for normal scrolling.
+        if (
+          event.pointerType === 'mouse' &&
+          !(event.target as HTMLElement).closest('button, a, input')
+        )
+          listeners?.onPointerDown?.(event);
+      }}
+    >
+      <button
+        ref={setActivatorNodeRef}
+        type="button"
+        className="file-grip"
+        disabled={disabled}
+        {...attributes}
+        {...listeners}
+        aria-label={`Move ${name}`}
+      >
+        <GripVertical size={20} />
+      </button>
+      {children}
+    </div>
+  );
+}
+
 export function SortableFiles<T>({
   items,
   identify,
@@ -16,134 +97,114 @@ export function SortableFiles<T>({
   onChange: (items: T[]) => void;
   render: (item: T, index: number) => ReactNode;
 }) {
-  const list = useRef<HTMLDivElement>(null);
-  const latest = useRef(items);
-  latest.current = items;
-  const [dragging, setDragging] = useState<string | null>(null);
-  const [announcement, setAnnouncement] = useState('');
-  const drag = useRef<{
-    id: string;
-    before: T[];
-    y: number;
-    x: number;
-    frame: number;
-  } | null>(null);
-  useEffect(
-    () => () => {
-      if (drag.current) cancelAnimationFrame(drag.current.frame);
-    },
-    [],
+  const contextId = useId();
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setReducedMotion(media.matches);
+    update();
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
   );
-  function move(id: string, to: number) {
-    const current = latest.current;
-    const from = current.findIndex((item) => identify(item) === id);
-    if (from < 0 || to < 0 || to >= current.length || from === to) return;
-    const next = [...current];
-    next.splice(to, 0, next.splice(from, 1)[0]);
-    latest.current = next;
-    onChange(next);
-    setAnnouncement(
-      `${label(next[to])}, position ${to + 1} of ${next.length}${to === 0 ? ', cover' : ''}`,
-    );
-  }
-  function track() {
-    const active = drag.current;
-    if (!active) return;
-    const rows = Array.from(
-      list.current?.querySelectorAll<HTMLElement>('[data-sort-id]') || [],
-    );
-    const from = latest.current.findIndex(
-      (item) => identify(item) === active.id,
-    );
-    rows.forEach((row, index) => {
-      const rect = row.getBoundingClientRect();
-      if (
-        active.y >= rect.top &&
-        active.y <= rect.bottom &&
-        index !== from &&
-        (index > from
-          ? active.y > rect.top + rect.height / 2
-          : active.y < rect.top + rect.height / 2)
-      )
-        move(active.id, index);
-    });
-    if (active.y < 90) window.scrollBy(0, -10);
-    if (active.y > window.innerHeight - 90) window.scrollBy(0, 10);
-    active.frame = requestAnimationFrame(track);
-  }
-  function finish(cancel = false) {
-    const active = drag.current;
-    if (!active) return;
-    cancelAnimationFrame(active.frame);
-    drag.current = null;
-    setDragging(null);
-    if (cancel) {
-      latest.current = active.before;
-      onChange(active.before);
-      setAnnouncement('Reordering cancelled.');
-    }
-  }
+  const ids = items.map(identify);
+  const activeIndex = activeId === null ? -1 : ids.indexOf(activeId);
+  const nameOf = (id: string | number) => {
+    const item = items.find((item) => identify(item) === id);
+    return item ? label(item) : 'File';
+  };
   return (
-    <div ref={list} className="sortable-files">
-      <p className="hint" id="reorder-help">
-        Drag the grip to reorder. First file is your cover. On a keyboard, focus
-        a grip and use the arrow keys. Order saves when you review your drop.
+    <div className="sortable-files">
+      <p className="hint">
+        Grab the grip and move your file. First file is your cover. Order saves
+        when you review your drop.
       </p>
-      <span className="sr-only" role="status">
-        {announcement}
-      </span>
-      {items.map((item, index) => {
-        const id = identify(item);
-        return (
-          <div
-            className={`file-row ${dragging === id ? 'file-dragging' : ''}`}
-            data-sort-id={id}
-            key={id}
-          >
-            <button
-              type="button"
-              className="file-grip"
+      <DndContext
+        id={contextId}
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        accessibility={{
+          screenReaderInstructions: {
+            draggable:
+              'Press Space to pick up a file, arrow keys to move it, Space to drop, or Escape to cancel.',
+          },
+          announcements: {
+            onDragStart: ({ active }) => `Picked up ${nameOf(active.id)}.`,
+            onDragOver: ({ active, over }) =>
+              over
+                ? `${nameOf(active.id)}, position ${ids.indexOf(String(over.id)) + 1} of ${items.length}.`
+                : undefined,
+            onDragEnd: ({ active, over }) =>
+              over
+                ? `${nameOf(active.id)} dropped at position ${ids.indexOf(String(over.id)) + 1}.`
+                : 'Move cancelled.',
+            onDragCancel: () => 'Move cancelled. Original order kept.',
+          },
+        }}
+        onDragStart={({ active }) => setActiveId(String(active.id))}
+        onDragCancel={() => setActiveId(null)}
+        onDragEnd={({ active, over }) => {
+          setActiveId(null);
+          if (!over || disabled || active.id === over.id) return;
+          const from = ids.indexOf(String(active.id)),
+            to = ids.indexOf(String(over.id));
+          if (from >= 0 && to >= 0) onChange(arrayMove(items, from, to));
+        }}
+      >
+        <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+          {items.map((item, index) => (
+            <SortableFile
+              key={identify(item)}
+              id={identify(item)}
+              name={label(item)}
               disabled={disabled}
-              aria-label={`Reorder ${label(item)}`}
-              aria-describedby="reorder-help"
-              onPointerDown={(event) => {
-                if (disabled || event.button !== 0) return;
-                event.preventDefault();
-                event.currentTarget.focus();
-                event.currentTarget.setPointerCapture(event.pointerId);
-                drag.current = {
-                  id,
-                  before: [...items],
-                  x: event.clientX,
-                  y: event.clientY,
-                  frame: 0,
-                };
-                setDragging(id);
-                track();
-              }}
-              onPointerMove={(event) => {
-                if (drag.current) {
-                  drag.current.x = event.clientX;
-                  drag.current.y = event.clientY;
-                }
-              }}
-              onPointerUp={() => finish()}
-              onPointerCancel={() => finish(true)}
-              onLostPointerCapture={() => finish()}
-              onKeyDown={(event) => {
-                if (event.key === 'Escape') finish(true);
-                if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
-                  event.preventDefault();
-                  move(id, index + (event.key === 'ArrowUp' ? -1 : 1));
-                }
-              }}
+              reducedMotion={reducedMotion}
             >
-              <GripVertical size={20} />
-            </button>
-            {render(item, index)}
-          </div>
-        );
-      })}
+              {render(item, index)}
+            </SortableFile>
+          ))}
+        </SortableContext>
+        {mounted &&
+          createPortal(
+            <DragOverlay
+              adjustScale={false}
+              zIndex={1100}
+              dropAnimation={
+                reducedMotion
+                  ? null
+                  : {
+                      duration: 230,
+                      easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
+                      sideEffects: defaultDropAnimationSideEffects({
+                        styles: { active: { opacity: '0' } },
+                      }),
+                    }
+              }
+            >
+              {activeIndex >= 0 ? (
+                <div
+                  className="file-row file-drag-overlay"
+                  aria-hidden="true"
+                  inert
+                >
+                  <span className="file-grip">
+                    <GripVertical size={20} />
+                  </span>
+                  {render(items[activeIndex], activeIndex)}
+                </div>
+              ) : null}
+            </DragOverlay>,
+            document.body,
+          )}
+      </DndContext>
     </div>
   );
 }

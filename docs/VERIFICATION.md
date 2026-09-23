@@ -25,3 +25,7 @@ No remote repository URL was supplied during implementation. A local commit and 
 - Real local API against production Supabase: temporary account, image/video upload, server JPEG previews, saved reverse order, private-original rejection and unpaid-download rejection passed. Temporary account, rows and storage objects removed.
 - Browser: nested-folder chooser loaded two photos and a video; dragging last file to first updated cover; full video viewer opened. Phone viewport automation was unavailable; physical iOS validation remains outstanding.
 - Header now shows Log in to guests. Primary button gradients no longer transition through transparent backgrounds.
+
+## Follow-pointer drag interaction — September 23, 2026
+
+Replaced immediate row swapping with dnd-kit sorting and a body-portal drag overlay. The lifted card follows pointer/touch movement, neighbouring rows animate into place, a dashed destination shows the drop position, and release animates the card into its slot. The grip is 44px wide; ordinary thumbnail/removal clicks and touch scrolling outside the grip remain available. Keyboard uses Space to pick up/drop, arrows to move, and Escape to cancel. Reduced-motion preferences disable decorative tilt and settling animation. Browser checks verified visible lift/placeholder, pointer last-to-first reorder and cover update, keyboard reorder/drop, and Escape preserving the original order. No database or upload behavior changed.
