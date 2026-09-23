@@ -1,6 +1,7 @@
 'use client';
+import { CreatorGallery } from './creator-gallery';
 import { EarningsEstimate } from './earnings-estimate';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { UploadCloud, ImageIcon, X, ShieldCheck, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/client-api';
@@ -16,6 +17,7 @@ export type Draft = {
     size_bytes: number;
     mime_type: string;
     status: string;
+    preview_url?: string;
   }[];
 };
 type Item = {
@@ -25,9 +27,23 @@ type Item = {
   mime: string;
   id?: string;
   ready: boolean;
+  preview?: string;
 };
 export function NewDropForm({ draft }: { draft?: Draft }) {
   const router = useRouter();
+  const objectUrls = useRef(new Set<string>());
+  useEffect(() => {
+    const urls = objectUrls.current;
+    return () => {
+      for (const url of urls) URL.revokeObjectURL(url);
+      urls.clear();
+    };
+  }, []);
+  function localPreview(file: File) {
+    const url = URL.createObjectURL(file);
+    objectUrls.current.add(url);
+    return url;
+  }
   const imagesRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const priceRef = useRef<HTMLInputElement>(null);
@@ -45,6 +61,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
       size: a.size_bytes,
       mime: a.mime_type,
       ready: a.status === 'READY',
+      preview: a.preview_url,
     })) || [],
   );
   const [busy, setBusy] = useState(false),
@@ -61,6 +78,8 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
           asset_id: item.id,
         });
       setItems(items.filter((_, i) => i !== index));
+      if (item.preview && objectUrls.current.delete(item.preview))
+        URL.revokeObjectURL(item.preview);
     } catch (error) {
       setError(
         error instanceof Error ? error.message : 'Unable to remove image.',
@@ -85,10 +104,12 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
         (i) =>
           !i.ready && !i.file && i.name === file.name && i.size === file.size,
       );
-      if (pending >= 0) next[pending] = { ...next[pending], file };
+      if (pending >= 0)
+        next[pending] = { ...next[pending], file, preview: localPreview(file) };
       else if (next.length < MAX_IMAGES)
         next.push({
           file,
+          preview: localPreview(file),
           name: file.name,
           size: file.size,
           mime: file.type,
@@ -223,6 +244,18 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
       setProgress('');
     }
   }
+  const previewImages = items.flatMap((item) =>
+    item.preview
+      ? [
+          {
+            id: item.id || item.preview,
+            name: item.name,
+            size: item.size,
+            url: item.preview,
+          },
+        ]
+      : [],
+  );
   return (
     <form noValidate onSubmit={publish} className="editor">
       <section className="panel">
@@ -259,32 +292,61 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
             }}
           />
         </label>
-        {items.map((item, i) => (
-          <div className="file-row" key={item.id || `${item.name}-${i}`}>
-            <ImageIcon size={20} color="#8b7bc2" />
-            <span>
-              {item.name}
-              <br />
-              <small>
-                {(item.size / 1024 / 1024).toFixed(1)} MB
-                {item.ready
-                  ? ' · Preview ready'
-                  : !item.file
-                    ? ' · Reselect this file to resume'
-                    : ''}
-              </small>
-            </span>
-            {item.ready && <Check size={17} color="#267251" />}
-            <button
-              type="button"
-              aria-label={`Remove ${item.name}`}
-              disabled={busy}
-              onClick={() => remove(i)}
-            >
-              <X size={18} />
-            </button>
-          </div>
-        ))}
+        {items.length > 0 && (
+          <p className="hint">Tap a thumbnail to see the full image.</p>
+        )}
+        <CreatorGallery
+          images={previewImages}
+          renderItems={(openImage) =>
+            items.map((item, i) => (
+              <div className="file-row" key={item.id || `${item.name}-${i}`}>
+                {item.preview ? (
+                  <button
+                    type="button"
+                    className="upload-thumbnail"
+                    aria-label={`View ${item.name}`}
+                    onClick={() =>
+                      openImage(
+                        previewImages.findIndex(
+                          (image) => image.url === item.preview,
+                        ),
+                      )
+                    }
+                  >
+                    <img
+                      src={item.preview}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                    />
+                  </button>
+                ) : (
+                  <ImageIcon size={20} color="#8b7bc2" />
+                )}
+                <span>
+                  {item.name}
+                  <br />
+                  <small>
+                    {(item.size / 1024 / 1024).toFixed(1)} MB
+                    {item.ready
+                      ? ' · Preview ready'
+                      : !item.file
+                        ? ' · Reselect this file to resume'
+                        : ''}
+                  </small>
+                </span>
+                {item.ready && <Check size={17} color="#267251" />}
+                <button
+                  type="button"
+                  aria-label={`Remove ${item.name}`}
+                  disabled={busy}
+                  onClick={() => remove(i)}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            ))
+          }
+        />
         <div className="tip">
           <ShieldCheck size={18} />
           <span>

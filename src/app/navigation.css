@@ -70,3 +70,50 @@
     width: 100%;
   }
 }
+
+/* Use our rounded press states instead of Safari's rectangular tap overlay. */
+:where(a, button, summary, label, input, [role='button']) {
+  -webkit-tap-highlight-color: transparent;
+}
+button,
+.button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+.button:not(.secondary):hover,
+button.primary:hover,
+.button:not(.secondary):active,
+button.primary:active {
+  background: linear-gradient(125deg, #9467c3, #7445a5 70%);
+  color: #fff;
+}
+.button:active,
+button.primary:active,
+button.secondary:active {
+  transform: scale(0.98);
+}
+.file-row .upload-thumbnail {
+  display: block;
+  flex: 0 0 60px;
+  width: 60px;
+  height: 60px;
+  padding: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #eee7f4;
+}
+.upload-thumbnail img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.upload-thumbnail:active {
+  transform: scale(0.96);
+}
+.file-row > button:last-child {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+}

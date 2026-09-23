@@ -1,7 +1,7 @@
 import { configured } from '@/lib/env';
 import { LoginForm } from '@/components/login-form';
 import { Setup } from '@/components/setup';
-import { BrandArt } from '@/components/brand-art';
+import { ExampleDrops } from '@/components/example-drops';
 export default async function Login({
   searchParams,
 }: {
@@ -18,7 +18,7 @@ export default async function Login({
           <br />
           <em>Make it yours.</em>
         </h2>
-        <BrandArt compact />
+        <ExampleDrops />
         <p>Upload your images. Set your price. Share your link.</p>
       </div>
       <div className="auth-form-wrap">

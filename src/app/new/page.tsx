@@ -24,7 +24,7 @@ export default async function NewDrop({
     const { data, error } = await admin()
       .from('drops')
       .select(
-        'id,title,description,price_cents,assets(id,original_filename,size_bytes,mime_type,status,sort_order)',
+        'id,title,description,price_cents,assets(id,original_filename,size_bytes,mime_type,status,sort_order,storage_path)',
       )
       .eq('id', params.drop)
       .eq('creator_id', user.id)
@@ -34,7 +34,28 @@ export default async function NewDrop({
     if (!data) notFound();
     draft = {
       ...data,
-      assets: data.assets.sort((a, b) => a.sort_order - b.sort_order),
+      assets: await Promise.all(
+        data.assets
+          .sort((a, b) => a.sort_order - b.sort_order)
+          .map(async (asset) => {
+            // Originals are signed only after verifying this creator owns the draft.
+            const signed =
+              asset.status === 'READY'
+                ? await admin()
+                    .storage.from('originals')
+                    .createSignedUrl(asset.storage_path, 900)
+                : null;
+            if (signed?.error) throw signed.error;
+            return {
+              id: asset.id,
+              original_filename: asset.original_filename,
+              size_bytes: asset.size_bytes,
+              mime_type: asset.mime_type,
+              status: asset.status,
+              preview_url: signed?.data?.signedUrl,
+            };
+          }),
+      ),
     };
   }
   return (

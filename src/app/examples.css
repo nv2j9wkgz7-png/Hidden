@@ -297,3 +297,42 @@
     animation: none;
   }
 }
+
+/* The login story uses the same swipeable drops as the homepage. */
+.auth-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+.auth-story {
+  min-width: 0;
+}
+.auth-story .example-drops {
+  margin-top: 28px;
+  text-align: left;
+}
+.auth-story .example-heading > span:first-child {
+  display: none;
+}
+.auth-story .example-image {
+  height: 190px;
+}
+.auth-story .example-details h2 {
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  margin: 0 0 8px;
+}
+.auth-story .example-details {
+  padding: 18px;
+}
+@media (max-width: 760px) {
+  .auth-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .auth-form-wrap {
+    grid-row: 1;
+  }
+  .auth-story .example-card {
+    flex-basis: calc(100% - 12px);
+    padding-inline: 12px;
+  }
+}

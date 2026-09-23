@@ -44,7 +44,7 @@ export default async function SharePage({
       .map(async (asset) => {
         const { data, error } = await admin()
           .storage.from('originals')
-          .createSignedUrl(asset.storage_path, 60);
+          .createSignedUrl(asset.storage_path, 900);
         if (error) throw error;
         return {
           id: asset.id,
