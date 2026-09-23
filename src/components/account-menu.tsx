@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { UserRound, ChevronDown, LogOut } from 'lucide-react';
+import { UserRound, ChevronDown } from 'lucide-react';
 import { configured } from '@/lib/env';
 import { supabase } from '@/lib/supabase/server';
+import { LogoutButton } from './logout-button';
 
 export async function AccountMenu() {
   if (!configured()) return null;
@@ -20,11 +21,7 @@ export async function AccountMenu() {
         <Link className="account-payout-link" href="/dashboard/payouts">
           Earnings & payouts ↗
         </Link>
-        <form action="/auth/logout" method="post">
-          <button type="submit">
-            <LogOut size={16} /> Log out
-          </button>
-        </form>
+        <LogoutButton />
       </div>
     </details>
   );
