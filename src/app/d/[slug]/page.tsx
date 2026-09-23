@@ -60,7 +60,7 @@ export default async function DropPage({
   const db = admin();
   const { data: drop, error } = await db
     .from('drops')
-    .select('id,title,price_cents,creator_id,status')
+    .select('id,title,description,price_cents,creator_id,status')
     .eq('slug', slug)
     .in('status', ['PUBLISHED', 'CLOSING', 'CLOSED'])
     .maybeSingle();

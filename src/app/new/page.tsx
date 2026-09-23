@@ -24,7 +24,7 @@ export default async function NewDrop({
     const { data, error } = await admin()
       .from('drops')
       .select(
-        'id,title,price_cents,assets(id,original_filename,size_bytes,mime_type,status,sort_order)',
+        'id,title,description,price_cents,assets(id,original_filename,size_bytes,mime_type,status,sort_order)',
       )
       .eq('id', params.drop)
       .eq('creator_id', user.id)

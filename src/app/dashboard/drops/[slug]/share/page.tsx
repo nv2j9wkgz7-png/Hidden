@@ -25,7 +25,7 @@ export default async function SharePage({
   const { data: drop, error } = await admin()
     .from('drops')
     .select(
-      'id,status,title,price_cents,assets(id,size_bytes,storage_path,original_filename,status,sort_order)',
+      'id,status,title,description,price_cents,assets(id,size_bytes,storage_path,original_filename,status,sort_order)',
     )
     .eq('slug', slug)
     .eq('creator_id', user.id)
@@ -104,6 +104,9 @@ export default async function SharePage({
           </div>
           <div>
             <h2>{drop.title}</h2>
+            {drop.description && (
+              <p className="drop-description">{drop.description}</p>
+            )}
             <p>
               {drop.assets.length} images · {money(drop.price_cents)} USD
             </p>

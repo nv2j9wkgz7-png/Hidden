@@ -25,6 +25,7 @@ export const PATCH = handler(async (request) => {
     p_drop: id,
     p_creator: user.id,
     p_title: input.title,
+    p_description: input.description,
     p_price: input.price_cents,
   });
   if (error) throw error;

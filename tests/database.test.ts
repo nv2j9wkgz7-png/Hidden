@@ -19,6 +19,12 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
   await db.exec(
     await readFile('supabase/migrations/20260922213000_stop_sales.sql', 'utf8'),
   );
+  await db.exec(
+    await readFile(
+      'supabase/migrations/20260923170000_drop_description.sql',
+      'utf8',
+    ),
+  );
   const creator = crypto.randomUUID(),
     other = crypto.randomUUID();
   await db.exec(
@@ -39,6 +45,41 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
       [creator],
     )
   ).rows[0].id;
+  await t.test('draft descriptions persist and require ownership', async () => {
+    await assert.rejects(
+      db.query('select public.update_draft($1,$2,$3,$4,$5)', [
+        drop,
+        other,
+        'Test images',
+        1250,
+        'Unauthorized',
+      ]),
+    );
+    await db.query('select public.update_draft($1,$2,$3,$4,$5)', [
+      drop,
+      creator,
+      'Test images',
+      1250,
+      'Four coastal images.\nFull-resolution files.',
+    ]);
+    const saved = await db.query<{ description: string }>(
+      'select description from public.drops where id=$1',
+      [drop],
+    );
+    assert.equal(
+      saved.rows[0].description,
+      'Four coastal images.\nFull-resolution files.',
+    );
+    await assert.rejects(
+      db.query('select public.update_draft($1,$2,$3,$4,$5)', [
+        drop,
+        creator,
+        'Test images',
+        1250,
+        'a'.repeat(2001),
+      ]),
+    );
+  });
   let asset = '';
   const purchaseId = crypto.randomUUID();
   await t.test(

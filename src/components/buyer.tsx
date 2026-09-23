@@ -23,7 +23,12 @@ export function Buyer({
   assets,
   salesClosed = false,
 }: {
-  drop: { id: string; title: string; price_cents: number };
+  drop: {
+    id: string;
+    title: string;
+    description?: string;
+    price_cents: number;
+  };
   assets: Asset[];
   salesClosed?: boolean;
 }) {
@@ -173,6 +178,9 @@ export function Buyer({
       <div className="buyer-heading">
         <div className="eyebrow">A private image drop</div>
         <h1>{drop.title}</h1>
+        {drop.description && (
+          <p className="drop-description">{drop.description}</p>
+        )}
         <p>{assets.length} images. One collection. Yours to keep.</p>
       </div>
       <div className="buyer-layout">

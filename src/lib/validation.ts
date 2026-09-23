@@ -4,6 +4,7 @@ export const MAX_BYTES = 10 * 1024 * 1024;
 export const uuid = z.uuid();
 export const dropInput = z.object({
   title: z.string().trim().min(1).max(100),
+  description: z.string().trim().max(2000).default(''),
   price_cents: z.number().int().min(50).max(100000),
 });
 export const uploadInput = z.object({

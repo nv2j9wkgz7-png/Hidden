@@ -7,6 +7,7 @@ import { MAX_BYTES, MAX_IMAGES } from '@/lib/validation';
 export type Draft = {
   id: string;
   title: string;
+  description?: string;
   price_cents: number;
   assets: {
     id: string;
@@ -30,6 +31,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
   const titleRef = useRef<HTMLInputElement>(null);
   const priceRef = useRef<HTMLInputElement>(null);
   const [invalidField, setInvalidField] = useState('');
+  const [description, setDescription] = useState(draft?.description || '');
   const [title, setTitle] = useState(draft?.title || ''),
     [price, setPrice] = useState(
       draft ? (draft.price_cents / 100).toFixed(2) : '',
@@ -140,6 +142,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
         setProgress('Saving your drop…');
         const created = await api('/api/creator/drops', {
           title,
+          description,
           price_cents: Math.round(Number(price) * 100),
         });
         id = created.id;
@@ -149,7 +152,12 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
       if (dropId)
         await api(
           '/api/creator/drops',
-          { id, title, price_cents: Math.round(Number(price) * 100) },
+          {
+            id,
+            title,
+            description,
+            price_cents: Math.round(Number(price) * 100),
+          },
           'PATCH',
         );
       for (let index = 0; index < working.length; index++) {
@@ -302,6 +310,25 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
             maxLength={100}
             disabled={busy}
           />
+        </div>
+        <div className="field">
+          <label htmlFor="description">
+            Description <span className="muted">(optional)</span>
+          </label>
+          <textarea
+            id="description"
+            name="description"
+            rows={4}
+            placeholder="Tell buyers what’s included in this drop…"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            maxLength={2000}
+            disabled={busy}
+            aria-describedby="description-help"
+          />
+          <small id="description-help">
+            {description.length} / 2,000 characters
+          </small>
         </div>
         <div className="field">
           <label htmlFor="price">Price in USD</label>

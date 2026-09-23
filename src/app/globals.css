@@ -318,7 +318,8 @@ p {
   font-size: 14px;
   font-weight: 600;
 }
-.field input {
+.field input,
+.field textarea {
   width: 100%;
   padding: 12px 14px;
   border: 1px solid #d9dce4;
@@ -1487,4 +1488,14 @@ progress {
   .howto-steps li {
     gap: 14px;
   }
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 110px;
+  font: inherit;
+}
+.drop-description {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
