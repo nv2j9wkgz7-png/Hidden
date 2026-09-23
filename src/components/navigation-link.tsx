@@ -1,21 +1,7 @@
 'use client';
 
-import Link, { useLinkStatus } from 'next/link';
-import { createPortal } from 'react-dom';
+import Link from 'next/link';
 import type { ComponentProps } from 'react';
-
-function NavigationProgress() {
-  const { pending } = useLinkStatus();
-  if (!pending) return null;
-  return createPortal(
-    <div
-      className="navigation-progress"
-      role="progressbar"
-      aria-label="Opening page"
-    />,
-    document.body,
-  );
-}
 
 export function NavigationLink({
   children,
@@ -32,7 +18,6 @@ export function NavigationLink({
       prefetch={prefetch ?? (href === '/new' ? true : undefined)}
     >
       {children}
-      <NavigationProgress />
     </Link>
   );
 }
