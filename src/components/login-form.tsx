@@ -54,22 +54,33 @@ export function LoginForm() {
           ? 'Create an account to publish your first drop.'
           : 'Log in to manage your image drops.'}
       </p>
-      <form onSubmit={submit}>
+      <form
+        key={signup ? 'signup' : 'login'}
+        id={signup ? 'signup-form' : 'login-form'}
+        method="post"
+        autoComplete="on"
+        onSubmit={submit}
+      >
         <div className="field">
           <label htmlFor="email">Email address</label>
           <input
             id="email"
             name="email"
             type="email"
-            autoComplete="email"
+            autoComplete="username"
+            inputMode="email"
+            autoCapitalize="none"
+            spellCheck={false}
             placeholder="you@example.com"
             required
           />
         </div>
         <div className="field">
-          <label htmlFor="password">Password</label>
+          <label htmlFor={signup ? 'new-password' : 'current-password'}>
+            Password
+          </label>
           <input
-            id="password"
+            id={signup ? 'new-password' : 'current-password'}
             name="password"
             type="password"
             autoComplete={signup ? 'new-password' : 'current-password'}
@@ -88,7 +99,7 @@ export function LoginForm() {
             {message}
           </div>
         )}
-        <button className="primary full" disabled={busy}>
+        <button type="submit" className="primary full" disabled={busy}>
           {busy ? 'Please wait…' : signup ? 'Create account' : 'Log in'}
         </button>
       </form>
