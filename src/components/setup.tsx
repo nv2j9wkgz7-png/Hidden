@@ -8,7 +8,7 @@ export function Setup() {
       </div>
       <h1>Connect your workspace</h1>
       <p>
-        Hidden is installed. Add your service credentials to start creating
+        Hidn is installed. Add your service credentials to start creating
         drops.
       </p>
       <ol>

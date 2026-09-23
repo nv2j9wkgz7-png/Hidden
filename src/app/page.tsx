@@ -72,7 +72,7 @@ function HowToGuide() {
   return (
     <div className="howto-page">
       <div className="eyebrow">A quick guide</div>
-      <h1>How to use Hidden</h1>
+      <h1>How to use Hidn</h1>
       <p className="lead">From your images to their inbox in a few steps.</p>
       <ol className="howto-steps">
         {[
@@ -90,7 +90,7 @@ function HowToGuide() {
           ],
           [
             'Your buyer pays and downloads',
-            'No Hidden account needed. Once payment is confirmed, they can download the originals individually or as a ZIP. They can save their private access link to return later.',
+            'No Hidn account needed. Once payment is confirmed, they can download the originals individually or as a ZIP. They can save their private access link to return later.',
           ],
         ].map(([title, detail], i) => (
           <li key={title}>

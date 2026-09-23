@@ -19,7 +19,7 @@ export async function generateMetadata({
   const drop = await publicDrop(slug);
   if (!drop) return { title: 'Drop unavailable' };
   const description = `${drop.assets.length} hidden images · ${fileSize(drop.assets.reduce((n, a) => n + a.size_bytes, 0))} · ${money(drop.price_cents)} USD. Preview, pay, and unlock full-resolution originals.`;
-  const socialTitle = `Unlock ${drop.title} · ${drop.assets.length} hidden images · ${fileSize(drop.assets.reduce((n, a) => n + a.size_bytes, 0))} · ${money(drop.price_cents)} USD | Hidden`;
+  const socialTitle = `Unlock ${drop.title} · ${drop.assets.length} hidden images · ${fileSize(drop.assets.reduce((n, a) => n + a.size_bytes, 0))} · ${money(drop.price_cents)} USD | Hidn`;
   const url = `${appUrl()}/d/${slug}`;
   return {
     title: drop.title,
@@ -28,14 +28,14 @@ export async function generateMetadata({
       title: socialTitle,
       description,
       url,
-      siteName: 'Hidden',
+      siteName: 'Hidn',
       type: 'website',
       images: [
         {
           url: `${url}/card?v=9`,
           width: 1000,
           height: 1000,
-          alt: 'Blurred collection cover watermarked with the Hidden H',
+          alt: 'Blurred collection cover watermarked with the Hidn H',
         },
       ],
     },

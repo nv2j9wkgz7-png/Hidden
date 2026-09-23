@@ -30,13 +30,13 @@ test('email escapes creator text and includes a fragment link in both formats', 
   assert.ok(email.html.includes(url));
   assert.ok(email.text.includes(url));
   assert.ok(email.text.includes('$12.50 USD'));
-  assert.ok(email.text.includes('No Hidden account needed'));
+  assert.ok(email.text.includes('No Hidn account needed'));
 });
 
 test('email transport uses purchase idempotency and never treats a provider failure as sent', async () => {
   const input = {
     apiKey: 'test-key',
-    from: 'Hidden <test@example.com>',
+    from: 'Hidn <test@example.com>',
     to: 'buyer@example.com',
     purchaseId: 'purchase-1',
     message: purchaseEmail({

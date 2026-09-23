@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import { AccountMenu } from '@/components/account-menu';
 import './globals.css';
 export const metadata: Metadata = {
-  title: { default: 'Hidden — image drops', template: '%s · Hidden' },
+  title: { default: 'Hidn — image drops', template: '%s · Hidn' },
   description: 'A simple way to share images worth paying for.',
   robots: { index: false, follow: false },
 };
@@ -13,12 +13,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <body>
         <header className="site-header">
-          <Link className="brand" href="/" aria-label="Hidden home">
+          <Link className="brand" href="/" aria-label="Hidn home">
             <img
               className="brand-wordmark"
-              src="/hidden-wordmark.svg"
-              alt="Hidden"
-              width={194}
+              src="/hidden-wordmark.svg?v=hidn1"
+              alt="Hidn"
+              width={132}
               height={44}
             />
           </Link>
@@ -32,7 +32,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <main>{children}</main>
         <footer>
           <span>Good images. A simple exchange.</span>
-          <span>Hidden / Image delivery</span>
+          <span>Hidn / Image delivery</span>
         </footer>
       </body>
     </html>

@@ -1,4 +1,4 @@
-# Hidden — payment-gated image drops (V0)
+# Hidn — payment-gated image drops (V0)
 
 Next.js + TypeScript + Supabase Auth/Postgres/Storage + Stripe. Vercel-ready.
 
@@ -198,7 +198,7 @@ The complete sandbox payment/unlock/refund flow has passed. See [Stripe verifica
 
 ### Rich sharing
 
-Published `/d/[slug]` pages expose Open Graph/Twitter metadata with title (including image count, total original file size, and price so apps that omit descriptions still receive those details), and a 1000×1000 JPEG at `/d/[slug]/card`. The square card uses the first **separate safe preview asset** with an additional blur and the Hidden H watermark; it never reads originals. Unpublished or invalid drops return 404. The same card appears on the creator share page and can be downloaded. Instagram sharing supplies the card as a file when the device supports it. Messaging apps control whether they retain text, URLs, or display rich previews; verify on target phones after deploying to a publicly reachable HTTPS URL.
+Published `/d/[slug]` pages expose Open Graph/Twitter metadata with title (including image count, total original file size, and price so apps that omit descriptions still receive those details), and a 1000×1000 JPEG at `/d/[slug]/card`. The square card uses the first **separate safe preview asset** with an additional blur and the Hidn H watermark; it never reads originals. Unpublished or invalid drops return 404. The same card appears on the creator share page and can be downloaded. Instagram sharing supplies the card as a file when the device supports it. Messaging apps control whether they retain text, URLs, or display rich previews; verify on target phones after deploying to a publicly reachable HTTPS URL.
 
 WhatsApp/SMS prefill the composed message. Snapchat’s documented web share URL accepts the purchase URL and opens its recipient flow, but does not accept a prefilled caption. Instagram has no equivalent general web DM composer URL: supported devices use the system share sheet, where the user selects Instagram; other browsers open Instagram with an explicit copy/paste fallback. No messages are sent automatically.
 
@@ -214,15 +214,15 @@ Apply `supabase/migrations/20260922213000_stop_sales.sql` after the initial migr
 
 ### Purchase emails (Resend)
 
-After the payment event is validated and committed, Hidden sends the checkout email address a private return link. The email contains the drop title, amount paid, and a “View my images” button. It does not attach originals or expose storage URLs. Email links use a separate HMAC-derived token; only its hash is stored, and existing checkout cookies still work. Every download checks PAID status, so refunds revoke both types of access and stopping sales preserves them.
+After the payment event is validated and committed, Hidn sends the checkout email address a private return link. The email contains the drop title, amount paid, and a “View my images” button. It does not attach originals or expose storage URLs. Email links use a separate HMAC-derived token; only its hash is stored, and existing checkout cookies still work. Every download checks PAID status, so refunds revoke both types of access and stopping sales preserves them.
 
 Setup:
 
 1. Apply `supabase/migrations/20260922230000_purchase_email.sql` after the other migrations (already applied to the current Supabase project).
 2. Create a [Resend account](https://resend.com/signup), add a sending domain you own, and add the DNS records Resend provides. Use a subdomain such as `mail.your-domain.com` if preferred. Verify the domain in Resend.
-3. Create a sending API key and save it as `RESEND_API_KEY` in `.env.local` and your hosting environment. Set `EMAIL_FROM` to `Hidden <purchases@mail.your-domain.com>` using your verified domain.
+3. Create a sending API key and save it as `RESEND_API_KEY` in `.env.local` and your hosting environment. Set `EMAIL_FROM` to `Hidn <purchases@mail.your-domain.com>` using your verified domain.
 4. Generate two independent secrets with `openssl rand -hex 32`, saving them as `EMAIL_ACCESS_SECRET` and `EMAIL_RETRY_SECRET`. Keep them in a password manager and use the same values on every deployment. Do not commit them. Keep EMAIL_ACCESS_SECRET stable; changing it changes tokens generated for unsent/retried messages.
-5. Set `APP_URL` to the public HTTPS Hidden origin, and redeploy/restart. Email delivery deliberately refuses HTTP URLs. Localhost is not a usable destination for buyers.
+5. Set `APP_URL` to the public HTTPS Hidn origin, and redeploy/restart. Email delivery deliberately refuses HTTP URLs. Localhost is not a usable destination for buyers.
 6. Disable click and open tracking for the sending domain: private access links should not be rewritten or tracked. Make a sandbox purchase with your own email address and open the email on another browser/device. Verify download access, stop-sales retention, and refund revocation.
 
 Missing email configuration leaves checkout/unlock working and messages unsent. Once configured, backfill up to five unsent PAID purchases per invocation:

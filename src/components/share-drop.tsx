@@ -120,7 +120,7 @@ export function ShareDrop({
       </div>
       {local && (
         <p className="share-local">
-          Local preview: this link only works on this computer. Once Hidden is
+          Local preview: this link only works on this computer. Once Hidn is
           hosted, you can send it to buyers.
         </p>
       )}
@@ -137,14 +137,14 @@ export function ShareDrop({
       <div className="share-card-preview">
         <img
           src={`${url}/card?v=9`}
-          alt="Blurred collection cover with the Hidden H watermark"
+          alt="Blurred collection cover with the Hidn H watermark"
           width={1000}
           height={1000}
         />
         <div className="share-card-details">
           <strong>
             Unlock {title} · {count} hidden images · {fileSize(bytes)} · {price}{' '}
-            USD | Hidden
+            USD | Hidn
           </strong>
           <span>Preview, pay, and unlock. No account needed.</span>
           <small>{new URL(url).host}</small>

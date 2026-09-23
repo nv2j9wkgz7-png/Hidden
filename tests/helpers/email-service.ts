@@ -4,7 +4,7 @@ import { paymentSucceeded } from '../../src/lib/payments/service';
 process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://database.example';
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-key';
 process.env.RESEND_API_KEY = 'test-key';
-process.env.EMAIL_FROM = 'Hidden <purchases@example.com>';
+process.env.EMAIL_FROM = 'Hidn <purchases@example.com>';
 process.env.EMAIL_ACCESS_SECRET = 'a'.repeat(48);
 process.env.APP_URL = 'https://hidden.example';
 const purchase = {
