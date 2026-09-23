@@ -199,7 +199,7 @@ export default async function Dashboard({
           aria-label="Create a new drop"
         >
           <span className="create-drop-plus" aria-hidden="true">
-            +
+            <img src="/hidn-ribbon-plus.svg" alt="" width={90} height={90} />
           </span>
           <strong>New drop</strong>
           <span className="hint">Upload images. Set a price. Share.</span>

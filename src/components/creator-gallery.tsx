@@ -16,7 +16,9 @@ export function CreatorGallery({ images }: { images: Image[] }) {
     const index = (selected + offset + images.length) % images.length;
     track.current?.scrollTo({
       left: index * track.current.clientWidth,
-      behavior: 'smooth',
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ? 'instant'
+        : 'smooth',
     });
   }
   return (

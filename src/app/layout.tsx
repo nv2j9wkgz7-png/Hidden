@@ -1,9 +1,28 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import localFont from 'next/font/local';
+import { PageMotion } from '@/components/page-motion';
 import { AccountMenu } from '@/components/account-menu';
 import './globals.css';
 import './studio.css';
+import './ribbon.css';
+const outfit = localFont({
+  src: [
+    {
+      path: '../../public/fonts/outfit-regular.ttf',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: '../../public/fonts/outfit-semibold.ttf',
+      weight: '600',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-hidn',
+  display: 'swap',
+});
 export const metadata: Metadata = {
   title: { default: 'Hidn — image drops', template: '%s · Hidn' },
   description: 'A simple way to share images worth paying for.',
@@ -11,20 +30,17 @@ export const metadata: Metadata = {
 };
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={outfit.variable}>
       <body>
         <header className="site-header">
           <Link className="brand" href="/" aria-label="Hidn home">
             <img
-              className="brand-ribbon"
-              src="/hidn-arrow-mark.svg"
+              className="ribbon-wordmark"
+              src="/hidn-ribbon-wordmark.svg"
               alt=""
-              width={48}
-              height={48}
+              width={140}
+              height={54}
             />
-            <span className="brand-lettering" aria-hidden="true">
-              idn
-            </span>
           </Link>
           <nav>
             <Link href="/dashboard">My drops</Link>
@@ -33,7 +49,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </Suspense>
           </nav>
         </header>
-        <main>{children}</main>
+        <main>
+          <PageMotion>{children}</PageMotion>
+        </main>
         <footer>
           <Link href="/" className="footer-brand">
             Hidn <span>Made to be discovered.</span>
