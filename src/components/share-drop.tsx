@@ -22,7 +22,7 @@ export function ShareDrop({
   const [card, setCard] = useState<File>();
   useEffect(() => {
     const controller = new AbortController();
-    fetch(`${url}/card?v=9`, { signal: controller.signal })
+    fetch(`${url}/card?v=10`, { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) return;
         const blob = await response.blob();
@@ -169,25 +169,20 @@ export function ShareDrop({
           <strong>More apps</strong>
         </button>
       </div>
-      <details className="share-preview-disclosure">
-        <summary>Preview shared link</summary>
-        <div className="share-card-preview">
-          <img
-            src={`${url}/card?v=9`}
-            alt="Blurred collection cover with the Hidn H watermark"
-            width={1000}
-            height={1000}
-          />
-          <div className="share-card-details">
-            <strong>
-              Unlock {title} · {count} hidden images · {fileSize(bytes)} ·{' '}
-              {price} USD | Hidn
-            </strong>
-            <span>Preview, pay, and unlock. No account needed.</span>
-            <small>{new URL(url).host}</small>
-          </div>
+      <section className="compact-link-preview" aria-label="Link preview">
+        <img
+          src={`${url}/card?v=10`}
+          alt="Blurred collection cover with the Hidn H watermark"
+          width={112}
+          height={112}
+        />
+        <div>
+          <small>{new URL(url).host}</small>
+          <strong>{title}</strong>
+          <span>{count} images · {price} USD</span>
+          <span className="compact-preview-caption">Preview, pay, and unlock.</span>
         </div>
-      </details>
+      </section>
       <p className="share-notice" role="status" aria-live="polite">
         {notice}
       </p>

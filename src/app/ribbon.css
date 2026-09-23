@@ -35,6 +35,8 @@ h3 {
   transform: translateY(-2px) rotate(-2deg);
 }
 .site-header {
+  position: relative;
+  z-index: 30;
   background: #fcfaf8ed;
   backdrop-filter: blur(18px);
 }
@@ -394,4 +396,48 @@ details[open] .share-card-preview,
     transition: none !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Keep the shared link visible without expanding a full-size social card. */
+.compact-link-preview {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 22px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fffafc;
+}
+.compact-link-preview > img {
+  width: 112px;
+  height: 112px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 12px;
+  background: #342947;
+}
+.compact-link-preview > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.compact-link-preview strong {
+  font-size: 16px;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.compact-link-preview small {
+  font-size: 11px;
+}
+@media (max-width: 600px) {
+  .compact-link-preview { gap: 12px; padding: 10px; }
+  .compact-link-preview > img { width: 88px; height: 88px; }
+  .compact-preview-caption { display: none; }
 }
