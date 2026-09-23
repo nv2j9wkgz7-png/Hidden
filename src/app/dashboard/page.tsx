@@ -209,16 +209,17 @@ export default async function Dashboard({
 
           const cover = drop.assets.find((a) => a.preview_path)?.preview_path;
           return (
-            <article className="drop-card" key={drop.id}>
+            <article className="drop-card openable-drop-card" key={drop.id}>
               <Link
-                className="drop-cover private-drop-cover"
+                className="drop-card-open"
                 href={
                   drop.status !== 'DRAFT'
                     ? `/dashboard/drops/${drop.slug}/share`
                     : `/new?drop=${drop.id}`
                 }
                 aria-label={`Open ${drop.title}`}
-              >
+              />
+              <div className="drop-cover private-drop-cover">
                 {cover && (
                   <img
                     className="private-drop-background"
@@ -246,7 +247,7 @@ export default async function Dashboard({
                       : 'Sales stopped'
                     : 'Draft'}
                 </span>
-              </Link>
+              </div>
               <div className="drop-info">
                 <h3>{drop.title}</h3>
                 <span className="hint">
@@ -259,16 +260,19 @@ export default async function Dashboard({
                 <div className="card-actions">
                   {drop.status !== 'DRAFT' ? (
                     <>
-                      <Link href={`/dashboard/drops/${drop.slug}/share`}>
-                        Open drop ↗
-                      </Link>
-                      <Link href={`/dashboard/drops/${drop.slug}/manage`}>
+                      <span aria-hidden="true">Open drop ↗</span>
+                      <Link
+                        className="drop-card-action"
+                        href={`/dashboard/drops/${drop.slug}/manage`}
+                      >
                         Manage
                       </Link>
-                      <CopyButton path={`/d/${drop.slug}`} />
+                      <span className="drop-card-action">
+                        <CopyButton path={`/d/${drop.slug}`} />
+                      </span>
                     </>
                   ) : (
-                    <Link href={`/new?drop=${drop.id}`}>Continue draft →</Link>
+                    <span aria-hidden="true">Continue draft →</span>
                   )}
                 </div>
               </div>

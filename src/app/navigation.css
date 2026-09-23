@@ -1,5 +1,26 @@
 /* Navigation keeps the current page visible; only slower transitions show a
    thin indicator. It lives outside the page animation and never shifts layout. */
+.openable-drop-card {
+  position: relative;
+  isolation: isolate;
+}
+.drop-card-open {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+.drop-card-open:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: -3px;
+}
+.drop-card-action {
+  position: relative;
+  z-index: 2;
+}
+.openable-drop-card:hover .private-drop-background {
+  filter: blur(7px);
+}
 .navigation-progress {
   position: fixed;
   z-index: 1000;
