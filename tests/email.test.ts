@@ -4,8 +4,35 @@ import {
   emailAccessToken,
   purchaseEmail,
   sendEmail,
+  welcomeEmail,
 } from '../src/lib/email/message';
 import { validToken } from '../src/lib/security';
+
+test('welcome email uses an ordinary dashboard link and separate retry key', async () => {
+  const message = welcomeEmail('https://sendhidn.com/dashboard');
+  assert.ok(message.text.includes('https://sendhidn.com/dashboard'));
+  assert.ok(!message.html.includes('access='));
+  assert.ok(message.text.includes('No email confirmation'));
+  await sendEmail(
+    {
+      apiKey: 'test-key',
+      from: 'Hidn <test@example.com>',
+      to: 'creator@example.com',
+      idempotencyKey: 'welcome-email/user-1',
+      message,
+    },
+    async (_url, options) => {
+      assert.equal(
+        new Headers(options?.headers).get('Idempotency-Key'),
+        'welcome-email/user-1',
+      );
+      assert.deepEqual(JSON.parse(options?.body as string).to, [
+        'creator@example.com',
+      ]);
+      return Response.json({ id: 'welcome-1' });
+    },
+  );
+});
 
 test('email tokens are stable for retries, secret-bound, and purchase-specific', () => {
   const secret = 'a'.repeat(48);

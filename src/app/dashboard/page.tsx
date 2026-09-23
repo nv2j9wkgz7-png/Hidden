@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { after } from 'next/server';
+import { sendWelcomeEmail } from '@/lib/email/welcome';
 import { redirect } from 'next/navigation';
 import {
   Images,
@@ -66,6 +68,19 @@ export default async function Dashboard({
     data: { user },
   } = await (await supabase()).auth.getUser();
   if (!user) redirect('/login');
+  if (user.email) {
+    const email = user.email;
+    after(async () => {
+      try {
+        await sendWelcomeEmail(user.id, email);
+      } catch {
+        // Keep account access independent of email delivery; retry on next visit.
+        console.error(
+          'Welcome email delivery failed; retry on next dashboard visit.',
+        );
+      }
+    });
+  }
   const db = admin();
   const revenueSort = sort.value.startsWith('revenue-');
   const [{ data: drops, error }, { data: stats, error: statsError }] =

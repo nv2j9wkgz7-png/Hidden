@@ -67,10 +67,10 @@ No Stripe publishable key is needed: checkout is hosted by Stripe. Never rename 
 
 1. Create a project. Copy the project URL, publishable key, and service role key into `.env.local`.
 2. Open **SQL Editor** and run the complete `supabase/migrations/20260922192409_initial.sql` once on a fresh project. It creates the six product/support tables, auth profile trigger, RLS policies, server-only functions, and both storage buckets. Alternatively initialize/link the Supabase CLI project and run `supabase db push`.
-3. In **Authentication → Providers**, enable email/password. Keep email confirmation enabled; configure SMTP for reliable delivery outside initial testing.
+3. In **Authentication → Providers**, enable email/password. For immediate signup, disable **Confirm email** (a separate authentication-policy decision). With confirmation enabled, the form still waits for the confirmation email. Configure SMTP for password reset/auth mail delivery.
 4. Set the Auth Site URL to your app's origin and allow `http://localhost:3000/auth/callback` plus your deployed `https://YOUR_DOMAIN/auth/callback` as redirect URLs. Add the 127.0.0.1 version only if you use that origin locally.
 5. Verify **Storage → originals** is **private** and **previews** is public. Do not add browser read, update, or insert policies for `originals`, and do not make it public.
-6. Create an account in the app and confirm the email. Existing auth users are backfilled by the migration.
+6. Create an account in the app. With Confirm email disabled, signup returns a session and opens the dashboard immediately. Existing auth users are backfilled by the initial migration.
 
 The migration assumes fresh `originals` and `previews` buckets and table names. If applying to an existing project with matching names, review existing policies first; don't weaken privacy to resolve a conflict.
 
@@ -236,3 +236,9 @@ The operator endpoint is `POST /api/internal/purchase-emails`, protected by EMAI
 `email_sent_at` means Resend accepted the message, not guaranteed inbox delivery; inspect Resend for bounces. A stable per-purchase idempotency key prevents concurrent/retried sends within Resend's 24-hour window. The durable sent marker skips later webhooks. In the rare case where Resend accepts a message but persisting the sent marker fails, a retry after 24 hours can duplicate the email; reconcile the provider ID/logs before retrying such a failure. Keep sender, APP_URL, and email template stable during retries inside that window, because Resend rejects a changed payload under the same key.
 
 Validation uses mocked email delivery plus Postgres authorization/payment tests; actual inbox delivery requires the setup above. References: [Resend send API](https://resend.com/docs/api-reference/emails/send-email), [idempotency](https://resend.com/docs/dashboard/emails/idempotency-keys).
+
+### Account-created welcome email
+
+Apply `supabase/migrations/20260923160000_welcome_email.sql`. New profiles have a pending welcome email; existing profiles are excluded. On their first authenticated dashboard visit, Next.js `after()` sends a Resend welcome message without delaying dashboard access. The recipient comes from Supabase `getUser()`, never request input. A durable sent timestamp and user-specific provider idempotency key prevent routine duplicate sends. Failed sends remain pending for the next dashboard visit. Provider deduplication is limited to its retention window, so a rare delivery-success/database-failure combination can duplicate a later retry.
+
+This is an account-created notification, not proof of email ownership. It contains an ordinary dashboard link and no session token. Purchase-access email behavior is unchanged. `EMAIL_FROM` and `RESEND_API_KEY` must be set, and APP_URL must use HTTPS. Disabling Confirm email is a Supabase dashboard setting, not applied by the migration.

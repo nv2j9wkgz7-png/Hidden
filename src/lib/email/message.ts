@@ -34,22 +34,35 @@ export function purchaseEmail(input: {
   };
 }
 
+export function welcomeEmail(dashboardUrl: string) {
+  const url = escapeHtml(dashboardUrl);
+  return {
+    subject: 'Welcome to Hidn — your account is ready',
+    text: `Welcome to Hidn! Your account has been created.\n\nUpload your images, set a price, and share your link.\n\nOpen your dashboard: ${dashboardUrl}\n\nNo email confirmation is needed to get started. If you did not create this account, you can ignore this email.`,
+    html: `<!doctype html><html><body style="margin:0;background:#f6f7fa;font-family:Arial,sans-serif;color:#20212a"><div style="max-width:520px;margin:32px auto;padding:32px;background:#fff;border-radius:20px"><p style="color:#7755c4;font-size:26px;font-weight:bold">Hidn</p><h1>Your account is ready.</h1><p>Welcome to Hidn. Upload your images, set a price, and share your link.</p><p style="margin:32px 0"><a href="${url}" style="display:inline-block;background:#6940e8;color:#fff;padding:16px 24px;border-radius:12px;text-decoration:none;font-weight:bold">Open my dashboard</a></p><p>No email confirmation is needed to get started.</p><p style="font-size:13px;color:#686e7c">If you did not create this account, you can ignore this email.</p></div></body></html>`,
+  };
+}
+
 export async function sendEmail(
   input: {
     apiKey: string;
     from: string;
     to: string;
-    purchaseId: string;
+    purchaseId?: string;
+    idempotencyKey?: string;
     message: ReturnType<typeof purchaseEmail>;
   },
   fetcher: typeof fetch = fetch,
 ) {
+  if (!input.idempotencyKey && !input.purchaseId)
+    throw new Error('Email idempotency key is required.');
   const response = await fetcher('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${input.apiKey}`,
       'Content-Type': 'application/json',
-      'Idempotency-Key': `purchase-email/${input.purchaseId}`,
+      'Idempotency-Key':
+        input.idempotencyKey || `purchase-email/${input.purchaseId}`,
     },
     body: JSON.stringify({
       from: input.from,
