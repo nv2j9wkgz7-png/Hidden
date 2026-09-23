@@ -301,8 +301,8 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
           }}
         >
           <UploadCloud size={30} />
-          <strong>Drop photos, videos, or a folder here</strong>
-          <p>or click to choose files</p>
+          <strong>Add photos & videos</strong>
+          <p>Tap to choose files, or drag them here</p>
           <p>Photos up to 10 MB · Videos up to 50 MB</p>
           <input
             ref={imagesRef}
@@ -338,8 +338,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
           />
         </label>
         <p className="hint">
-          JPEG, PNG, WebP · MP4, MOV, WebM. Up to 20 files / 200 MB. Folder
-          contents are added to one drop, including subfolders.
+          JPEG, PNG, WebP · MP4, MOV, WebM. Up to 20 files / 200 MB.
         </p>
         {items.length > 0 && (
           <p className="hint">
