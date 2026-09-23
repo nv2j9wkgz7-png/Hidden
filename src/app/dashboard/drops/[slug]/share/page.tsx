@@ -10,6 +10,7 @@ import { ReviewActions } from '@/components/review-actions';
 import { PublishDrop } from '@/components/publish-drop';
 import { CreatorGallery } from '@/components/creator-gallery';
 import { ShareDrop } from '@/components/share-drop';
+import { StopSales } from '@/components/stop-sales';
 
 export const dynamic = 'force-dynamic';
 export default async function SharePage({
@@ -105,6 +106,9 @@ export default async function SharePage({
         )}
       </section>
       <ReviewActions draft={drop.status === 'DRAFT'} />
+      {drop.status !== 'DRAFT' && (
+        <StopSales dropId={drop.id} status={drop.status} compact />
+      )}
     </div>
   );
 }

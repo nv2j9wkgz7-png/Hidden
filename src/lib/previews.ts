@@ -20,7 +20,7 @@ export async function createPreview(original: Buffer) {
     .toBuffer();
   const blurred = await sharp(small)
     .resize(800, 600, { fit: 'contain', background: '#151820' })
-    .blur(12)
+    .blur(8)
     .jpeg({ quality: 55 })
     .toBuffer();
   const watermark = Buffer.from(

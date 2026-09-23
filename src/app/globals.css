@@ -1376,7 +1376,7 @@ body:has(.image-viewer[open]) {
   width: calc(100% + 24px);
   height: calc(100% + 24px);
   object-fit: cover;
-  filter: blur(10px);
+  filter: blur(4px);
   z-index: -2;
 }
 .private-drop-cover::after {

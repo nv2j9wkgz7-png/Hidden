@@ -22,7 +22,7 @@ export async function GET(
     layers.push({
       input: await sharp(Buffer.from(await data.arrayBuffer()))
         .resize(1000, 1000, { fit: 'cover' })
-        .blur(12)
+        .blur(5)
         .png()
         .toBuffer(),
       left: 0,

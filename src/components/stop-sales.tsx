@@ -5,9 +5,11 @@ import { api } from '@/lib/client-api';
 export function StopSales({
   dropId,
   status,
+  compact = false,
 }: {
   dropId: string;
   status: string;
+  compact?: boolean;
 }) {
   const [confirm, setConfirm] = useState(false),
     [busy, setBusy] = useState(false),
@@ -29,13 +31,20 @@ export function StopSales({
     }
   }
   return (
-    <section className="panel" style={{ marginTop: 24 }}>
-      <h2>{status === 'CLOSED' ? 'Sales stopped' : 'Stop sales'}</h2>
-      <p className="hint">
-        {status === 'CLOSED'
-          ? 'No new purchases can be made. Existing paid buyers keep access to their images.'
-          : 'Disable this purchase link and close unpaid checkouts. Buyers who already paid keep access. Payments already completed or processing will still be honored.'}
-      </p>
+    <section
+      className={compact ? 'stop-sales-compact' : 'panel'}
+      style={{ marginTop: 24 }}
+    >
+      {(!compact || status === 'CLOSED') && (
+        <h2>{status === 'CLOSED' ? 'Sales stopped' : 'Stop sales'}</h2>
+      )}
+      {(!compact || status === 'CLOSED') && (
+        <p className="hint">
+          {status === 'CLOSED'
+            ? 'No new purchases can be made. Existing paid buyers keep access to their images.'
+            : 'Disable this purchase link and close unpaid checkouts. Buyers who already paid keep access. Payments already completed or processing will still be honored.'}
+        </p>
+      )}
       {status !== 'CLOSED' &&
         (confirm || status === 'CLOSING' ? (
           <div
@@ -66,7 +75,7 @@ export function StopSales({
                   disabled={busy}
                   onClick={() => setConfirm(false)}
                 >
-                  Cancel
+                  Keep sales open
                 </button>
               )}
               <button className="danger-button" disabled={busy} onClick={stop}>
