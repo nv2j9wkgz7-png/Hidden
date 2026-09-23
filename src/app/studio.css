@@ -1,0 +1,344 @@
+/* Hidn studio: warm paper, plum ink, and sculptural lavender accents. */
+:root {
+  --bg: #faf8f6;
+  --ink: #292333;
+  --muted: #726b7b;
+  --line: #e8e1ec;
+  --accent: #7545cd;
+  --accent-light: #f0e8f8;
+  --radius: 22px;
+}
+body {
+  background:
+    radial-gradient(ellipse at 95% 12%, #f0e7f780, transparent 42%), var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+.site-header {
+  height: 80px;
+  background: #faf8f6e8;
+  border-color: #e8e1ec90;
+}
+nav > a:first-child {
+  color: var(--ink);
+}
+main {
+  padding-top: 38px;
+}
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 2.2px;
+}
+h1 {
+  font-size: clamp(32px, 4vw, 48px);
+  letter-spacing: -2px;
+}
+.studio-heading {
+  position: relative;
+  overflow: hidden;
+  padding: 38px 42px;
+  border-radius: 28px;
+  background:
+    radial-gradient(ellipse at 87% 45%, #c6a3df66, transparent 42%),
+    linear-gradient(120deg, #eee6f4, #f5ebef 65%, #eee5fa);
+  border: 1px solid #e6dcea;
+  min-height: 218px;
+  margin-bottom: 22px;
+}
+.studio-heading h1 {
+  font-size: clamp(38px, 5vw, 58px);
+  font-weight: 600;
+}
+.studio-heading p {
+  color: #695570;
+  font-size: 15px;
+}
+.studio-art {
+  width: 180px;
+  height: 180px;
+  flex-shrink: 0;
+}
+.studio-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.stats {
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+  background: #ffffffa8;
+  margin-bottom: 36px;
+}
+.stat {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 22px 28px;
+}
+.stat + .stat {
+  border-left: 1px solid var(--line);
+}
+.stat-label {
+  font-size: 12px;
+}
+.stat-label svg {
+  opacity: 0.55;
+}
+.stat-value {
+  font-size: 30px;
+  font-weight: 550;
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+.section-title h2 {
+  font-size: 20px;
+}
+.drop-card {
+  border-radius: 22px;
+  box-shadow: 0 6px 24px #38214305;
+  transition:
+    box-shadow 0.2s,
+    border-color 0.2s;
+}
+.drop-card:hover {
+  box-shadow: 0 10px 30px #38214310;
+  border-color: #d6c6df;
+}
+.drop-info {
+  padding: 20px;
+}
+.drop-info h3 {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+.drop-cover {
+  height: 206px;
+}
+.private-drop-cover::after {
+  background: #e9ddf02e;
+}
+.private-drop-label {
+  font-size: 12px;
+  padding: 6px 12px;
+  backdrop-filter: blur(8px);
+}
+.private-drop-cover .private-drop-mark {
+  filter: drop-shadow(0 0 3px #fff) drop-shadow(0 2px 14px #e8c9fa);
+}
+.badge {
+  border-radius: 100px;
+  padding: 5px 11px;
+  font-size: 11px;
+}
+.badge.paid {
+  background: #eef8ef;
+  color: #306343;
+}
+.create-drop-card {
+  background:
+    radial-gradient(ellipse at 50% 35%, #ecd5f4, transparent 55%),
+    linear-gradient(145deg, #faf5fc, #eee6f4);
+  border: 1px solid #e2d3eb;
+}
+.create-drop-card strong {
+  color: #513864;
+  font-size: 18px;
+}
+.create-drop-card .hint {
+  max-width: 180px;
+  text-align: center;
+  font-size: 12px;
+}
+.card-actions {
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+.panel {
+  box-shadow: 0 6px 28px #38214304;
+}
+.button,
+button.primary {
+  border-radius: 12px;
+  background: linear-gradient(135deg, #8757d9, #6736b8);
+  border-color: #7343bc;
+  box-shadow:
+    inset 0 1px #ffffff33,
+    0 4px 12px #7545cd18;
+}
+.button:hover,
+button.primary:hover {
+  background: #6736b8;
+}
+.button.secondary,
+button.secondary {
+  background: #fff;
+  box-shadow: none;
+  border-color: var(--line);
+  border-radius: 12px;
+}
+.field input,
+.field textarea {
+  border-color: var(--line);
+  border-radius: 12px;
+  background: #fdfbfe;
+}
+.field textarea {
+  font: inherit;
+}
+.upload-zone {
+  background:
+    radial-gradient(ellipse at center, #f0e4f580, transparent), #fdfbff;
+  border-color: #cdb5df;
+  border-radius: 18px;
+}
+.flow {
+  border-radius: 28px;
+  background: linear-gradient(150deg, #fff, #f7f0fc);
+  border-color: var(--line);
+}
+.flow-top {
+  color: #513864;
+}
+.step-number {
+  background: #ede2f5;
+  color: #75518d;
+  border-radius: 50%;
+}
+.home h1 {
+  font-weight: 600;
+}
+.home h1 em {
+  background: linear-gradient(110deg, #ad609e, #7649b9);
+  background-clip: text;
+  color: transparent;
+}
+.howto-steps li {
+  border-color: var(--line);
+}
+.review-heading {
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+.share-panel {
+  background: linear-gradient(145deg, #fff, #faf6fd);
+}
+.creator-gallery-grid button {
+  border-radius: 10px;
+}
+.danger-button {
+  box-shadow: none;
+}
+footer {
+  font-size: 11px;
+}
+@media (max-width: 760px) {
+  .site-header {
+    height: 68px;
+    padding: 0 18px;
+  }
+  main {
+    margin: 0 16px;
+    padding-top: 24px;
+  }
+  .studio-heading {
+    min-height: 162px;
+    padding: 24px;
+    border-radius: 23px;
+    gap: 8px;
+    align-items: center;
+  }
+  .studio-heading h1 {
+    font-size: 36px;
+    letter-spacing: -1.5px;
+  }
+  .studio-heading p {
+    font-size: 12px;
+    max-width: 185px;
+  }
+  .studio-heading .eyebrow {
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    margin-bottom: 12px;
+  }
+  .studio-art {
+    width: 85px;
+    height: 110px;
+  }
+  .stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: 26px;
+    border-radius: 16px;
+  }
+  .stat {
+    display: block;
+    padding: 14px 12px;
+  }
+  .stat-label {
+    font-size: 10px;
+  }
+  .stat-label svg {
+    display: none;
+  }
+  .stat-value {
+    font-size: 25px;
+  }
+  .drop-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .drop-card {
+    border-radius: 17px;
+  }
+  .drop-cover {
+    height: 160px;
+  }
+  .drop-info {
+    padding: 13px;
+  }
+  .drop-info h3 {
+    font-size: 15px;
+  }
+  .drop-info .hint,
+  .drop-info .row {
+    font-size: 11px;
+  }
+  .card-actions {
+    gap: 9px;
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+  .private-drop-label {
+    font-size: 10px;
+    padding: 5px 8px;
+  }
+  .drop-cover > .badge {
+    top: 9px;
+    left: 9px;
+    font-size: 9px;
+  }
+  .create-drop-card {
+    min-height: 290px;
+    padding: 16px;
+    gap: 12px;
+  }
+  .create-drop-card strong {
+    font-size: 16px;
+  }
+  .create-drop-card .hint {
+    font-size: 11px;
+  }
+  .panel {
+    border-radius: 20px;
+  }
+  .home h1 {
+    font-size: 46px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .drop-card {
+    transition: none;
+  }
+}

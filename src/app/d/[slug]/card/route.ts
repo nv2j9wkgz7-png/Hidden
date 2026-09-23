@@ -29,8 +29,8 @@ export async function GET(
       top: 0,
     });
   }
-  // Reuse the exact colored logo shown in the site header.
-  const logo = await sharp(`${process.cwd()}/public/hidden-logo.svg`)
+  // Reuse the Arrow-generated mark shown in the creator gallery.
+  const logo = await sharp(`${process.cwd()}/public/hidn-arrow-mark.svg`)
     .resize(180, 204, {
       fit: 'contain',
       background: { r: 0, g: 0, b: 0, alpha: 0 },

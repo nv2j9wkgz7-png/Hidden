@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { AccountMenu } from '@/components/account-menu';
 import './globals.css';
+import './studio.css';
 export const metadata: Metadata = {
   title: { default: 'Hidn — image drops', template: '%s · Hidn' },
   description: 'A simple way to share images worth paying for.',

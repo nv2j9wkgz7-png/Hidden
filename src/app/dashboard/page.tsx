@@ -136,11 +136,14 @@ export default async function Dashboard({
     gross = rows.reduce((n, r) => n + Number(r.gross_cents), 0);
   return (
     <>
-      <div className="page-heading">
+      <div className="page-heading studio-heading">
         <div>
-          <div className="eyebrow">Creator workspace</div>
+          <div className="eyebrow">Your private gallery</div>
           <h1>Your drops</h1>
-          <p>A little less admin. A little more creating.</p>
+          <p>Made by you. Unlocked by them.</p>
+        </div>
+        <div className="studio-art" aria-hidden="true">
+          <img src="/hidn-arrow-mark.svg" alt="" width={180} height={180} />
         </div>
       </div>
       <div className="stats">
@@ -227,7 +230,7 @@ export default async function Dashboard({
                   />
                 )}
                 <img
-                  src="/hidden-logo.svg"
+                  src="/hidn-arrow-mark.svg"
                   alt=""
                   className="private-drop-mark"
                   width={56}
