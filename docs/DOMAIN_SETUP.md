@@ -5,7 +5,7 @@ The application brand is Hidn; the existing GitHub repository remains `nv2j9wkgz
 
 ## Email
 
-Added `sendhidn.com` to Resend and submitted verification. Namecheap Advanced DNS contains:
+Resend verified `sendhidn.com` on September 23, 2026. Namecheap Advanced DNS contains:
 
 - TXT `resend._domainkey`: the public DKIM value provided by Resend.
 - CNAME `rsend`: `rsend.forge.rmta.net`.
@@ -14,17 +14,23 @@ Added `sendhidn.com` to Resend and submitted verification. Namecheap Advanced DN
 
 These are the records supplied by this Resend account; do not replace them with generic examples. Sending is enabled in Resend, receiving is disabled, and tracking has not been configured.
 
-Intended application sender after verification/deployment: `Hidn <purchases@sendhidn.com>`.
-The local app still uses its localhost APP_URL. Keep automatic purchase emails disabled until the public app is reachable. The Resend API key and email secrets are in ignored `.env.local` and must be transferred securely into the deployment environment.
+Production application sender: `Hidn <purchases@sendhidn.com>`.
+The local app still uses its localhost APP_URL. Automatic purchase emails are enabled in Vercel. The local app remains without EMAIL_FROM to avoid sending localhost links. Secrets are stored only in ignored local files and Vercel environment variables.
 
-## Web hosting — pending
+## Web hosting
 
-The signed-in Vercel team `dre` (`dre6`) currently reports that it is suspended. No Hidn project exists in that team. Deployment needs an active authorized Vercel team; no subscription or billing changes have been made.
+Vercel project `hidn/hidden` is connected to the existing GitHub repository and deployed from `main`. The active team is Hidn (currently a Pro trial); the old suspended `dre6` team is not used.
 
-The domain's existing web parking/redirect records remain in place until the app is deployed. After deployment:
+- Public URL: https://sendhidn.com
+- Vercel alias: https://hidden-neon.vercel.app
+- Namecheap A record `@`: `216.198.79.1`, as supplied by Vercel.
+- Production and Preview environment variables are configured. The two `NEXT_PUBLIC_SUPABASE_*` variables use Vercel Config; all other variables are server secrets.
+- `APP_URL=https://sendhidn.com` and `EMAIL_FROM=Hidn <purchases@sendhidn.com>` in Vercel. Local settings remain local.
+- Supabase Site URL is `https://sendhidn.com`; its redirect allowlist includes `https://sendhidn.com/auth/callback` and both existing localhost callbacks.
+- Stripe sandbox webhook: `https://sendhidn.com/api/webhooks/stripe`, with a dedicated signing secret. Events: `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `charge.refunded`.
 
-1. Add `sendhidn.com` to the Vercel project and use the DNS values Vercel supplies. Replace the default parking/redirect records as appropriate; retain the email DNS records above.
-2. Configure runtime secrets and `APP_URL=https://sendhidn.com`; public Supabase values are needed at build time.
-3. Add `https://sendhidn.com/auth/callback` to Supabase's redirect allowlist and set the public site URL.
-4. Create the deployed Stripe sandbox webhook at `https://sendhidn.com/api/webhooks/stripe`, with its own signing secret (not the local CLI secret).
-5. Once Resend is verified, set EMAIL_FROM and verify a sandbox purchase, received email, and downloads from another device. Creator payouts and live-money launch remain deferred.
+## Deployment checks
+
+The first Vercel production build succeeded. HTTPS home, login, and the existing buyer drop page return 200. An unsigned Stripe webhook returns 400. The deployed checkout endpoint creates a Stripe test-mode checkout with a sendhidn.com return URL; that unpaid smoke-test checkout was expired afterward. Resend accepted a test email from the verified sender to the account owner's email.
+
+A completed payment and recovery-email download flow on the public domain still needs a final end-to-end check. Payments remain sandbox-only; creator payouts and live-money launch are deferred. Do not reuse the local Stripe CLI webhook secret in Vercel.
