@@ -1,0 +1,51 @@
+/* Navigation keeps the current page visible; only slower transitions show a
+   thin indicator. It lives outside the page animation and never shifts layout. */
+.navigation-progress {
+  position: fixed;
+  z-index: 1000;
+  inset: 0 0 auto;
+  height: 3px;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  animation: navigation-visible 100ms 150ms forwards;
+}
+.navigation-progress::before {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 45%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #bb8fcc, #8052b4);
+  animation: navigation-travel 1.2s ease-in-out infinite;
+}
+@keyframes navigation-visible {
+  to {
+    opacity: 1;
+  }
+}
+@keyframes navigation-travel {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(325%);
+  }
+}
+/* Workspace contents are ready to use when the route commits. Keep the
+   decorative homepage card animations separate from navigation feedback. */
+.drop-grid > *,
+.howto-steps > *,
+.creator-gallery > * {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .navigation-progress {
+    animation: none;
+    opacity: 1;
+  }
+  .navigation-progress::before {
+    animation: none;
+    width: 100%;
+  }
+}

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import { NavigationLink as Link } from '@/components/navigation-link';
 import { Suspense } from 'react';
 import localFont from 'next/font/local';
 import { PageMotion } from '@/components/page-motion';
@@ -8,6 +8,7 @@ import './globals.css';
 import './studio.css';
 import './ribbon.css';
 import './examples.css';
+import './navigation.css';
 const outfit = localFont({
   src: [
     {

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { NavigationLink as Link } from '@/components/navigation-link';
 import { redirect } from 'next/navigation';
 import { supabase } from '@/lib/supabase/server';
 import {

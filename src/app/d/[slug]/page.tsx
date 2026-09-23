@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { publicDrop } from '@/lib/public-drop';
 import { appUrl } from '@/lib/env';
 import { money, fileSize } from '@/lib/format';
-import Link from 'next/link';
+import { NavigationLink as Link } from '@/components/navigation-link';
 import { supabase } from '@/lib/supabase/server';
 import { notFound, redirect } from 'next/navigation';
 import { admin } from '@/lib/supabase/admin';

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { NavigationLink as Link } from '@/components/navigation-link';
 import { after } from 'next/server';
 import { sendWelcomeEmail } from '@/lib/email/welcome';
 import { redirect } from 'next/navigation';

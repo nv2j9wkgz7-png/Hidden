@@ -1,5 +1,5 @@
 'use client';
-import Link from 'next/link';
+import { NavigationLink as Link } from '@/components/navigation-link';
 import { useRouter } from 'next/navigation';
 export function ReviewActions({ draft }: { draft: boolean }) {
   const router = useRouter();

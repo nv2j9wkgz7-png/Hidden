@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { NavigationLink as Link } from '@/components/navigation-link';
 import { notFound, redirect } from 'next/navigation';
 import { EditDropDetails } from '@/components/edit-drop-details';
 import { supabase } from '@/lib/supabase/server';

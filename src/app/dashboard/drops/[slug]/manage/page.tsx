@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { NavigationLink as Link } from '@/components/navigation-link';
 import { notFound } from 'next/navigation';
 import { creator } from '@/lib/http';
 import { admin } from '@/lib/supabase/admin';
