@@ -209,7 +209,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
       }
       setProgress('Creating your shareable link…');
       const published = await api('/api/creator/publish', { drop_id: id });
-      router.push(published.share_url);
+      router.push(`${published.share_url}?created=1`);
       router.refresh();
     } catch (error) {
       setError(
@@ -353,8 +353,8 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
         </div>
         <hr className="divider" />
         <p className="hint">
-          Once published, your collection and price are fixed. You can share the
-          same link with multiple buyers.
+          Review your drop and make final edits next. You can share the same
+          link with multiple buyers.
         </p>
         {error && (
           <div id="drop-error" role="alert" className="notice error">

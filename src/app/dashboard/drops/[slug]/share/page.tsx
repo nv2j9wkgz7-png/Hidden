@@ -1,20 +1,24 @@
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
-import { Check, Images } from 'lucide-react';
+import { EditDropDetails } from '@/components/edit-drop-details';
 import { supabase } from '@/lib/supabase/server';
 import { admin } from '@/lib/supabase/admin';
 import { appUrl, configured } from '@/lib/env';
 import { money, fileSize } from '@/lib/format';
 import { Setup } from '@/components/setup';
 import { StopSales } from '@/components/stop-sales';
+import { CreatorGallery } from '@/components/creator-gallery';
 import { ShareDrop } from '@/components/share-drop';
 
 export const dynamic = 'force-dynamic';
 export default async function SharePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ created?: string }>;
 }) {
+  const justCreated = (await searchParams).created === '1';
   if (!configured()) return <Setup />;
   const {
     data: { user },
@@ -56,65 +60,36 @@ export default async function SharePage({
       <Link className="back" href="/dashboard">
         ← My drops
       </Link>
-      <div className="share-heading">
-        <div className="share-check">
-          <Check size={28} />
+      <div className="page-heading review-heading">
+        <div>
+          <div className="eyebrow">Review & share</div>
+          <h1>{drop.title}</h1>
+          <p>
+            {originals.length} images ·{' '}
+            {fileSize(originals.reduce((n, a) => n + a.size, 0))} ·{' '}
+            {money(drop.price_cents)} USD
+          </p>
         </div>
-        <div className="eyebrow">02 / Share</div>
-        <h1>Your drop is ready.</h1>
-        <p>Send the link. Your buyers preview, pay, and unlock.</p>
+        <span className="badge paid">
+          {drop.status === 'PUBLISHED' ? 'Ready to share' : 'Sales stopped'}
+        </span>
       </div>
+      <EditDropDetails
+        drop={{
+          id: drop.id,
+          title: drop.title,
+          description: drop.description,
+          price_cents: drop.price_cents,
+        }}
+      />
       <section className="panel creator-gallery-panel">
-        <h2>Your uploaded images</h2>
+        <h2>Your images</h2>
         <p className="hint">
-          Only you see the originals here. Buyers see locked previews until they
-          pay.
+          Tap an image to view it. Buyers see blurred previews until they pay.
         </p>
-        <div className="creator-gallery">
-          {originals.map((asset) => (
-            <figure key={asset.id}>
-              <a
-                href={asset.url}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={`View ${asset.name}`}
-              >
-                <img
-                  src={asset.url}
-                  alt={asset.name}
-                  referrerPolicy="no-referrer"
-                />
-              </a>
-              <figcaption>
-                {asset.name}
-                <small>{fileSize(asset.size)}</small>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-        <p className="hint">
-          Image links expire after one minute. Refresh this page to open them
-          again.
-        </p>
+        <CreatorGallery images={originals} />
       </section>
       <section className="panel share-panel">
-        <div className="share-summary">
-          <div className="empty-icon">
-            <Images size={25} />
-          </div>
-          <div>
-            <h2>{drop.title}</h2>
-            {drop.description && (
-              <p className="drop-description">{drop.description}</p>
-            )}
-            <p>
-              {drop.assets.length} images · {money(drop.price_cents)} USD
-            </p>
-          </div>
-          <span className="badge paid">
-            {drop.status === 'PUBLISHED' ? 'Published' : 'Sales stopped'}
-          </span>
-        </div>
         <ShareDrop
           url={`${appUrl()}/d/${slug}`}
           title={drop.title}
@@ -123,7 +98,12 @@ export default async function SharePage({
           bytes={drop.assets.reduce((n, a) => n + a.size_bytes, 0)}
         />
       </section>
-      <StopSales dropId={drop.id} status={drop.status} />
+      {!justCreated && (
+        <details className="drop-management">
+          <summary>Manage drop</summary>
+          <StopSales dropId={drop.id} status={drop.status} />
+        </details>
+      )}
       <div className="share-footer">
         <Link href={`/d/${slug}?preview=buyer`}>Preview buyer page ↗</Link>
         <Link href="/dashboard">Back to my drops</Link>

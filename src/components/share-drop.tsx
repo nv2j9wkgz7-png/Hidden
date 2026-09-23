@@ -18,9 +18,7 @@ export function ShareDrop({
 }) {
   const [notice, setNotice] = useState('');
   const [manual, setManual] = useState(false);
-  const [message, setMessage] = useState(
-    `${title} — ${count} hidden images · ${fileSize(bytes)} · ${price} USD. Preview, pay, and unlock the originals.`,
-  );
+  const message = `${title} — ${count} hidden images · ${fileSize(bytes)} · ${price} USD. Preview, pay, and unlock the originals.`;
   const [card, setCard] = useState<File>();
   useEffect(() => {
     const controller = new AbortController();
@@ -124,33 +122,6 @@ export function ShareDrop({
           hosted, you can send it to buyers.
         </p>
       )}
-      <label className="share-label" htmlFor="share-message">
-        Add a message
-      </label>
-      <textarea
-        id="share-message"
-        rows={3}
-        maxLength={1000}
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-      <div className="share-card-preview">
-        <img
-          src={`${url}/card?v=9`}
-          alt="Blurred collection cover with the Hidn H watermark"
-          width={1000}
-          height={1000}
-        />
-        <div className="share-card-details">
-          <strong>
-            Unlock {title} · {count} hidden images · {fileSize(bytes)} · {price}{' '}
-            USD | Hidn
-          </strong>
-          <span>Preview, pay, and unlock. No account needed.</span>
-          <small>{new URL(url).host}</small>
-        </div>
-
-      </div>
       <h3 className="share-label">Share your drop</h3>
       <div className="share-options">
         <button onClick={() => copy(url, 'Purchase link copied!')}>
@@ -198,16 +169,25 @@ export function ShareDrop({
           <strong>More apps</strong>
         </button>
       </div>
-      <p className="hint">
-        Send to more than one person using a group chat or your app’s recipient
-        picker. Everyone gets the same purchase link and unlocks separately.
-      </p>
-      <button
-        className="text-button"
-        onClick={() => copy(text, 'Message and purchase link copied!')}
-      >
-        <Copy size={14} /> Copy message + link
-      </button>
+      <details className="share-preview-disclosure">
+        <summary>Preview shared link</summary>
+        <div className="share-card-preview">
+          <img
+            src={`${url}/card?v=9`}
+            alt="Blurred collection cover with the Hidn H watermark"
+            width={1000}
+            height={1000}
+          />
+          <div className="share-card-details">
+            <strong>
+              Unlock {title} · {count} hidden images · {fileSize(bytes)} ·{' '}
+              {price} USD | Hidn
+            </strong>
+            <span>Preview, pay, and unlock. No account needed.</span>
+            <small>{new URL(url).host}</small>
+          </div>
+        </div>
+      </details>
       <p className="share-notice" role="status" aria-live="polite">
         {notice}
       </p>

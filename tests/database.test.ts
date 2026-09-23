@@ -25,6 +25,12 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
       'utf8',
     ),
   );
+  await db.exec(
+    await readFile(
+      'supabase/migrations/20260923180000_edit_drop_details.sql',
+      'utf8',
+    ),
+  );
   const creator = crypto.randomUUID(),
     other = crypto.randomUUID();
   await db.exec(
@@ -161,6 +167,34 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
       );
     },
   );
+  await t.test(
+    'published details require ownership and allow a final price edit',
+    async () => {
+      await assert.rejects(
+        db.query('select public.update_drop_details($1,$2,$3,$4,$5)', [
+          drop,
+          other,
+          'Changed',
+          1500,
+          'Description',
+        ]),
+      );
+      await db.query('select public.update_drop_details($1,$2,$3,$4,$5)', [
+        drop,
+        creator,
+        'Test images',
+        1500,
+        'Final description',
+      ]);
+      await db.query('select public.update_drop_details($1,$2,$3,$4,$5)', [
+        drop,
+        creator,
+        'Test images',
+        1250,
+        'Final description',
+      ]);
+    },
+  );
   await t.test('pending purchase has no original access', async () => {
     await db.query(
       "insert into public.purchases(id,drop_id,payment_provider,amount_cents,access_token) values($1,$2,'stripe',1250,$3)",
@@ -174,6 +208,28 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
     ).rows[0];
     assert.equal(canDownload(p, drop), false);
   });
+  await t.test(
+    'checkout locks price but not title or description',
+    async () => {
+      await assert.rejects(
+        db.query('select public.update_drop_details($1,$2,$3,$4,$5)', [
+          drop,
+          creator,
+          'Test images',
+          1500,
+          'New description',
+        ]),
+        /Price is locked/,
+      );
+      await db.query('select public.update_drop_details($1,$2,$3,$4,$5)', [
+        drop,
+        creator,
+        'Test images',
+        1250,
+        'New description',
+      ]);
+    },
+  );
   async function apply(
     eventId: string,
     kind = 'paid',
