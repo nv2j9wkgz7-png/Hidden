@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowUpRight, LockKeyhole, Images } from 'lucide-react';
 import { configured } from '@/lib/env';
 import { supabase } from '@/lib/supabase/server';
-import { BrandArt } from '@/components/brand-art';
+import { ExampleDrops } from '@/components/example-drops';
 
 export default async function Home() {
   if (configured()) {
@@ -16,16 +16,16 @@ export default async function Home() {
       <div className="home">
         <section>
           <div className="eyebrow">
-            <span>Made to share. Yours to sell.</span>
+            <span>Private sharing. Simple selling.</span>
           </div>
           <h1>
-            A little hidden.
+            Your content.
             <br />
-            <em>All yours.</em>
+            <em>Your price.</em>
           </h1>
           <p className="lead">
-            Your images deserve their own moment. Create a private drop, set
-            your price, and share one beautiful link.
+            Turn your photos, artwork, and image collections into a private
+            drop. Set a price, share a link, and sell directly to your audience.
           </p>
           <div className="actions">
             <Link href="/new" className="button">
@@ -40,17 +40,17 @@ export default async function Home() {
             confirmed.
           </p>
         </section>
-        <BrandArt />
+        <ExampleDrops />
       </div>
       <section className="brand-process" aria-label="How drops work">
         <div className="flow-top">
           <strong style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-            <Images size={20} /> From your camera to their collection.
+            <Images size={20} /> Your work. One link. Ready to sell.
           </strong>
           <span className="badge">3 steps</span>
         </div>
         {[
-          ['Upload your images', 'One image or a whole collection.'],
+          ['Add your content', 'Photos, artwork, or a collection of images.'],
           ['Set a price. Share a link.', 'Your drop, ready for your buyer.'],
           [
             'Get paid. Originals unlock.',

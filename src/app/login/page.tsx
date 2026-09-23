@@ -14,12 +14,12 @@ export default async function Login({
       <div className="auth-story">
         <div className="eyebrow">Your work. Your world.</div>
         <h2>
-          Keep a little
+          Make something.
           <br />
-          <em>for the reveal.</em>
+          <em>Make it yours.</em>
         </h2>
         <BrandArt compact />
-        <p>Make a drop. Share a link. Let them discover.</p>
+        <p>Upload your images. Set your price. Share your link.</p>
       </div>
       <div className="auth-form-wrap">
         {params.error && (

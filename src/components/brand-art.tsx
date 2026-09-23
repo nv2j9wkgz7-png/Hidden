@@ -11,8 +11,8 @@ export function BrandArt({ compact = false }: { compact?: boolean }) {
           <img src="/hidn-arrow-mark.svg" alt="" width={180} height={180} />
         </div>
         <div className="art-card-caption">
-          <span>A little mystery.</span>
-          <strong>Something worth unlocking.</strong>
+          <span>Your work, in one place.</span>
+          <strong>Share a preview. Sell the collection.</strong>
         </div>
       </div>
       <span className="art-chip">Private by design ↗</span>

@@ -5,7 +5,7 @@ test('home is responsive and offers the creator flow', async ({ page }) => {
   await page.goto('/');
   await expect(
     page.getByRole('heading', {
-      name: 'Your images. One link. Paid & delivered.',
+      name: 'Your content. Your price.',
     }),
   ).toBeVisible();
   await expect(

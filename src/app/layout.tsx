@@ -7,6 +7,7 @@ import { AccountMenu } from '@/components/account-menu';
 import './globals.css';
 import './studio.css';
 import './ribbon.css';
+import './examples.css';
 const outfit = localFont({
   src: [
     {
@@ -25,7 +26,8 @@ const outfit = localFont({
 });
 export const metadata: Metadata = {
   title: { default: 'Hidn — image drops', template: '%s · Hidn' },
-  description: 'A simple way to share images worth paying for.',
+  description:
+    'Share and sell private photo, artwork, and image collections with one simple link.',
   robots: { index: false, follow: false },
 };
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -54,9 +56,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </main>
         <footer>
           <Link href="/" className="footer-brand">
-            Hidn <span>Made to be discovered.</span>
+            Hidn <span>Made to share. Yours to sell.</span>
           </Link>
-          <span>Private drops. Beautifully delivered.</span>
+          <span>Your content. Your price. One link.</span>
         </footer>
       </body>
     </html>
