@@ -5,6 +5,7 @@ import { sendPurchaseEmail } from '../email/service';
 export async function paymentSucceeded(provider: string, event: PaymentEvent) {
   const { error } = await admin().rpc('apply_payment_event', {
     p_provider: provider,
+    p_account: event.stripeAccountId || null,
     p_event_id: event.eventId,
     p_purchase: event.purchaseId,
     p_transaction: event.transactionId,

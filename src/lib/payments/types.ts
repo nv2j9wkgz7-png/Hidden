@@ -5,6 +5,7 @@ export type CheckoutInput = {
   previewUrl?: string;
   logoUrl?: string;
   amountCents: number;
+  platformFeeCents?: number;
   currency: 'usd';
   successUrl: string;
   cancelUrl: string;
@@ -17,13 +18,12 @@ export type PaymentEvent = {
   currency: string;
   kind: 'paid' | 'refunded';
   customerEmail: string | null;
+  stripeAccountId?: string | null;
 };
 export interface PaymentProvider {
   readonly name: string;
   createCheckout(input: CheckoutInput): Promise<{ id: string; url: string }>;
-  getCheckout(
-    transactionId: string,
-  ): Promise<{
+  getCheckout(transactionId: string): Promise<{
     url: string | null;
     status: 'open' | 'complete' | 'expired';
     presentationReady?: boolean;

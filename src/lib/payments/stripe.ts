@@ -8,10 +8,21 @@ export class StripeProvider implements PaymentProvider {
     secret: string,
     private webhookSecret: string,
     private cashApp = false,
+    private stripeAccount?: string,
   ) {
     this.stripe = new Stripe(secret, { maxNetworkRetries: 2 });
   }
+  private get requestOptions(): Stripe.RequestOptions {
+    return this.stripeAccount ? { stripeAccount: this.stripeAccount } : {};
+  }
   async createCheckout(input: CheckoutInput) {
+    if (
+      this.stripeAccount &&
+      (!Number.isInteger(input.platformFeeCents) ||
+        input.platformFeeCents! < 0 ||
+        input.platformFeeCents! >= input.amountCents)
+    )
+      throw new Error('Invalid application fee');
     const session = await this.stripe.checkout.sessions.create(
       {
         mode: 'payment',
@@ -30,7 +41,12 @@ export class StripeProvider implements PaymentProvider {
           purchase_id: input.purchaseId,
           presentation_version: 'hidn-1',
         },
-        payment_intent_data: { metadata: { purchase_id: input.purchaseId } },
+        payment_intent_data: {
+          metadata: { purchase_id: input.purchaseId },
+          ...(this.stripeAccount
+            ? { application_fee_amount: input.platformFeeCents }
+            : {}),
+        },
         line_items: [
           {
             quantity: 1,
@@ -50,13 +66,20 @@ export class StripeProvider implements PaymentProvider {
         success_url: input.successUrl,
         cancel_url: input.cancelUrl,
       },
-      { idempotencyKey: `checkout:${input.purchaseId}` },
+      {
+        ...this.requestOptions,
+        idempotencyKey: `checkout:${input.purchaseId}`,
+      },
     );
     if (!session.url) throw new Error('Checkout URL missing');
     return { id: session.id, url: session.url };
   }
   async getCheckout(transactionId: string) {
-    const session = await this.stripe.checkout.sessions.retrieve(transactionId);
+    const session = await this.stripe.checkout.sessions.retrieve(
+      transactionId,
+      {},
+      this.requestOptions,
+    );
     if (
       session.status !== 'open' &&
       session.status !== 'complete' &&
@@ -74,7 +97,11 @@ export class StripeProvider implements PaymentProvider {
     const session = await this.getCheckout(transactionId);
     if (session.status !== 'open') return;
     try {
-      await this.stripe.checkout.sessions.expire(transactionId);
+      await this.stripe.checkout.sessions.expire(
+        transactionId,
+        {},
+        this.requestOptions,
+      );
     } catch (error) {
       // A checkout may complete or another request may expire it concurrently.
       if ((await this.getCheckout(transactionId)).status === 'open')
@@ -102,7 +129,7 @@ export class StripeProvider implements PaymentProvider {
       const session = event.data.object;
       if (session.mode !== 'payment' || session.payment_status !== 'paid')
         return null;
-      return this.normalize(event.id, session, 'paid');
+      return this.normalize(event.id, session, 'paid', event.account);
     }
     if (event.type === 'charge.refunded') {
       const charge = event.data.object;
@@ -114,13 +141,16 @@ export class StripeProvider implements PaymentProvider {
           ? charge.payment_intent
           : charge.payment_intent?.id;
       if (!intent) return null;
-      const sessions = await this.stripe.checkout.sessions.list({
-        payment_intent: intent,
-        limit: 1,
-      });
+      const sessions = await this.stripe.checkout.sessions.list(
+        {
+          payment_intent: intent,
+          limit: 1,
+        },
+        event.account ? { stripeAccount: event.account } : {},
+      );
       const session = sessions.data[0];
       if (!session) return null;
-      return this.normalize(event.id, session, 'refunded');
+      return this.normalize(event.id, session, 'refunded', event.account);
     }
     return null;
   }
@@ -128,6 +158,7 @@ export class StripeProvider implements PaymentProvider {
     eventId: string,
     session: Stripe.Checkout.Session,
     kind: PaymentEvent['kind'],
+    stripeAccountId?: string,
   ): PaymentEvent | null {
     const purchaseId = session.metadata?.purchase_id;
     if (!purchaseId) return null; // Other products on the same Stripe account.
@@ -135,6 +166,7 @@ export class StripeProvider implements PaymentProvider {
       throw new Error('Incomplete checkout event');
     return {
       eventId,
+      ...(stripeAccountId ? { stripeAccountId } : {}),
       purchaseId,
       transactionId: session.id,
       amountCents: session.amount_total,
@@ -144,15 +176,22 @@ export class StripeProvider implements PaymentProvider {
     };
   }
   async refundPayment(transactionId: string, idempotencyKey: string) {
-    const session = await this.stripe.checkout.sessions.retrieve(transactionId);
+    const session = await this.stripe.checkout.sessions.retrieve(
+      transactionId,
+      {},
+      this.requestOptions,
+    );
     const intent =
       typeof session.payment_intent === 'string'
         ? session.payment_intent
         : session.payment_intent?.id;
     if (!intent) throw new Error('No payment to refund');
     await this.stripe.refunds.create(
-      { payment_intent: intent },
-      { idempotencyKey },
+      {
+        payment_intent: intent,
+        ...(this.stripeAccount ? { refund_application_fee: true } : {}),
+      },
+      { ...this.requestOptions, idempotencyKey },
     );
     // Access changes only when the verified refund webhook is applied.
   }

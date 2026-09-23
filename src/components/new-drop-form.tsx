@@ -1,4 +1,5 @@
 'use client';
+import { EarningsEstimate } from './earnings-estimate';
 import { useRef, useState } from 'react';
 import { UploadCloud, ImageIcon, X, ShieldCheck, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -350,6 +351,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
             />
           </div>
           <small>One payment unlocks the entire drop.</small>
+          <EarningsEstimate cents={Math.round(Number(price) * 100)} />
         </div>
         <hr className="divider" />
         <p className="hint">

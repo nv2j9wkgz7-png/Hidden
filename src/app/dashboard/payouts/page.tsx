@@ -43,7 +43,10 @@ export default async function Payouts({
         <div>
           <div className="eyebrow">Made by you. Paid to you.</div>
           <h1>Earnings & payouts</h1>
-          <p>Your earnings, on their way to your bank.</p>
+          <p>
+            Free to start. Hidn takes 5% when you sell. Payment processing fees
+            apply.
+          </p>
         </div>
       </div>
       {testMode && (

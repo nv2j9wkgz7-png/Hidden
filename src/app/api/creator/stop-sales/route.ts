@@ -31,7 +31,9 @@ export const POST = handler(async (request) => {
   for (;;) {
     let query = db
       .from('purchases')
-      .select('id,payment_provider,payment_provider_transaction_id')
+      .select(
+        'id,payment_provider,payment_provider_transaction_id,stripe_account_id',
+      )
       .eq('drop_id', drop_id)
       .eq('status', 'PENDING')
       .not('payment_provider_transaction_id', 'is', null)
@@ -42,7 +44,7 @@ export const POST = handler(async (request) => {
     if (error) throw error;
     await Promise.all(
       (purchases || []).map((p) =>
-        paymentProvider(p.payment_provider).expireCheckout(
+        paymentProvider(p.payment_provider, p.stripe_account_id).expireCheckout(
           p.payment_provider_transaction_id,
         ),
       ),

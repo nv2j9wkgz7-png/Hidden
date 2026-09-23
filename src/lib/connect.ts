@@ -33,22 +33,17 @@ export async function createOnboarding(
     if (!country) throw new HttpError(400, 'Select your business country.');
     const account = await stripe.v2.core.accounts.create(
       {
-        dashboard: 'express',
+        dashboard: 'full',
         identity: { country: country.toLowerCase() },
         ...(user.email ? { contact_email: user.email } : {}),
         configuration: {
           merchant: { capabilities: { card_payments: { requested: true } } },
-          recipient: {
-            capabilities: {
-              stripe_balance: { stripe_transfers: { requested: true } },
-            },
-          },
         },
         defaults: {
           currency: 'usd',
           responsibilities: {
-            fees_collector: 'application',
-            losses_collector: 'application',
+            fees_collector: 'stripe',
+            losses_collector: 'stripe',
           },
           profile: {
             product_description:
@@ -77,7 +72,7 @@ export async function createOnboarding(
     use_case: {
       type: 'account_onboarding',
       account_onboarding: {
-        configurations: ['merchant', 'recipient'],
+        configurations: ['merchant'],
         refresh_url: `${appUrl()}/dashboard/payouts?refresh=1`,
         return_url: `${appUrl()}/dashboard/payouts?returned=1`,
       },
@@ -92,5 +87,12 @@ export async function payoutDashboard(userId: string) {
   const account = await stripe.accounts.retrieve(accountId);
   if (!payoutStatus(account).submitted)
     throw new HttpError(409, 'Finish payout setup first.');
-  return (await stripe.accounts.createLoginLink(accountId)).url;
+  return 'https://dashboard.stripe.com/';
+}
+
+export async function readyPayoutAccount(userId: string) {
+  const id = await creatorPayoutAccount(userId);
+  if (!id) return null;
+  const account = await connectStripe().accounts.retrieve(id);
+  return payoutStatus(account).ready ? id : null;
 }

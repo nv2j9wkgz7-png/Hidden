@@ -184,3 +184,94 @@ test('checkout resume distinguishes open, completed, expired, and unknown states
     /Unknown checkout state/,
   );
 });
+
+test('direct checkout, cancellation and refund stay within the creator account', async () => {
+  const provider = new StripeProvider(
+    'sk_test_local_unit_test_only',
+    secret,
+    false,
+    'acct_creator',
+  );
+  const calls: { name: string; params: unknown; options: unknown }[] = [];
+  const fake = provider as unknown as { stripe: any };
+  fake.stripe.checkout.sessions.create = async (
+    params: unknown,
+    options: unknown,
+  ) => {
+    calls.push({ name: 'create', params, options });
+    return { id: 'cs_direct', url: 'https://checkout.stripe.com/test' };
+  };
+  fake.stripe.checkout.sessions.retrieve = async (
+    _id: string,
+    params: unknown,
+    options: unknown,
+  ) => {
+    calls.push({ name: 'retrieve', params, options });
+    return { status: 'open', payment_intent: 'pi_direct' };
+  };
+  fake.stripe.checkout.sessions.expire = async (
+    _id: string,
+    params: unknown,
+    options: unknown,
+  ) => {
+    calls.push({ name: 'expire', params, options });
+  };
+  fake.stripe.refunds.create = async (params: unknown, options: unknown) => {
+    calls.push({ name: 'refund', params, options });
+  };
+  await provider.createCheckout({
+    purchaseId: 'purchase',
+    title: 'Images',
+    amountCents: 2500,
+    platformFeeCents: 125,
+    currency: 'usd',
+    successUrl: 'https://example.com/done',
+    cancelUrl: 'https://example.com/cancel',
+  });
+  await provider.expireCheckout('cs_direct');
+  await provider.refundPayment('cs_direct', 'refund-one');
+  for (const c of calls)
+    assert.equal(
+      (c.options as Stripe.RequestOptions).stripeAccount,
+      'acct_creator',
+    );
+  assert.equal(
+    (calls[0].params as Stripe.Checkout.SessionCreateParams).payment_intent_data
+      ?.application_fee_amount,
+    125,
+  );
+  assert.equal(
+    (
+      calls.find((c) => c.name === 'refund')!
+        .params as Stripe.RefundCreateParams
+    ).refund_application_fee,
+    true,
+  );
+});
+test('connected webhook carries verified account identity', async () => {
+  const provider = new StripeProvider('sk_test_local_unit_test_only', secret);
+  const body = JSON.stringify({
+    id: 'evt_connected',
+    type: 'checkout.session.completed',
+    account: 'acct_creator',
+    data: {
+      object: {
+        id: 'cs_direct',
+        mode: 'payment',
+        payment_status: 'paid',
+        metadata: { purchase_id: 'purchase' },
+        amount_total: 2500,
+        currency: 'usd',
+      },
+    },
+  });
+  const signature = sdk.webhooks.generateTestHeaderString({
+    payload: body,
+    secret,
+  });
+  const result = await provider.verifyWebhook(
+    body,
+    new Headers({ 'stripe-signature': signature }),
+  );
+  assert.equal(result?.stripeAccountId, 'acct_creator');
+});

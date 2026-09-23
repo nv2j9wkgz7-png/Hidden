@@ -517,6 +517,56 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
         [creator],
       );
       assert.equal(identities.rows.length, 2);
+      await db.exec(
+        await readFile(
+          'supabase/migrations/20260923210000_direct_connect_payments.sql',
+          'utf8',
+        ),
+      );
+    },
+  );
+  await t.test(
+    'connected payments reject the wrong seller account and accept the correct scope',
+    async () => {
+      const connectedDrop = crypto.randomUUID(),
+        purchase = crypto.randomUUID();
+      await db.query(
+        "insert into public.drops(id,creator_id,title,price_cents,status) values($1,$2,'Connect test',2500,'PUBLISHED')",
+        [connectedDrop, creator],
+      );
+      await db.query(
+        "insert into public.purchases(id,drop_id,payment_provider,amount_cents,access_token,stripe_account_id,platform_fee_cents) values($1,$2,'stripe',2500,$3,'acct_seller',125)",
+        [purchase, connectedDrop, hashToken(newToken())],
+      );
+      for (const account of [null, 'acct_other']) {
+        await assert.rejects(
+          db.query(
+            "select public.apply_payment_event('stripe','evt_connect',$1,'cs_connect',2500,'usd','paid',null,$2)",
+            [purchase, account],
+          ),
+          /Payment account mismatch/,
+        );
+      }
+      await db.query(
+        "select public.apply_payment_event('stripe','evt_connect',$1,'cs_connect',2500,'usd','paid',null,'acct_seller')",
+        [purchase],
+      );
+      assert.equal(
+        (
+          await db.query<{ status: string }>(
+            'select status from public.purchases where id=$1',
+            [purchase],
+          )
+        ).rows[0].status,
+        'PAID',
+      );
+      await assert.rejects(
+        db.query(
+          'update public.purchases set platform_fee_cents=2501 where id=$1',
+          [purchase],
+        ),
+        /purchase_platform_fee_bounds/,
+      );
     },
   );
   await db.close();

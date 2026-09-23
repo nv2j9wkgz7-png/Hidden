@@ -8,6 +8,8 @@ import {
   requestIp,
   sameOrigin,
 } from '@/lib/http';
+import { readyPayoutAccount } from '@/lib/connect';
+import { hidnFee } from '@/lib/fees';
 import { fileSize } from '@/lib/format';
 import { appUrl } from '@/lib/env';
 import { paymentProvider } from '@/lib/payments';
@@ -22,7 +24,7 @@ export const POST = handler(async (request) => {
   const db = admin();
   const { data: drop, error } = await db
     .from('drops')
-    .select('id,slug,title,description,price_cents,currency')
+    .select('id,slug,title,description,price_cents,currency,creator_id')
     .eq('id', drop_id)
     .eq('status', 'PUBLISHED')
     .maybeSingle();
@@ -38,15 +40,19 @@ export const POST = handler(async (request) => {
   ) {
     const checkout = await paymentProvider(
       existing.payment_provider,
+      existing.stripe_account_id,
     ).getCheckout(existing.payment_provider_transaction_id);
     if (checkout.status === 'open' && checkout.url) {
-      if (checkout.presentationReady) return json({ url: checkout.url });
+      if (checkout.presentationReady && existing.stripe_account_id)
+        return json({ url: checkout.url });
       // Replace legacy, unpaid sessions so returning buyers see the summary too.
-      await paymentProvider(existing.payment_provider).expireCheckout(
-        existing.payment_provider_transaction_id,
-      );
+      await paymentProvider(
+        existing.payment_provider,
+        existing.stripe_account_id,
+      ).expireCheckout(existing.payment_provider_transaction_id);
       const latest = await paymentProvider(
         existing.payment_provider,
+        existing.stripe_account_id,
       ).getCheckout(existing.payment_provider_transaction_id);
       if (latest.status !== 'expired')
         throw new HttpError(
@@ -68,7 +74,14 @@ export const POST = handler(async (request) => {
     .order('sort_order');
   if (assetsError) throw assetsError;
   const summary = `${assets?.length || 0} images · ${fileSize((assets || []).reduce((sum, asset) => sum + asset.size_bytes, 0))}. Full-resolution originals + ZIP download after payment.`;
-  const provider = paymentProvider();
+  const accountId = await readyPayoutAccount(drop.creator_id);
+  if (!accountId)
+    throw new HttpError(
+      409,
+      'This creator is finishing payment setup. Please try again later.',
+    );
+  const platformFee = hidnFee(drop.price_cents);
+  const provider = paymentProvider('stripe', accountId);
   const token = newToken();
   const { data: purchase, error: insertError } = await db
     .from('purchases')
@@ -78,12 +91,15 @@ export const POST = handler(async (request) => {
       amount_cents: drop.price_cents,
       currency: drop.currency,
       access_token: hashToken(token),
+      stripe_account_id: accountId,
+      platform_fee_cents: platformFee,
     })
     .select('id')
     .single();
   if (insertError) throw insertError;
   const checkout = await provider.createCheckout({
     purchaseId: purchase.id,
+    platformFeeCents: platformFee,
     title: drop.title,
     description: [summary, drop.description]
       .filter(Boolean)

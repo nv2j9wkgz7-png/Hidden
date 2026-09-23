@@ -1,4 +1,5 @@
 'use client';
+import { EarningsEstimate } from './earnings-estimate';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/client-api';
@@ -8,6 +9,7 @@ export function EditDropDetails({
 }: {
   drop: { id: string; title: string; description: string; price_cents: number };
 }) {
+  const [price, setPrice] = useState((drop.price_cents / 100).toFixed(2));
   const [editing, setEditing] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -96,11 +98,13 @@ export function EditDropDetails({
               min="0.50"
               max="1000"
               step="0.01"
-              defaultValue={(drop.price_cents / 100).toFixed(2)}
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
               required
               disabled={busy}
             />
             <small>Price can be changed until the first checkout starts.</small>
+            <EarningsEstimate cents={Math.round(Number(price) * 100)} />
           </div>
           {error && (
             <p role="alert" className="notice error">
@@ -112,10 +116,13 @@ export function EditDropDetails({
           </button>
         </form>
       ) : (
-        <p className="drop-description">
-          {drop.description ||
-            'Add an optional description so buyers know what’s included.'}
-        </p>
+        <>
+          <p className="drop-description">
+            {drop.description ||
+              'Add an optional description so buyers know what’s included.'}
+          </p>
+          <EarningsEstimate cents={drop.price_cents} />
+        </>
       )}
     </section>
   );
