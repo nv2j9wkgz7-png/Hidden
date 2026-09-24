@@ -39,13 +39,7 @@ export function ShareExamples() {
               <strong>Coastal Studio</strong>
               <span aria-label="X">𝕏</span>
             </div>
-            <img
-              className="demo-x-cover"
-              src="/examples/coast.webp"
-              width={320}
-              height={60}
-              alt=""
-            />
+            <div className="demo-x-cover" aria-hidden="true" />
             <div className="demo-x-body">
               <div className="demo-x-avatar-row">
                 <img
@@ -81,6 +75,34 @@ export function ShareExamples() {
               <span>Posts</span>
               <span>Replies</span>
               <span>Media</span>
+            </div>
+            <div className="demo-x-post">
+              <span className="demo-x-post-label">
+                Pinned · My latest collection
+              </span>
+              <div
+                className="demo-x-previews"
+                aria-label="Blurred, watermarked collection previews"
+              >
+                {['coast', 'botanical'].map((name) => (
+                  <div className="demo-x-preview" key={name}>
+                    <img
+                      className="demo-x-preview-photo"
+                      src={`/examples/${name}.webp`}
+                      width={120}
+                      height={70}
+                      alt="Blurred collection preview"
+                    />
+                    <img
+                      className="demo-x-preview-mark"
+                      src="/hidn-arrow-mark.svg"
+                      width={32}
+                      height={32}
+                      alt="Hidn watermark"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         ) : (

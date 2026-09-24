@@ -15,7 +15,6 @@ export function GuideVisual({ step }: { step: number }) {
       className={`guide-visual guide-visual-${step}`}
       aria-hidden={step === 2 ? undefined : true}
     >
-      <span className="guide-example-label">Example</span>
       {step === 0 && (
         <div className="demo-upload">
           <span className="demo-upload-label">

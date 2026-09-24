@@ -81,15 +81,6 @@ html[data-theme='blackout'] .visual-guide .howto-steps {
   padding: 30px 28px 20px;
   color: var(--ink);
 }
-.guide-example-label {
-  position: absolute;
-  top: 12px;
-  left: 14px;
-  font-size: 9px;
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
-  color: var(--muted);
-}
 .guide-visual > div {
   transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
   animation: guide-card-arrive 0.7s ease-out 1;
@@ -326,11 +317,8 @@ html[data-theme='blackout'] .visual-guide .howto-steps {
   line-height: 1;
 }
 .demo-x-cover {
-  display: block;
-  width: 100%;
-  height: 54px;
-  object-fit: cover;
-  object-position: center 45%;
+  height: 48px;
+  background: linear-gradient(120deg, #305966, #759c9e 55%, #d4bd98);
 }
 .demo-x-body {
   padding: 0 12px 10px;
@@ -643,4 +631,43 @@ html[data-theme='blackout'] .stop-sales-preview {
   .visual-guide .howto-steps li:hover .guide-visual > div {
     transform: none;
   }
+}
+
+.demo-x-post {
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--line);
+}
+.demo-x-post-label {
+  display: block;
+  font-size: 9px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.demo-x-previews {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+.demo-x-preview {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 7px;
+}
+.demo-x-preview-photo {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(5px);
+  transform: scale(1.15);
+}
+.demo-x-preview-mark {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 7px #fff8);
 }
