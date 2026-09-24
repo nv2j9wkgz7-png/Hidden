@@ -74,6 +74,7 @@ function login(id?: string) {
   );
 }
 let signatures = 0;
+let moderationState = 'ACTIVE';
 globalThis.fetch = async (input, init) => {
   const url = new URL(String(input));
   assert.equal(url.hostname, 'database.example'); // No real accounts, payments, or emails.
@@ -95,6 +96,16 @@ globalThis.fetch = async (input, init) => {
     });
   }
   const single = headers.get('accept')?.includes('vnd.pgrst.object');
+  if (url.pathname.endsWith('/drops'))
+    return Response.json([
+      {
+        moderation_state: moderationState,
+        creator_id: alice,
+        status: 'PUBLISHED',
+        users: { creator_suspended: false },
+      },
+    ]);
+  if (url.pathname.endsWith('/moderation_admins')) return Response.json([]);
   if (url.pathname.endsWith('/assets')) {
     assert.equal(url.searchParams.get('drop_id'), `eq.${drop}`);
     return Response.json(
@@ -214,4 +225,29 @@ assert.equal((await download(post({ drop_id: drop }))).status, 403);
 assert.equal(signatures, 2);
 console.log(
   'Saved purchase ownership, guest expiry, refund, media/download and claim API checks passed',
+);
+
+rows[0].status = 'PAID';
+login(alice);
+moderationState = 'REMOVED';
+assert.equal(
+  (await (await access(get(`/api/access?drop_id=${drop}`))).json()).status,
+  'UNAVAILABLE',
+);
+assert.equal(
+  (await media(get(`/api/media?drop_id=${drop}&asset_id=${asset}`))).status,
+  403,
+);
+assert.equal((await download(post({ drop_id: drop }))).status, 403);
+const { GET: adminMedia } = await import('../../src/app/api/admin/media/route');
+assert.equal(
+  (await adminMedia(get(`/api/admin/media?drop_id=${drop}&asset_id=${asset}`)))
+    .status,
+  403,
+);
+login();
+assert.equal(
+  (await adminMedia(get(`/api/admin/media?drop_id=${drop}&asset_id=${asset}`)))
+    .status,
+  401,
 );

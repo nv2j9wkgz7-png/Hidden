@@ -1,3 +1,4 @@
+import { isModerator } from '@/lib/moderation';
 import { NavigationLink as Link } from '@/components/navigation-link';
 import { UserRound, ChevronDown } from 'lucide-react';
 import { configured } from '@/lib/env';
@@ -45,6 +46,11 @@ export async function AccountMenu() {
           <Link className="account-payout-link" href="/dashboard/payouts">
             Earnings & payouts ↗
           </Link>
+          {(await isModerator(user.id)) && (
+            <Link className="account-payout-link" href="/admin">
+              Review reports ↗
+            </Link>
+          )}
           <ThemeToggle />
           <LogoutButton />
         </div>

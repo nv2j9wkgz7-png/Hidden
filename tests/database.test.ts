@@ -876,5 +876,122 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
       }
     },
   );
+  await t.test(
+    'moderation requires admin role and explicit audited actions; reports alone never restrict content',
+    async () => {
+      await db.exec(
+        await readFile(
+          'supabase/migrations/20260924060000_moderation.sql',
+          'utf8',
+        ),
+      );
+      const id = crypto.randomUUID(),
+        report = crypto.randomUUID(),
+        request = crypto.randomUUID();
+      await db.query(
+        "insert into public.drops(id,creator_id,title,price_cents,status) values($1,$2,'Moderation fixture',100,'PUBLISHED')",
+        [id, creator],
+      );
+      await db.query(
+        "insert into public.content_reports(id,drop_id,category,details,reporter_key,priority) values($1,$2,'OTHER','A report to review','fixture',2)",
+        [report, id],
+      );
+      assert.equal(
+        (
+          await db.query<{ moderation_state: string }>(
+            'select moderation_state from public.drops where id=$1',
+            [id],
+          )
+        ).rows[0].moderation_state,
+        'ACTIVE',
+      );
+      const act = (
+        action: string,
+        actor = other,
+        req = crypto.randomUUID(),
+        note = 'Reviewed for testing',
+      ) =>
+        db.query('select public.moderate_report($1,$2,$3,$4,$5)', [
+          actor,
+          report,
+          action,
+          note,
+          req,
+        ]);
+      await assert.rejects(act('PAUSE'));
+      await db.query(
+        'insert into public.moderation_admins(user_id) values($1)',
+        [other],
+      );
+      await assert.rejects(act('REMOVE', other, crypto.randomUUID(), 'x'));
+      await act('PAUSE', other, request);
+      await act('PAUSE', other, request);
+      assert.equal(
+        (
+          await db.query(
+            'select id from public.moderation_audit where report_id=$1',
+            [report],
+          )
+        ).rows.length,
+        1,
+      );
+      const buy = () =>
+        db.query(
+          "insert into public.purchases(drop_id,payment_provider,amount_cents,access_token) values($1,'stripe',100,$2)",
+          [id, hashToken(newToken())],
+        );
+      await assert.rejects(buy());
+      await assert.rejects(act('RESUME'));
+      await db.query(
+        'update public.moderation_cleanup set pending=false where drop_id=$1',
+        [id],
+      );
+      await act('RESUME');
+      await buy();
+      await act('SUSPEND');
+      await assert.rejects(buy());
+      await assert.rejects(
+        db.query(
+          "insert into public.drops(creator_id,title,price_cents) values($1,'Blocked new drop',100)",
+          [creator],
+        ),
+      );
+      await assert.rejects(act('UNSUSPEND'));
+      await db.query('update public.moderation_cleanup set pending=false');
+      await act('UNSUSPEND');
+      await buy();
+      await act('REMOVE');
+      await assert.rejects(buy());
+      await assert.rejects(act('RESUME'));
+      await act('DISMISS');
+      assert.equal(
+        (
+          await db.query<{ moderation_state: string }>(
+            'select moderation_state from public.drops where id=$1',
+            [id],
+          )
+        ).rows[0].moderation_state,
+        'REMOVED',
+      );
+      await assert.rejects(act('REMOVE', other, request)); // Same request ID cannot be reused with a different action.
+      for (const role of ['anon', 'authenticated']) {
+        await db.exec(`set role ${role}`);
+        for (const table of [
+          'content_reports',
+          'moderation_admins',
+          'moderation_audit',
+          'moderation_cleanup',
+        ])
+          await assert.rejects(db.query(`select * from public.${table}`));
+        await assert.rejects(
+          db.query('insert into public.moderation_admins(user_id) values($1)', [
+            creator,
+          ]),
+        );
+        await assert.rejects(act('REMOVE'));
+        await db.exec('reset role');
+      }
+    },
+  );
   await db.close();
 });

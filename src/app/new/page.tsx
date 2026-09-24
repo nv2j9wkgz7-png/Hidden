@@ -17,6 +17,23 @@ export default async function NewDrop({
     data: { user },
   } = await (await supabase()).auth.getUser();
   if (!user) redirect('/login?mode=signup&next=new');
+  const { data: profile, error: profileError } = await admin()
+    .from('users')
+    .select('creator_suspended')
+    .eq('id', user.id)
+    .single();
+  if (profileError) throw profileError;
+  if (profile.creator_suspended)
+    return (
+      <section className="panel">
+        <h1>Creating drops is paused.</h1>
+        <p>
+          Your creator account is suspended. Contact team@sendhidn.com for
+          review.
+        </p>
+        <Link href="/dashboard">My drops</Link>
+      </section>
+    );
   const params = await searchParams;
   let draft: Draft | undefined;
   if (params.drop) {
@@ -28,6 +45,7 @@ export default async function NewDrop({
       )
       .eq('id', params.drop)
       .eq('creator_id', user.id)
+      .neq('moderation_state', 'REMOVED')
       .eq('status', 'DRAFT')
       .maybeSingle();
     if (error) throw error;
@@ -43,7 +61,7 @@ export default async function NewDrop({
               asset.status === 'READY'
                 ? await admin()
                     .storage.from('originals')
-                    .createSignedUrl(asset.storage_path, 900)
+                    .createSignedUrl(asset.storage_path, 60)
                 : null;
             if (signed?.error) throw signed.error;
             return {

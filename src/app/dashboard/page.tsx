@@ -90,7 +90,7 @@ export default async function Dashboard({
         : db
             .from('drops')
             .select(
-              'id,title,slug,price_cents,status,created_at,assets(id,preview_path,sort_order)',
+              'id,title,slug,price_cents,status,moderation_state,created_at,assets(id,preview_path,sort_order)',
             )
             .eq('creator_id', user.id)
             .order(sort.column, { ascending: sort.ascending })
@@ -118,7 +118,7 @@ export default async function Dashboard({
       const { data, error } = await db
         .from('drops')
         .select(
-          'id,title,slug,price_cents,status,created_at,assets(id,preview_path,sort_order)',
+          'id,title,slug,price_cents,status,moderation_state,created_at,assets(id,preview_path,sort_order)',
         )
         .eq('creator_id', user.id)
         .in(
@@ -209,9 +209,12 @@ export default async function Dashboard({
         {displayedDrops.map((drop) => {
           const stat = rows.find((r) => r.drop_id === drop.id);
 
-          const cover = [...drop.assets]
-            .sort((a, b) => a.sort_order - b.sort_order)
-            .find((a) => a.preview_path)?.preview_path;
+          const cover =
+            drop.moderation_state === 'REMOVED'
+              ? undefined
+              : [...drop.assets]
+                  .sort((a, b) => a.sort_order - b.sort_order)
+                  .find((a) => a.preview_path)?.preview_path;
           return (
             <article className="drop-card openable-drop-card" key={drop.id}>
               <Link
@@ -241,15 +244,21 @@ export default async function Dashboard({
                   width={56}
                   height={64}
                 />
-                <span className="private-drop-label">Open to view files</span>
+                <span className="private-drop-label">
+                  {drop.moderation_state === 'REMOVED'
+                    ? 'Content removed'
+                    : 'Open to view files'}
+                </span>
                 <span
                   className={`badge ${drop.status !== 'DRAFT' ? 'paid' : ''}`}
                 >
-                  {drop.status !== 'DRAFT'
-                    ? drop.status === 'PUBLISHED'
-                      ? 'Live'
-                      : 'Sales stopped'
-                    : 'Draft'}
+                  {drop.moderation_state !== 'ACTIVE'
+                    ? drop.moderation_state.toLowerCase()
+                    : drop.status !== 'DRAFT'
+                      ? drop.status === 'PUBLISHED'
+                        ? 'Live'
+                        : 'Sales stopped'
+                      : 'Draft'}
                 </span>
               </div>
               <div className="drop-info">

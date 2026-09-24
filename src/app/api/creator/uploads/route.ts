@@ -1,3 +1,4 @@
+import { activeCreator } from '@/lib/moderation';
 import { z } from 'zod';
 import { admin } from '@/lib/supabase/admin';
 import {
@@ -11,7 +12,7 @@ import {
 import { uploadInput } from '@/lib/validation';
 export const POST = handler(async (request) => {
   sameOrigin(request);
-  const user = await creator();
+  const user = await activeCreator();
   const input = uploadInput
     .safeExtend({ asset_id: z.uuid().optional() })
     .parse(await request.json());

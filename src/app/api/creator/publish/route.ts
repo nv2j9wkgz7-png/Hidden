@@ -1,3 +1,4 @@
+import { activeCreator } from '@/lib/moderation';
 import { readyPayoutAccount } from '@/lib/connect';
 import { HttpError } from '@/lib/http';
 import { z } from 'zod';
@@ -5,7 +6,7 @@ import { admin } from '@/lib/supabase/admin';
 import { creator, handler, json, ownedDrop, sameOrigin } from '@/lib/http';
 export const POST = handler(async (request) => {
   sameOrigin(request);
-  const user = await creator();
+  const user = await activeCreator();
   const { drop_id } = z
     .object({ drop_id: z.uuid() })
     .parse(await request.json());

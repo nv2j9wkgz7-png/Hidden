@@ -22,6 +22,7 @@ export default async function BuyerPreview({
     )
     .eq('slug', slug)
     .eq('creator_id', user.id)
+    .neq('moderation_state', 'REMOVED')
     .maybeSingle();
   if (error) throw error;
   if (!drop) notFound();

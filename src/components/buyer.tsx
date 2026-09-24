@@ -267,6 +267,14 @@ export function Buyer({
       setBusy('');
     }
   }
+  if (status === 'UNAVAILABLE')
+    return (
+      <section className="panel">
+        <h1>This drop is unavailable.</h1>
+        <p>Access to this content has been removed following review.</p>
+        <Link href="/help">Get help</Link>
+      </section>
+    );
   const paid = status === 'PAID';
   const remainingMinutes = expiresAt
     ? Math.max(0, Math.ceil((Date.parse(expiresAt) - now) / 60000))

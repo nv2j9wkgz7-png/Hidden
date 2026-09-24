@@ -39,12 +39,12 @@ export default async function Purchases({
     (purchases || []).map(async (purchase) => {
       const { data: drop, error: dropError } = await db
         .from('drops')
-        .select('title,slug')
+        .select('title,slug,moderation_state')
         .eq('id', purchase.drop_id)
         .maybeSingle();
       if (dropError) throw dropError;
       const { data: assets, error: assetError } =
-        purchase.status === 'PAID'
+        purchase.status === 'PAID' && drop?.moderation_state !== 'REMOVED'
           ? await db
               .from('assets')
               .select('id,original_filename,size_bytes,mime_type')
@@ -89,14 +89,16 @@ export default async function Purchases({
                 · {assets.length} files
               </p>
             </div>
-            {purchase.status === 'PAID' && drop && (
-              <Link
-                className="secondary"
-                href={`/d/${drop.slug}?preview=buyer`}
-              >
-                Download ZIP & more ↗
-              </Link>
-            )}
+            {purchase.status === 'PAID' &&
+              drop &&
+              drop.moderation_state !== 'REMOVED' && (
+                <Link
+                  className="secondary"
+                  href={`/d/${drop.slug}?preview=buyer`}
+                >
+                  Download ZIP & more ↗
+                </Link>
+              )}
           </div>
           {purchase.status === 'REFUNDED' ? (
             <p className="notice">

@@ -12,6 +12,7 @@ export const publicDrop = cache(async (slug: string) => {
       'title,description,price_cents,assets(preview_path,size_bytes,sort_order,status)',
     )
     .eq('slug', slug)
+    .neq('moderation_state', 'REMOVED')
     .in('status', ['PUBLISHED', 'CLOSING', 'CLOSED'])
     .maybeSingle();
   if (error) throw error;

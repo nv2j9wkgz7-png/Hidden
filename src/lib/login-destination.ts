@@ -1,5 +1,6 @@
 // Keep login and email-confirmation returns on explicitly supported private routes.
 export function loginDestination(next?: string | null): string {
+  if (next === '/admin' || next === 'admin') return '/admin';
   if (next === 'new' || next === '/new') return '/new';
   if (next === 'purchases' || next === '/purchases') return '/purchases';
   if (next === '/purchases/recover/claim') return next;

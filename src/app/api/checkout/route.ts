@@ -1,3 +1,4 @@
+import { assertSalesAllowed } from '@/lib/moderation';
 import { z } from 'zod';
 import { admin } from '@/lib/supabase/admin';
 import {
@@ -33,6 +34,7 @@ export const POST = handler(async (request) => {
   if (error) throw error;
   if (!drop)
     throw new HttpError(410, 'This drop is no longer accepting purchases.');
+  await assertSalesAllowed(drop_id);
   const existing = await purchaseAccess(drop_id);
   if (existing?.status === 'PAID')
     throw new HttpError(
@@ -137,12 +139,9 @@ export const POST = handler(async (request) => {
   if (updateError) throw updateError;
   // If the creator closed sales while checkout was being created, revoke it
   // before returning a URL. Stop-sales also expires all registered sessions.
-  const { data: latest, error: statusError } = await db
-    .from('drops')
-    .select('status')
-    .eq('id', drop.id)
-    .single();
-  if (statusError || latest?.status !== 'PUBLISHED') {
+  try {
+    await assertSalesAllowed(drop.id);
+  } catch {
     await provider.expireCheckout(checkout.id);
     throw new HttpError(410, 'This drop is no longer accepting purchases.');
   }

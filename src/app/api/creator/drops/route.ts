@@ -1,9 +1,10 @@
+import { activeCreator } from '@/lib/moderation';
 import { admin } from '@/lib/supabase/admin';
 import { creator, handler, json, rateLimit, sameOrigin } from '@/lib/http';
 import { dropInput, uuid } from '@/lib/validation';
 export const POST = handler(async (request) => {
   sameOrigin(request);
-  const user = await creator();
+  const user = await activeCreator();
   await rateLimit(`new-drop:${user.id}`, 30);
   const { id, ...input } = dropInput
     .extend({ id: uuid.optional() })
@@ -30,7 +31,7 @@ export const POST = handler(async (request) => {
 
 export const PATCH = handler(async (request) => {
   sameOrigin(request);
-  const user = await creator();
+  const user = await activeCreator();
   const { id, ...input } = dropInput
     .extend({ id: uuid })
     .parse(await request.json());

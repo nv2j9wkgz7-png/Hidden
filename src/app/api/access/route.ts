@@ -1,3 +1,4 @@
+import { dropModeration } from '@/lib/moderation';
 import { z } from 'zod';
 import { cookies } from 'next/headers';
 import { admin } from '@/lib/supabase/admin';
@@ -9,6 +10,12 @@ export const GET = handler(async (request) => {
   const dropId = z
     .uuid()
     .parse(new URL(request.url).searchParams.get('drop_id'));
+  if ((await dropModeration(dropId))?.moderation_state === 'REMOVED')
+    return json({
+      status: 'UNAVAILABLE',
+      expires_at: null,
+      account_saved: false,
+    });
   const purchase = await purchaseAccess(dropId);
   const response: {
     status: string;

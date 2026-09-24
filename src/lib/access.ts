@@ -1,4 +1,5 @@
 import 'server-only';
+import { dropModeration } from './moderation';
 import { cookies } from 'next/headers';
 import { admin } from './supabase/admin';
 import { accessCookie, hashToken, validToken } from './security';
@@ -11,6 +12,8 @@ export const cookieOptions = {
   maxAge: 60 * 60 * 24 * 365,
 };
 export async function purchaseAccess(dropId: string) {
+  if ((await dropModeration(dropId))?.moderation_state === 'REMOVED')
+    return null;
   const fields =
     'id,buyer_id,drop_id,status,paid_at,payment_provider,payment_provider_transaction_id,stripe_account_id';
   const {

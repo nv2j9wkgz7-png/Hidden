@@ -1,3 +1,4 @@
+import { activeCreator } from '@/lib/moderation';
 import { z } from 'zod';
 import { admin } from '@/lib/supabase/admin';
 import {
@@ -15,7 +16,7 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 export const POST = handler(async (request) => {
   sameOrigin(request);
-  const user = await creator();
+  const user = await activeCreator();
   const { drop_id, asset_id } = z
     .object({ drop_id: z.uuid(), asset_id: z.uuid() })
     .parse(await request.json());
@@ -65,6 +66,9 @@ export const POST = handler(async (request) => {
     .update({ preview_path: previewPath, status: 'READY' })
     .eq('id', asset.id)
     .eq('status', 'UPLOADING');
-  if (updateError) throw updateError;
+  if (updateError) {
+    await db.storage.from('previews').remove([previewPath]);
+    throw updateError;
+  }
   return json({ ready: true });
 });

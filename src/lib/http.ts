@@ -61,6 +61,8 @@ export async function ownedDrop(id: string, userId: string) {
     .maybeSingle();
   if (error) throw error;
   if (!data) throw new HttpError(404, 'Drop not found.');
+  if (data.moderation_state !== 'ACTIVE')
+    throw new HttpError(409, 'This drop is restricted while under review.');
   return data;
 }
 export async function rateLimit(key: string, limit: number, seconds = 3600) {

@@ -1,9 +1,10 @@
+import { activeCreator } from '@/lib/moderation';
 import { z } from 'zod';
 import { admin } from '@/lib/supabase/admin';
 import { creator, handler, json, sameOrigin } from '@/lib/http';
 export const POST = handler(async (request) => {
   sameOrigin(request);
-  const user = await creator();
+  const user = await activeCreator();
   const { drop_id, asset_id } = z
     .object({ drop_id: z.uuid(), asset_id: z.uuid() })
     .parse(await request.json());

@@ -1,3 +1,4 @@
+import { activeCreator } from '@/lib/moderation';
 import { admin } from '@/lib/supabase/admin';
 import {
   creator,
@@ -10,7 +11,7 @@ import {
 import { dropInput, uuid } from '@/lib/validation';
 export const PATCH = handler(async (request) => {
   sameOrigin(request);
-  const user = await creator();
+  const user = await activeCreator();
   const input = dropInput.extend({ id: uuid }).parse(await request.json());
   const drop = await ownedDrop(input.id, user.id);
   const { error } = await admin().rpc(

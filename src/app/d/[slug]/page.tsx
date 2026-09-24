@@ -1,3 +1,5 @@
+import { ReportDrop } from '@/components/report-drop';
+import { dropModeration } from '@/lib/moderation';
 import type { Metadata } from 'next';
 import { publicDrop } from '@/lib/public-drop';
 import { appUrl } from '@/lib/env';
@@ -66,6 +68,15 @@ export default async function DropPage({
     .maybeSingle();
   if (error) throw error;
   if (!drop) notFound();
+  const moderation = await dropModeration(drop.id);
+  if (moderation?.moderation_state === 'REMOVED')
+    return (
+      <section className="panel">
+        <h1>This drop is unavailable.</h1>
+        <p>Access to this content has been removed following review.</p>
+        <Link href="/help">Get help</Link>
+      </section>
+    );
   const {
     data: { user },
   } = await (await supabase()).auth.getUser();
@@ -91,13 +102,18 @@ export default async function DropPage({
       )}
       <Buyer
         drop={buyerDrop}
-        salesClosed={drop.status !== 'PUBLISHED'}
+        salesClosed={
+          drop.status !== 'PUBLISHED' ||
+          moderation?.moderation_state !== 'ACTIVE' ||
+          moderation?.users?.creator_suspended
+        }
         assets={(assets || []).map(({ preview_path, ...asset }) => ({
           ...asset,
           preview_url: db.storage.from('previews').getPublicUrl(preview_path)
             .data.publicUrl,
         }))}
       />
+      <ReportDrop dropId={drop.id} />
     </>
   );
 }

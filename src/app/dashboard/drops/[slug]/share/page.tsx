@@ -32,6 +32,7 @@ export default async function SharePage({
     )
     .eq('slug', slug)
     .eq('creator_id', user.id)
+    .neq('moderation_state', 'REMOVED')
     .in('status', ['DRAFT', 'PUBLISHED', 'CLOSING', 'CLOSED'])
     .maybeSingle();
   if (error) throw error;
@@ -44,7 +45,7 @@ export default async function SharePage({
       .map(async (asset) => {
         const { data, error } = await admin()
           .storage.from('originals')
-          .createSignedUrl(asset.storage_path, 900);
+          .createSignedUrl(asset.storage_path, 60);
         if (error) throw error;
         return {
           id: asset.id,

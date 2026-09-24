@@ -1,3 +1,4 @@
+import { dropModeration } from '@/lib/moderation';
 import { z } from 'zod';
 import { admin } from '@/lib/supabase/admin';
 import { purchaseAccess } from '@/lib/access';
@@ -106,6 +107,8 @@ export const POST = handler(async (request) => {
     url.hash = `access=${token}`;
   }
   const expiresAt = accountAccess ? null : purchaseExpiresAt(purchase)!;
+  if ((await dropModeration(drop_id))?.moderation_state === 'REMOVED')
+    throw new HttpError(410, 'This content is unavailable.');
   const id = await sendEmail({
     apiKey: env('RESEND_API_KEY'),
     from: env('EMAIL_FROM'),
