@@ -1,6 +1,7 @@
 'use client';
 import { notifyCopied } from './toast';
-import { useEffect, useState } from 'react';
+import { PaidGallery } from './paid-gallery';
+import { useEffect, useRef, useState } from 'react';
 import {
   LockKeyhole,
   Check,
@@ -8,6 +9,8 @@ import {
   ShieldCheck,
   ImageIcon,
   Link2,
+  Share2,
+  Mail,
 } from 'lucide-react';
 import { zip } from 'fflate';
 import { api } from '@/lib/client-api';
@@ -41,6 +44,23 @@ export function Buyer({
     [error, setError] = useState(''),
     [recovery, setRecovery] = useState(''),
     [waited, setWaited] = useState(false);
+  const [expiresAt, setExpiresAt] = useState<string | null>(null);
+  const [now, setNow] = useState(Date.now());
+  const [emailMessage, setEmailMessage] = useState('');
+  const emailRequest = useRef<string | null>(null);
+  useEffect(() => {
+    if (status !== 'PAID' || !expiresAt) return;
+    const tick = () => {
+      setNow(Date.now());
+      if (Date.now() >= Date.parse(expiresAt)) {
+        setStatus('EXPIRED');
+        setRecovery('');
+      }
+    };
+    tick();
+    const timer = setInterval(tick, 1000);
+    return () => clearInterval(timer);
+  }, [status, expiresAt]);
   useEffect(() => {
     if (previewOnly) return;
     let cancelled = false;
@@ -55,9 +75,12 @@ export function Buyer({
         if (!response.ok) throw new Error(data.error);
         if (cancelled) return;
         setStatus(data.status);
+        setExpiresAt(data.expires_at || null);
+        setNow(Date.now());
         if (data.status === 'PENDING' && attempts++ < 60)
           timer = setTimeout(check, 3000);
         else if (data.status === 'PENDING') setWaited(true);
+        else if (data.status === 'PAID') timer = setTimeout(check, 30000);
       } catch {
         if (!cancelled) {
           setError('Could not check purchase access. Refresh to try again.');
@@ -160,7 +183,7 @@ export function Buyer({
       setBusy('');
     }
   }
-  async function saveAccess() {
+  async function saveAccess(method: 'copy' | 'share' | 'download' = 'copy') {
     setError('');
     try {
       const response = await fetch(
@@ -172,6 +195,32 @@ export function Buyer({
         throw new Error('Access could not be verified.');
       const link = `${window.location.origin}${window.location.pathname}#access=${data.token}`;
       setRecovery(link);
+      if (method === 'download') {
+        saveBlob(
+          new Blob(
+            [
+              `${drop.title}\n\nPrivate purchase access:\n${link}\n\nAccess expires: ${data.expires_at}\nDownload your originals before that time. Keep this link private: anyone with it can access your purchase until it expires.\n`,
+            ],
+            { type: 'text/plain;charset=utf-8' },
+          ),
+          'hidn-private-access.txt',
+        );
+        return;
+      }
+      if (method === 'share' && navigator.share) {
+        try {
+          await navigator.share({
+            title: `${drop.title} — private access`,
+            url: link,
+          });
+        } catch (error) {
+          if (error instanceof Error && error.name === 'AbortError') return;
+          setError(
+            'Sharing isn’t available here. Copy or download the access link instead.',
+          );
+        }
+        return;
+      }
       try {
         await navigator.clipboard.writeText(link);
         notifyCopied('Access link copied');
@@ -184,7 +233,36 @@ export function Buyer({
       );
     }
   }
+  async function emailZip() {
+    setBusy('email');
+    setError('');
+    setEmailMessage('');
+    emailRequest.current ||= crypto.randomUUID();
+    try {
+      const result = await api('/api/purchase-email', {
+        drop_id: drop.id,
+        request_id: emailRequest.current,
+      });
+      setEmailMessage(
+        result.delivery === 'attachment'
+          ? 'ZIP sent to your checkout email address.'
+          : 'The collection is too large to attach. A ZIP download link was sent to your checkout email address.',
+      );
+      emailRequest.current = null;
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : 'Email failed. Please download your files here instead.',
+      );
+    } finally {
+      setBusy('');
+    }
+  }
   const paid = status === 'PAID';
+  const remainingMinutes = expiresAt
+    ? Math.max(0, Math.ceil((Date.parse(expiresAt) - now) / 60000))
+    : 0;
   return (
     <>
       <div className="buyer-heading">
@@ -203,41 +281,39 @@ export function Buyer({
         <p>
           {assets.length} files ·{' '}
           {fileSize(assets.reduce((n, a) => n + a.size_bytes, 0))} · One
-          collection, yours to keep.
+          collection · Download within 72 hours of payment. Keep your downloads.
         </p>
       </div>
-      <div className="buyer-layout">
-        <div className="image-grid">
-          {assets.map((asset, index) => (
-            <article className="image-card" key={asset.id}>
-              <img
-                src={asset.preview_url}
-                alt={`Locked preview ${index + 1}`}
-                width={800}
-                height={600}
-              />
-              <div className="image-caption">
-                <span>
-                  {asset.mime_type?.startsWith('video/') ? 'Video' : 'Photo'}{' '}
-                  {String(index + 1).padStart(2, '0')} ·{' '}
-                  {fileSize(asset.size_bytes)}
-                </span>
-                {paid ? (
-                  <button
-                    className="text-button"
-                    disabled={!!busy}
-                    onClick={() => download(asset.id)}
-                    aria-label={`Download file ${index + 1}`}
-                  >
-                    <Download size={17} />
-                  </button>
-                ) : (
+      <div className={`buyer-layout${paid ? ' buyer-paid' : ''}`}>
+        {paid ? (
+          <PaidGallery
+            dropId={drop.id}
+            assets={assets}
+            busy={!!busy}
+            download={download}
+          />
+        ) : (
+          <div className="image-grid">
+            {assets.map((asset, index) => (
+              <article className="image-card" key={asset.id}>
+                <img
+                  src={asset.preview_url}
+                  alt={`Locked preview ${index + 1}`}
+                  width={800}
+                  height={600}
+                />
+                <div className="image-caption">
+                  <span>
+                    {asset.mime_type?.startsWith('video/') ? 'Video' : 'Photo'}{' '}
+                    {String(index + 1).padStart(2, '0')} ·{' '}
+                    {fileSize(asset.size_bytes)}
+                  </span>
                   <LockKeyhole size={14} color="#8a829f" />
-                )}
-              </div>
-            </article>
-          ))}
-        </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
         <aside className="panel checkout-panel">
           <div className="status-icon">
             {paid ? <Check /> : <LockKeyhole />}
@@ -247,21 +323,30 @@ export function Buyer({
               ? 'Payment confirmed'
               : status === 'PENDING'
                 ? 'Awaiting confirmation'
-                : status === 'REFUNDED'
-                  ? 'Payment refunded'
-                  : 'Locked collection'}
+                : status === 'EXPIRED'
+                  ? 'Access expired'
+                  : status === 'REFUNDED'
+                    ? 'Payment refunded'
+                    : 'Locked collection'}
           </span>
           <h2 style={{ marginTop: 18 }}>
             {paid
               ? 'It’s all yours.'
-              : salesClosed
-                ? 'This drop is closed.'
-                : 'Unlock the originals.'}
+              : status === 'EXPIRED'
+                ? 'Your access window has ended.'
+                : salesClosed
+                  ? 'This drop is closed.'
+                  : 'Unlock the originals.'}
           </h2>
           {paid ? (
             <p className="hint">
-              Download your original files below. Previews remain protected on
-              this page.
+              Tap a photo to view it full size, or play a video. Download your
+              originals before your 72-hour access window ends.
+            </p>
+          ) : status === 'EXPIRED' ? (
+            <p className="hint">
+              Online access ends 72 hours after payment. Files you downloaded or
+              received as an email attachment are yours to keep.
             </p>
           ) : (
             <>
@@ -270,9 +355,23 @@ export function Buyer({
               </div>
               <p className="hint">
                 One-time payment. All {assets.length} files ·{' '}
-                {fileSize(assets.reduce((n, a) => n + a.size_bytes, 0))} total.
+                {fileSize(assets.reduce((n, a) => n + a.size_bytes, 0))} total.{' '}
+                View and download for 72 hours after payment. No login needed.
               </p>
             </>
+          )}
+          {paid && expiresAt && (
+            <div className="notice purchase-deadline">
+              <strong>
+                {Math.floor(remainingMinutes / 60)}h {remainingMinutes % 60}m
+                left to download
+              </strong>
+              <p className="hint">
+                Access ends {new Date(expiresAt).toLocaleString()}. Save your
+                files before then. Reopening or emailing a link does not reset
+                this deadline.
+              </p>
+            </div>
           )}
           {salesClosed && !paid && (
             <p className="notice">
@@ -305,15 +404,53 @@ export function Buyer({
                 <button
                   className="secondary full"
                   style={{ marginTop: 10 }}
-                  onClick={saveAccess}
+                  onClick={() => saveAccess()}
                 >
-                  <Link2 size={14} /> Save private access link
+                  <Link2 size={14} /> Copy private access link
                 </button>
+                <button
+                  className="secondary full"
+                  style={{ marginTop: 10 }}
+                  onClick={() => saveAccess('share')}
+                >
+                  <Share2 size={14} /> Share or save access link
+                </button>
+                <button
+                  className="text-button full"
+                  style={{ marginTop: 10 }}
+                  onClick={() => saveAccess('download')}
+                >
+                  <Download size={14} /> Download access link
+                </button>
+                <p className="hint">
+                  Keep your private link safe. Anyone with it can view and
+                  download until the 72-hour deadline.
+                </p>
+                <button
+                  className="secondary full"
+                  disabled={!!busy}
+                  onClick={emailZip}
+                >
+                  <Mail size={16} />{' '}
+                  {busy === 'email'
+                    ? 'Preparing email…'
+                    : 'Email ZIP to checkout address'}
+                </button>
+                <p className="hint">
+                  Only sent when you ask. ZIPs up to 15 MB are attached; larger
+                  collections get a download link with the same deadline.
+                </p>
+                {emailMessage && (
+                  <p className="notice" role="status">
+                    {emailMessage}
+                  </p>
+                )}
                 {recovery && (
                   <div className="notice">
                     <p className="hint">
-                      Keep this link to return on another device. Anyone with it
-                      can access your purchase.
+                      Use this private link on another device before the
+                      deadline. Anyone with it can access these files until it
+                      expires.
                     </p>
                     <input
                       className="full"
@@ -325,7 +462,7 @@ export function Buyer({
                   </div>
                 )}
               </>
-            ) : (
+            ) : status === 'EXPIRED' ? null : (
               <button
                 className="primary full"
                 disabled={salesClosed || !!busy || status === 'LOADING'}
@@ -371,8 +508,10 @@ export function Buyer({
           )}
           <p className="payment-note">
             {paid
-              ? 'Signed download links expire after 60 seconds.'
-              : 'No account needed · Secure checkout by Stripe'}
+              ? 'Private access lasts 72 hours from payment. Downloads are yours to keep.'
+              : status === 'EXPIRED'
+                ? 'The original payment deadline cannot be extended by copying or emailing a link.'
+                : 'No account needed · Secure checkout by Stripe'}
           </p>
         </aside>
       </div>

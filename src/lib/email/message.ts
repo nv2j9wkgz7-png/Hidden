@@ -51,6 +51,7 @@ export async function sendEmail(
     purchaseId?: string;
     idempotencyKey?: string;
     message: ReturnType<typeof purchaseEmail>;
+    attachments?: { filename: string; content: string }[];
   },
   fetcher: typeof fetch = fetch,
 ) {
@@ -68,8 +69,9 @@ export async function sendEmail(
       from: input.from,
       to: [input.to],
       ...input.message,
+      ...(input.attachments ? { attachments: input.attachments } : {}),
     }),
-    signal: AbortSignal.timeout(10000),
+    signal: AbortSignal.timeout(input.attachments?.length ? 30000 : 10000),
   });
   // Do not log provider response bodies: they may include addresses or private links.
   if (!response.ok)
@@ -78,6 +80,25 @@ export async function sendEmail(
   if (typeof result.id !== 'string')
     throw new Error('Email provider did not return a message ID.');
   return result.id as string;
+}
+
+export function requestedPurchaseEmail(input: {
+  title: string;
+  url: string;
+  expiresAt: string;
+  attached: boolean;
+}) {
+  const deadline = new Date(input.expiresAt).toUTCString();
+  const intro = input.attached
+    ? 'Your ZIP is attached. Save it to keep your original files.'
+    : 'Your collection is too large to attach. Open the private link below and select Download all to save your ZIP.';
+  return {
+    subject: input.attached
+      ? 'Your requested Hidn ZIP'
+      : 'Your requested Hidn ZIP download link',
+    text: `${input.title}\n\n${intro}\n\nView files and download ZIP:\n${input.url}\n\nOnline access expires ${deadline}, 72 hours after payment. Emailing or reopening the link does not extend access. Downloaded files and attachments are yours to keep.\n\nKeep this email private: anyone with the link can access the purchase until it expires. No Hidn account needed. You received this email because it was requested from your paid drop.`,
+    html: `<html><body style="font-family:Arial,sans-serif;background:#08070a;color:#f5f0fa;padding:32px"><h1>Hidn</h1><h2>${escapeHtml(input.title)}</h2><p>${intro}</p><p><a style="color:#c399f4" href="${escapeHtml(input.url)}">View files &amp; download ZIP</a></p><p>Online access expires <strong>${deadline}</strong>, 72 hours after payment. Emailing or reopening this link does not extend access. Save your files before then.</p><p>Downloaded files and attachments are yours to keep.</p><p>Keep this email private: anyone with the link can access the purchase until it expires. No Hidn account needed.</p><small>You received this email because it was requested from your paid drop.</small></body></html>`,
+  };
 }
 
 export function saleEmail(input: {

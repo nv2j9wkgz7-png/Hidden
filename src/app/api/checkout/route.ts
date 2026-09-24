@@ -15,6 +15,7 @@ import { appUrl } from '@/lib/env';
 import { paymentProvider } from '@/lib/payments';
 import { newToken, hashToken, accessCookie } from '@/lib/security';
 import { cookieOptions, purchaseAccess } from '@/lib/access';
+import { purchaseViewStatus } from '@/lib/purchase-window';
 export const POST = handler(async (request) => {
   sameOrigin(request);
   const { drop_id } = z
@@ -33,7 +34,12 @@ export const POST = handler(async (request) => {
     throw new HttpError(410, 'This drop is no longer accepting purchases.');
   const existing = await purchaseAccess(drop_id);
   if (existing?.status === 'PAID')
-    throw new HttpError(409, 'You already have access. Refresh this page.');
+    throw new HttpError(
+      409,
+      purchaseViewStatus(existing) === 'EXPIRED'
+        ? 'Your 72-hour access window has ended. Your downloaded files are yours to keep.'
+        : 'You already have access. Refresh this page.',
+    );
   if (
     existing?.status === 'PENDING' &&
     existing.payment_provider_transaction_id
@@ -73,7 +79,7 @@ export const POST = handler(async (request) => {
     .eq('status', 'READY')
     .order('sort_order');
   if (assetsError) throw assetsError;
-  const summary = `${assets?.length || 0} images · ${fileSize((assets || []).reduce((sum, asset) => sum + asset.size_bytes, 0))}. Full-resolution originals + ZIP download after payment.`;
+  const summary = `${assets?.length || 0} files · ${fileSize((assets || []).reduce((sum, asset) => sum + asset.size_bytes, 0))}. View and download originals or ZIP for 72 hours after payment. Keep downloaded files.`;
   const accountId = await readyPayoutAccount(drop.creator_id);
   if (!accountId)
     throw new HttpError(

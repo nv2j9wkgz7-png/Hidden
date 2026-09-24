@@ -102,31 +102,24 @@ const event = {
   kind: 'paid' as const,
   customerEmail: purchase.customer_email,
 };
-fail = true;
+failSale = true;
 await assert.rejects(paymentSucceeded('stripe', event), /503/);
 assert.equal(purchase.status, 'PAID');
 assert.equal(purchase.email_sent_at, null);
-fail = false;
-await paymentSucceeded('stripe', event); // Duplicate webhook retries the failed delivery.
-assert.ok(purchase.email_sent_at);
-assert.equal(sends, 2);
-await paymentSucceeded('stripe', event);
-assert.equal(sends, 2); // Durable marker suppresses later duplicates.
-assert.equal(saleSends, 1);
-notice.email_sent_at = null;
-failSale = true;
-await assert.rejects(paymentSucceeded('stripe', event), /503/);
-assert.equal(sends, 2);
+assert.equal(sends, 0); // Never email the buyer automatically.
 failSale = false;
 await paymentSucceeded('stripe', event);
-assert.equal(saleSends, 3);
 assert.ok(notice.email_sent_at);
+assert.equal(saleSends, 2);
+await paymentSucceeded('stripe', event);
+assert.equal(saleSends, 2); // Durable marker suppresses duplicate creator emails.
+assert.equal(sends, 0);
 purchase.status = 'REFUNDED';
 notice.email_sent_at = null;
 assert.equal(await sendSaleEmail(purchase.id), 'skipped');
-assert.equal(saleSends, 3);
+assert.equal(saleSends, 2);
 assert.equal(await sendPurchaseEmail(purchase.id), 'skipped');
-assert.equal(sends, 2);
+assert.equal(sends, 0);
 process.env.RESEND_API_KEY = '';
 assert.equal(await sendPurchaseEmail(purchase.id), 'disabled');
 console.log('Payment/email retry and entitlement checks passed');

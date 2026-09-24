@@ -16,9 +16,11 @@ type Image = {
 export function CreatorGallery({
   images,
   renderItems,
+  label = 'Your uploaded media',
 }: {
   images: Image[];
   renderItems?: (openImage: (index: number) => void) => ReactNode;
+  label?: string;
 }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -89,7 +91,7 @@ export function CreatorGallery({
           <dialog
             ref={dialog}
             className="image-viewer"
-            aria-label="Your uploaded media"
+            aria-label={label}
             onClose={pauseVideos}
             onKeyDown={(event) => {
               if ((event.target as HTMLElement).tagName === 'VIDEO') return;

@@ -15,7 +15,7 @@ export async function purchaseAccess(dropId: string) {
   const { data, error } = await admin()
     .from('purchases')
     .select(
-      'id,drop_id,status,payment_provider,payment_provider_transaction_id,stripe_account_id',
+      'id,drop_id,status,paid_at,payment_provider,payment_provider_transaction_id,stripe_account_id',
     )
     .eq('drop_id', dropId)
     .or(
