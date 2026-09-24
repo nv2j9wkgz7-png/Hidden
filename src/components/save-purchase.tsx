@@ -54,6 +54,13 @@ export function SavePurchase({
           Try again
         </button>
       )}
+      {error && (
+        <p>
+          <Link href="/purchases/recover">
+            Recover using your checkout email
+          </Link>
+        </p>
+      )}
       <p>
         <Link href={`/d/${slug}?preview=buyer`}>Back to your purchase</Link>
       </p>

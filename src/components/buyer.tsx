@@ -359,8 +359,9 @@ export function Buyer({
             </p>
           ) : status === 'EXPIRED' ? (
             <p className="hint">
-              Online access ends 72 hours after payment. Files you downloaded or
-              received as an email attachment are yours to keep.
+              Guest access ends 72 hours after payment. Recover your purchase
+              using your checkout email to save it to an account. Downloaded
+              files and email attachments are yours to keep.
             </p>
           ) : (
             <>
@@ -509,7 +510,20 @@ export function Buyer({
                   </div>
                 )}
               </>
-            ) : status === 'EXPIRED' ? null : (
+            ) : status === 'EXPIRED' ? (
+              <>
+                <Link className="primary full" href="/purchases/recover">
+                  Recover your purchase
+                </Link>
+                <p className="hint">
+                  Already saved it?{' '}
+                  <Link href="/login?next=purchases">
+                    Log in to My purchases
+                  </Link>
+                  .
+                </p>
+              </>
+            ) : (
               <button
                 className="primary full"
                 disabled={salesClosed || !!busy || status === 'LOADING'}
@@ -527,6 +541,13 @@ export function Buyer({
               </button>
             )}
           </div>
+          {status === 'LOCKED' && !previewOnly && (
+            <p className="hint">
+              Already bought this?{' '}
+              <Link href="/login?next=purchases">Log in</Link> or{' '}
+              <Link href="/purchases/recover">recover your purchase</Link>.
+            </p>
+          )}
           {status === 'PENDING' && (
             <p role="status" className="notice">
               {waited

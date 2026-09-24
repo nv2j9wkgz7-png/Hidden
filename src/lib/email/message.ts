@@ -19,6 +19,14 @@ function escapeHtml(value: string) {
   );
 }
 
+export function purchaseRecoveryEmail(url: string) {
+  return {
+    subject: 'Verify your email to recover Hidn purchases',
+    text: `You requested purchase recovery on Hidn.\n\nVerify this checkout email, then log in or create an account to save eligible purchases in My purchases:\n${url}\n\nThis verification link expires in 30 minutes. It does not extend guest access or sign you in. Purchases already saved to another account and refunded purchases cannot be claimed.\n\nOnly continue if you requested this. Keep the link private and do not forward it. If you didn’t request it, ignore this email.`,
+    html: `<html><body style="font-family:Arial,sans-serif;background:#08070a;color:#f5f0fa;padding:32px"><h1>Hidn</h1><h2>Recover your purchases</h2><p>You requested purchase recovery. Verify this checkout email, then log in or create an account to save eligible purchases in My purchases.</p><p><a style="color:#c399f4" href="${escapeHtml(url)}">Verify checkout email</a></p><p>This link expires in 30 minutes. It does not extend guest access or sign you in. Purchases already saved to another account and refunded purchases cannot be claimed.</p><p>Only continue if you requested this. Keep the link private and do not forward it. If you didn’t request it, ignore this email.</p></body></html>`,
+  };
+}
+
 export function purchaseEmail(input: {
   title: string;
   amountCents: number;

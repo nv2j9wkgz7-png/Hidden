@@ -769,5 +769,112 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
       assert.equal((await claim(other)).rows.length, 0);
     },
   );
+  await t.test(
+    'email recovery atomically claims only matching unowned paid purchases and cannot replay for another buyer',
+    async () => {
+      await db.exec(
+        await readFile(
+          'supabase/migrations/20260924050000_purchase_recovery.sql',
+          'utf8',
+        ),
+      );
+      const email = 'recovery@example.com';
+      const add = async (
+        address: string,
+        status: string,
+        owner: string | null = null,
+        paidAt: string | null = '2026-01-01T00:00:00Z',
+      ) => {
+        const id = crypto.randomUUID();
+        await db.query(
+          "insert into public.purchases(id,drop_id,payment_provider,amount_cents,access_token,status,customer_email,buyer_id,paid_at) values($1,$2,'stripe',100,$3,$4,$5,$6,$7)",
+          [id, drop, hashToken(newToken()), status, address, owner, paidAt],
+        );
+        return id;
+      };
+      const eligible = [
+        await add(' RECOVERY@EXAMPLE.COM ', 'PAID'),
+        await add(email, 'PAID'),
+      ];
+      const excluded = [
+        await add('different@example.com', 'PAID'),
+        await add(email, 'REFUNDED'),
+        await add(email, 'PENDING'),
+        await add(email, 'PAID', creator),
+        await add(email, 'PAID', null, null),
+        await add(email, 'PAID', null, '2099-01-01T00:00:00Z'),
+      ];
+      const before = (
+        await db.query(
+          'select id,paid_at from public.purchases where id = any($1::uuid[]) order by id',
+          [eligible],
+        )
+      ).rows;
+      const issue = async (expiry = '2099-01-01T00:00:00Z') => {
+        const hash = hashToken(newToken());
+        await db.query(
+          'insert into public.purchase_recoveries(token_hash,email,expires_at) values($1,$2,$3)',
+          [hash, email, expiry],
+        );
+        return hash;
+      };
+      const claim = async (hash: string, buyer = other) =>
+        (
+          await db.query<{ count: number }>(
+            'select public.claim_recovered_purchases($1,$2) as count',
+            [hash, buyer],
+          )
+        ).rows[0].count;
+      const token = await issue(),
+        overlapping = await issue();
+      assert.equal(await claim(token), 2);
+      assert.equal(await claim(token), 2); // Lost response retries do not grant twice.
+      await assert.rejects(claim(token, creator));
+      assert.equal(await claim(overlapping, creator), 0); // Another proof cannot transfer purchases.
+      assert.deepEqual(
+        (
+          await db.query(
+            'select id,paid_at from public.purchases where id = any($1::uuid[]) order by id',
+            [eligible],
+          )
+        ).rows,
+        before,
+      );
+      assert.equal(
+        (
+          await db.query(
+            'select id from public.purchases where id=any($1::uuid[]) and buyer_id=$2',
+            [eligible, other],
+          )
+        ).rows.length,
+        2,
+      );
+      assert.equal(
+        (
+          await db.query(
+            'select id from public.purchases where id=any($1::uuid[]) and buyer_id=$2',
+            [excluded, other],
+          )
+        ).rows.length,
+        0,
+      );
+      await assert.rejects(claim(await issue('2000-01-01T00:00:00Z')));
+      await assert.rejects(claim(hashToken(newToken())));
+      for (const role of ['anon', 'authenticated']) {
+        await db.exec(`set role ${role}`);
+        await assert.rejects(
+          db.query('select * from public.purchase_recoveries'),
+        );
+        await assert.rejects(
+          db.query(
+            'insert into public.purchase_recoveries(token_hash,email) values($1,$2)',
+            [hashToken(newToken()), email],
+          ),
+        );
+        await assert.rejects(claim(token));
+        await db.exec('reset role');
+      }
+    },
+  );
   await db.close();
 });

@@ -134,6 +134,11 @@ export function LoginForm({
           {busy ? 'Please wait…' : signup ? 'Create account' : 'Log in'}
         </button>
       </form>
+      {destination.startsWith('/purchases') && (
+        <p>
+          <Link href="/purchases/recover">Recover a guest purchase</Link>
+        </p>
+      )}
       <hr className="divider" />
       <button
         className="text-button"

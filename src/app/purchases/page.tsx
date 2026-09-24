@@ -109,6 +109,11 @@ export default async function Purchases({
           )}
         </section>
       ))}
+      <p>
+        <Link href="/purchases/recover">
+          Missing a guest purchase? Recover it with your checkout email ↗
+        </Link>
+      </p>
       <nav className="purchase-pagination" aria-label="Purchase pages">
         {page > 1 && (
           <Link className="secondary" href={`/purchases?page=${page - 1}`}>
