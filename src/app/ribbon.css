@@ -125,14 +125,21 @@ h3 {
   overflow: hidden;
   background: #f3eaf7;
 }
+@property --drop-glow-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
 .create-drop-card::before {
   content: '';
   position: absolute;
   z-index: -1;
-  inset: -40%;
-  border-radius: 50%;
+  /* Rotate the colors, not an ellipse whose edges expose tall-card corners. */
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
   background: conic-gradient(
-    from 0deg,
+    from var(--drop-glow-angle),
     transparent,
     #e2b6d570,
     transparent,
@@ -299,7 +306,7 @@ details[open] .share-card-preview,
 }
 @keyframes ribbon-orbit {
   to {
-    transform: rotate(360deg);
+    --drop-glow-angle: 360deg;
   }
 }
 @keyframes viewer-reveal {
