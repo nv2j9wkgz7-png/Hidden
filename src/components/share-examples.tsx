@@ -96,8 +96,8 @@ export function ShareExamples() {
                     <img
                       className="demo-x-preview-mark"
                       src="/hidn-arrow-mark.svg"
-                      width={32}
-                      height={32}
+                      width={42}
+                      height={42}
                       alt="Hidn watermark"
                     />
                   </div>
