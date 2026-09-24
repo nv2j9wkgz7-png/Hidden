@@ -1,10 +1,10 @@
 import { dropModeration } from '@/lib/moderation';
 import { z } from 'zod';
 import { cookies } from 'next/headers';
-import { admin } from '@/lib/supabase/admin';
 import { handler, HttpError, json, sameOrigin } from '@/lib/http';
-import { accessCookie, hashToken, validToken } from '@/lib/security';
-import { cookieOptions, purchaseAccess } from '@/lib/access';
+import { accessCookie, validToken } from '@/lib/security';
+import { cookieOptions, purchaseAccess, guestPurchase } from '@/lib/access';
+import { pendingCookie } from '@/lib/purchase-device';
 import { purchaseExpiresAt, purchaseViewStatus } from '@/lib/purchase-window';
 export const GET = handler(async (request) => {
   const dropId = z
@@ -17,6 +17,8 @@ export const GET = handler(async (request) => {
       account_saved: false,
     });
   const purchase = await purchaseAccess(dropId);
+  const candidate = purchase ? null : await guestPurchase(dropId);
+  const candidateStatus = purchaseViewStatus(candidate?.purchase ?? null);
   const response: {
     status: string;
     token?: string;
@@ -24,7 +26,11 @@ export const GET = handler(async (request) => {
     account_saved: boolean;
     library_url?: string;
   } = {
-    status: purchaseViewStatus(purchase),
+    status: purchase
+      ? purchaseViewStatus(purchase)
+      : candidateStatus === 'PAID'
+        ? 'VERIFICATION_REQUIRED'
+        : candidateStatus,
     expires_at: purchase?.account_access ? null : purchaseExpiresAt(purchase),
     account_saved: purchase?.account_access === true,
   };
@@ -42,20 +48,23 @@ export const POST = handler(async (request) => {
   const { drop_id, token } = z
     .object({ drop_id: z.uuid(), token: z.string().refine(validToken) })
     .parse(await request.json());
-  const { data, error } = await admin()
-    .from('purchases')
-    .select('status,drop_id,paid_at')
-    .eq('drop_id', drop_id)
-    .or(
-      `access_token.eq.${hashToken(token)},email_access_token.eq.${hashToken(token)}`,
-    )
-    .maybeSingle();
-  if (error) throw error;
-  if (!data) throw new HttpError(403, 'This access link is invalid.');
+  const guest = await guestPurchase(drop_id, token);
+  if (!guest) throw new HttpError(403, 'This access link is invalid.');
+  const existing = await purchaseAccess(drop_id);
+  const state = purchaseViewStatus(guest.purchase);
   const response = json({
-    status: purchaseViewStatus(data),
-    expires_at: purchaseExpiresAt(data),
+    status:
+      existing && existing.id === guest.purchase.id
+        ? purchaseViewStatus(existing)
+        : state === 'PAID'
+          ? 'VERIFICATION_REQUIRED'
+          : state,
+    expires_at: purchaseExpiresAt(guest.purchase),
   });
-  response.cookies.set(accessCookie(drop_id), token, cookieOptions);
+  // A URL identifies the purchase, but never establishes a trusted browser.
+  response.cookies.set(pendingCookie(drop_id), token, {
+    ...cookieOptions,
+    maxAge: 72 * 3600,
+  });
   return response;
 });

@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { NavigationLink as Link } from './navigation-link';
+import { PurchaseVerification } from './purchase-verification';
 import { api } from '@/lib/client-api';
 export function SavePurchase({
   dropId,
@@ -14,13 +15,19 @@ export function SavePurchase({
 }) {
   const router = useRouter();
   const started = useRef(false);
+  const [verification, setVerification] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(true);
   async function save() {
     setBusy(true);
     setError('');
     try {
-      await api('/api/purchases/save', { drop_id: dropId });
+      const result = await api('/api/purchases/save', { drop_id: dropId });
+      if (result.verification_required) {
+        setVerification(true);
+        setBusy(false);
+        return;
+      }
       router.replace('/purchases');
       router.refresh();
     } catch (error) {
@@ -49,7 +56,16 @@ export function SavePurchase({
           {error}
         </p>
       )}
-      {!busy && (
+      {verification && (
+        <PurchaseVerification
+          dropId={dropId}
+          onVerified={() => {
+            setVerification(false);
+            void save();
+          }}
+        />
+      )}
+      {!busy && !verification && (
         <button className="primary" onClick={save}>
           Try again
         </button>

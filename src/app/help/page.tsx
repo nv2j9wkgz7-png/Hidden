@@ -52,8 +52,8 @@ const questions = [
       <>
         Open Account → <Link href="/purchases">My purchases</Link> to see your
         saved photos and videos together. For a guest purchase, choose “Save to
-        my account” on the paid page during its access window, or recover it
-        using your checkout email later.
+        my account” on the paid page and verify your checkout email during its
+        access window, or recover it using your checkout email later.
       </>
     ),
   },
@@ -74,10 +74,11 @@ const questions = [
     question: 'Can someone else use my purchase link?',
     answer: (
       <>
-        Anyone with a private guest access link can use it until its 72-hour
-        deadline, so keep it private. After that, the link alone won’t unlock
-        the files. Ongoing access to a saved purchase requires the account that
-        owns it.
+        A forwarded link alone won’t unlock your purchase in a new browser. We
+        require a one-time code sent to the original checkout email. Don’t share
+        your codes. Guest access still ends 72 hours after payment; saved
+        purchases require the account that owns them. Downloaded files and ZIP
+        attachments can still be shared by whoever has them.
       </>
     ),
   },

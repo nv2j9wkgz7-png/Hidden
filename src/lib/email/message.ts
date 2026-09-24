@@ -19,6 +19,14 @@ function escapeHtml(value: string) {
   );
 }
 
+export function purchaseCodeEmail(code: string) {
+  return {
+    subject: 'Your Hidn verification code',
+    text: `Your Hidn verification code is ${code}.\n\nEnter it in the browser where you requested it to open your purchase or save it to your account. It expires in 10 minutes and works once.\n\nDo not share this code. Hidn support will never ask for it. If you did not request this code, ignore this email.`,
+    html: `<html><body style="font-family:Arial,sans-serif;background:#08070a;color:#f5f0fa;padding:32px"><h1>Hidn</h1><h2>Verify your purchase</h2><p>Enter this code in the browser where you requested it:</p><p style="font-size:32px;letter-spacing:6px">${escapeHtml(code)}</p><p>It expires in 10 minutes and works once. Use it to open your purchase or save it to your account.</p><p>Do not share this code. Hidn support will never ask for it. If you did not request it, ignore this email.</p></body></html>`,
+  };
+}
+
 export function purchaseRecoveryEmail(url: string) {
   return {
     subject: 'Verify your email to recover Hidn purchases',
@@ -37,8 +45,8 @@ export function purchaseEmail(input: {
   const price = money(input.amountCents);
   return {
     subject: 'Your Hidn images are unlocked',
-    text: `Your files are unlocked.\n\n${input.title}\nPaid ${price} USD\n\nView and download your originals:\n${input.url}\n\nSave this email to return anytime, on any device. No Hidn account needed.\nKeep this link private: anyone with it can access your purchase.\nIf the creator stops sales, your paid access remains. A refund revokes access.`,
-    html: `<!doctype html><html><body style="margin:0;background:#f6f7fa;font-family:Arial,sans-serif;color:#20212a"><div style="max-width:520px;margin:32px auto;padding:32px;background:#fff;border-radius:20px"><p style="color:#7755c4;font-size:26px;font-weight:bold">Hidn</p><h1 style="font-size:28px">Your files are unlocked.</h1><p style="font-size:18px">${title}</p><p style="color:#686e7c">Paid ${price} USD</p><p style="margin:32px 0"><a href="${url}" style="display:inline-block;background:#6940e8;color:#fff;padding:16px 24px;border-radius:12px;text-decoration:none;font-weight:bold">View my files</a></p><p>Download your originals individually or as a ZIP. Save this email to return on any device. No Hidn account needed.</p><p style="font-size:13px;color:#686e7c">Keep this link private: anyone with it can access your purchase. If the creator stops sales, your paid access remains. A refund revokes access.</p><p style="font-size:12px;word-break:break-all">Button not working? Open this link:<br/><a href="${url}">${url}</a></p></div></body></html>`,
+    text: `Your files are unlocked.\n\n${input.title}\nPaid ${price} USD\n\nView and download your originals:\n${input.url}\n\nSave this email to return during your 72-hour guest access window. Verify your checkout email when opening it in a new browser. No Hidn account needed.\nA new browser requires a code sent to your checkout email. Never share verification codes.\nIf the creator stops sales, your paid access remains. A refund revokes access.`,
+    html: `<!doctype html><html><body style="margin:0;background:#f6f7fa;font-family:Arial,sans-serif;color:#20212a"><div style="max-width:520px;margin:32px auto;padding:32px;background:#fff;border-radius:20px"><p style="color:#7755c4;font-size:26px;font-weight:bold">Hidn</p><h1 style="font-size:28px">Your files are unlocked.</h1><p style="font-size:18px">${title}</p><p style="color:#686e7c">Paid ${price} USD</p><p style="margin:32px 0"><a href="${url}" style="display:inline-block;background:#6940e8;color:#fff;padding:16px 24px;border-radius:12px;text-decoration:none;font-weight:bold">View my files</a></p><p>Download your originals individually or as a ZIP. Save this email to return during your 72-hour guest access window. No Hidn account needed.</p><p style="font-size:13px;color:#686e7c">A new browser requires a code sent to your checkout email. Never share verification codes. If the creator stops sales, your paid access remains. A refund revokes access.</p><p style="font-size:12px;word-break:break-all">Button not working? Open this link:<br/><a href="${url}">${url}</a></p></div></body></html>`,
   };
 }
 
@@ -119,8 +127,8 @@ export function requestedPurchaseEmail(input: {
     subject: input.attached
       ? 'Your requested Hidn ZIP'
       : 'Your requested Hidn ZIP download link',
-    text: `${input.title}\n\n${intro}\n\nView files and download ZIP:\n${input.url}\n\nOnline access expires ${deadline}, 72 hours after payment. Emailing or reopening the link does not extend access. Downloaded files and attachments are yours to keep.\n\nKeep this email private: anyone with the link can access the purchase until it expires. No Hidn account needed. You received this email because it was requested from your paid drop.`,
-    html: `<html><body style="font-family:Arial,sans-serif;background:#08070a;color:#f5f0fa;padding:32px"><h1>Hidn</h1><h2>${escapeHtml(input.title)}</h2><p>${intro}</p><p><a style="color:#c399f4" href="${escapeHtml(input.url)}">View files &amp; download ZIP</a></p><p>Online access expires <strong>${deadline}</strong>, 72 hours after payment. Emailing or reopening this link does not extend access. Save your files before then.</p><p>Downloaded files and attachments are yours to keep.</p><p>Keep this email private: anyone with the link can access the purchase until it expires. No Hidn account needed.</p><small>You received this email because it was requested from your paid drop.</small></body></html>`,
+    text: `${input.title}\n\n${intro}\n\nView files and download ZIP:\n${input.url}\n\nOnline access expires ${deadline}, 72 hours after payment. Emailing or reopening the link does not extend access. Downloaded files and attachments are yours to keep.\n\nOpening this link in a new browser requires a code sent to your checkout email. Keep codes and ZIP attachments private. No Hidn account needed. You received this email because it was requested from your paid drop.`,
+    html: `<html><body style="font-family:Arial,sans-serif;background:#08070a;color:#f5f0fa;padding:32px"><h1>Hidn</h1><h2>${escapeHtml(input.title)}</h2><p>${intro}</p><p><a style="color:#c399f4" href="${escapeHtml(input.url)}">View files &amp; download ZIP</a></p><p>Online access expires <strong>${deadline}</strong>, 72 hours after payment. Emailing or reopening this link does not extend access. Save your files before then.</p><p>Downloaded files and attachments are yours to keep.</p><p>Opening this link in a new browser requires a code sent to your checkout email. Keep codes and ZIP attachments private. No Hidn account needed.</p><small>You received this email because it was requested from your paid drop.</small></body></html>`,
   };
 }
 

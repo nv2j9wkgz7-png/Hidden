@@ -15,8 +15,15 @@ import { fileSize } from '@/lib/format';
 import { appUrl } from '@/lib/env';
 import { paymentProvider } from '@/lib/payments';
 import { newToken, hashToken, accessCookie } from '@/lib/security';
-import { cookieOptions, purchaseAccess } from '@/lib/access';
+import { cookieOptions, purchaseAccess, guestPurchase } from '@/lib/access';
 import { purchaseViewStatus } from '@/lib/purchase-window';
+import { env } from '@/lib/env';
+import {
+  deviceCookie,
+  pendingCookie,
+  signDeviceProof,
+  CHECKOUT_DEVICE_SECONDS,
+} from '@/lib/purchase-device';
 import { supabase } from '@/lib/supabase/server';
 export const POST = handler(async (request) => {
   sameOrigin(request);
@@ -36,6 +43,11 @@ export const POST = handler(async (request) => {
     throw new HttpError(410, 'This drop is no longer accepting purchases.');
   await assertSalesAllowed(drop_id);
   const existing = await purchaseAccess(drop_id);
+  if (!existing && (await guestPurchase(drop_id))?.purchase.status === 'PAID')
+    throw new HttpError(
+      409,
+      'Verify your checkout email to open this purchase. Do not pay again.',
+    );
   if (existing?.status === 'PAID')
     throw new HttpError(
       409,
@@ -92,6 +104,10 @@ export const POST = handler(async (request) => {
   const platformFee = hidnFee(drop.price_cents);
   const provider = paymentProvider('stripe', accountId);
   const token = newToken();
+  // Validate the signing configuration before creating a payable checkout.
+  const deviceSecret = env('EMAIL_ACCESS_SECRET');
+  if (deviceSecret.length < 32)
+    throw new HttpError(503, 'Checkout is temporarily unavailable.');
   const {
     data: { user },
   } = await (await supabase()).auth.getUser();
@@ -150,5 +166,16 @@ export const POST = handler(async (request) => {
   }
   const response = json({ url: checkout.url });
   response.cookies.set(accessCookie(drop.id), token, cookieOptions);
+  response.cookies.set(
+    deviceCookie(drop.id),
+    signDeviceProof(
+      purchase.id,
+      token,
+      Date.now() + CHECKOUT_DEVICE_SECONDS * 1000,
+      deviceSecret,
+    ),
+    { ...cookieOptions, maxAge: CHECKOUT_DEVICE_SECONDS },
+  );
+  response.cookies.delete(pendingCookie(drop.id));
   return response;
 });

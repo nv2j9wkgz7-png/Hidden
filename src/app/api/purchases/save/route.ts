@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { admin } from '@/lib/supabase/admin';
-import { purchaseAccess } from '@/lib/access';
+import { purchaseAccess, guestPurchase } from '@/lib/access';
 import { canAccessPurchase, PURCHASE_ACCESS_MS } from '@/lib/purchase-window';
 import { creator, handler, HttpError, json, sameOrigin } from '@/lib/http';
 export const POST = handler(async (request) => {
@@ -10,12 +10,18 @@ export const POST = handler(async (request) => {
     .object({ drop_id: z.uuid() })
     .parse(await request.json());
   const access = await purchaseAccess(drop_id);
+  if (
+    !access &&
+    canAccessPurchase((await guestPurchase(drop_id))?.purchase ?? null, drop_id)
+  )
+    return json({ verification_required: true });
   if (!canAccessPurchase(access, drop_id))
     throw new HttpError(
       403,
       'Open your paid private link and save it before the 72-hour deadline.',
     );
   if (access!.account_access) return json({ saved: true });
+  if (!access!.email_verified) return json({ verification_required: true });
   const db = admin();
   const { data, error } = await db
     .from('purchases')
@@ -23,6 +29,7 @@ export const POST = handler(async (request) => {
     .eq('id', access!.id)
     .eq('status', 'PAID')
     .is('buyer_id', null)
+    .eq('customer_email', access!.customer_email)
     .gt('paid_at', new Date(Date.now() - PURCHASE_ACCESS_MS).toISOString())
     .select('id')
     .maybeSingle();

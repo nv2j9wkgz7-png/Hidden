@@ -1,6 +1,7 @@
 'use client';
 import { NavigationLink as Link } from './navigation-link';
 import { notifyCopied } from './toast';
+import { PurchaseVerification } from './purchase-verification';
 import { PaidGallery } from './paid-gallery';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -207,7 +208,7 @@ export function Buyer({
         saveBlob(
           new Blob(
             [
-              `${drop.title}\n\nPrivate purchase access:\n${link}\n\nAccess expires: ${data.expires_at}\nDownload your originals before that time. Keep this link private: anyone with it can access your purchase until it expires.\n`,
+              `${drop.title}\n\nPrivate purchase access:\n${link}\n\nAccess expires: ${data.expires_at}\nDownload your originals before that time. A new browser must verify your checkout email before opening the files. Do not share verification codes.\n`,
             ],
             { type: 'text/plain;charset=utf-8' },
           ),
@@ -342,20 +343,24 @@ export function Buyer({
               ? 'Payment confirmed'
               : status === 'PENDING'
                 ? 'Awaiting confirmation'
-                : status === 'EXPIRED'
-                  ? 'Access expired'
-                  : status === 'REFUNDED'
-                    ? 'Payment refunded'
-                    : 'Locked collection'}
+                : status === 'VERIFICATION_REQUIRED'
+                  ? 'Verify to open'
+                  : status === 'EXPIRED'
+                    ? 'Access expired'
+                    : status === 'REFUNDED'
+                      ? 'Payment refunded'
+                      : 'Locked collection'}
           </span>
           <h2 style={{ marginTop: 18 }}>
             {paid
               ? 'It’s all yours.'
-              : status === 'EXPIRED'
-                ? 'Your access window has ended.'
-                : salesClosed
-                  ? 'This drop is closed.'
-                  : 'Unlock the originals.'}
+              : status === 'VERIFICATION_REQUIRED'
+                ? 'Your purchase, protected.'
+                : status === 'EXPIRED'
+                  ? 'Your access window has ended.'
+                  : salesClosed
+                    ? 'This drop is closed.'
+                    : 'Unlock the originals.'}
           </h2>
           {paid ? (
             <p className="hint">
@@ -364,6 +369,11 @@ export function Buyer({
               {accountSaved
                 ? ' whenever you like while the files remain available.'
                 : ' before your 72-hour guest access ends, or save this purchase to your account.'}
+            </p>
+          ) : status === 'VERIFICATION_REQUIRED' ? (
+            <p className="hint">
+              Confirm it’s you to open this purchase in this browser. You don’t
+              need to pay again.
             </p>
           ) : status === 'EXPIRED' ? (
             <p className="hint">
@@ -464,7 +474,7 @@ export function Buyer({
                       style={{ marginTop: 10 }}
                       onClick={() => saveAccess('share')}
                     >
-                      <Share2 size={14} /> Share or save access link
+                      <Share2 size={14} /> Save access link to another app
                     </button>
                     <button
                       className="text-button full"
@@ -474,8 +484,9 @@ export function Buyer({
                       <Download size={14} /> Download access link
                     </button>
                     <p className="hint">
-                      Keep your private link safe. Anyone with it can view and
-                      download until the 72-hour deadline.
+                      Opening this link in a new browser requires a code sent to
+                      your checkout email. Guest access still ends after 72
+                      hours.
                     </p>
                   </>
                 )}
@@ -505,8 +516,8 @@ export function Buyer({
                   <div className="notice">
                     <p className="hint">
                       Use this private link on another device before the
-                      deadline. Anyone with it can access these files until it
-                      expires.
+                      deadline. You’ll verify your checkout email before opening
+                      the files in a new browser.
                     </p>
                     <input
                       className="full"
@@ -518,6 +529,11 @@ export function Buyer({
                   </div>
                 )}
               </>
+            ) : status === 'VERIFICATION_REQUIRED' ? (
+              <PurchaseVerification
+                dropId={drop.id}
+                onVerified={() => window.location.reload()}
+              />
             ) : status === 'EXPIRED' ? (
               <>
                 <Link className="primary full" href="/purchases/recover">
