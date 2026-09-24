@@ -678,13 +678,18 @@ html[data-theme='blackout'] .stop-sales-preview {
     font-size: 12px;
     margin: 18px 2px 12px;
   }
+  .guide-gallery-viewport {
+    height: var(--guide-slide-height, auto);
+    overflow: hidden;
+    overflow-anchor: none;
+    border-radius: 24px;
+  }
   .visual-guide .guide-gallery .howto-steps,
   html[data-theme='blackout'] .visual-guide .guide-gallery .howto-steps {
     display: flex;
     align-items: flex-start;
     gap: 14px;
     margin: 0;
-    height: var(--guide-slide-height, auto);
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;

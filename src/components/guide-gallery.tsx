@@ -43,6 +43,22 @@ export function GuideGallery({ children }: { children: ReactNode }) {
       if (cards[current])
         setHeight(Math.ceil(cards[current].getBoundingClientRect().height));
     };
+    const measureVisible = () => {
+      // Resize the outer viewport, not the scrolling rail. Keeping the rail's
+      // geometry stable lets Safari finish snapping while taller cards appear.
+      const left = Math.max(0, rail.scrollLeft);
+      const next = cards.findIndex((_, index) => targetLeft(index) > left);
+      const from = next < 0 ? cards.length - 1 : Math.max(0, next - 1);
+      const to = next < 0 ? from : next;
+      if (!cards[from]) return;
+      const distance = targetLeft(to) - targetLeft(from);
+      const progress = distance
+        ? Math.min(1, (left - targetLeft(from)) / distance)
+        : 0;
+      const start = cards[from].getBoundingClientRect().height;
+      const end = cards[to].getBoundingClientRect().height;
+      setHeight(Math.ceil(start + (end - start) * progress));
+    };
     const settle = () => {
       if (!query.matches || touching || !cards.length) return;
       clearTimeout(settleTimer);
@@ -50,7 +66,7 @@ export function GuideGallery({ children }: { children: ReactNode }) {
       current = nearest();
       const left = targetLeft(current);
       // Safari can leave a mandatory snap unfinished after touch momentum.
-      // Correct the resting position, then resize; never resize mid-swipe.
+      // Correct the resting position without changing the scrolling rail size.
       if (Math.abs(rail.scrollLeft - left) > 0.5)
         rail.scrollTo({ left, behavior: 'instant' });
       setActive(current);
@@ -65,6 +81,7 @@ export function GuideGallery({ children }: { children: ReactNode }) {
       scrolling = true;
       current = nearest();
       setActive(current);
+      measureVisible();
       queueSettle();
     };
     const onTouchStart = () => {
@@ -131,36 +148,40 @@ export function GuideGallery({ children }: { children: ReactNode }) {
           {active + 1} / {count}
         </span>
       </div>
-      <ol
-        id="guide-gallery-track"
-        className="howto-steps"
-        ref={track}
-        tabIndex={mobile ? 0 : undefined}
-        aria-label="Guide steps"
+      <div
+        className="guide-gallery-viewport"
         style={
           height
             ? ({ '--guide-slide-height': `${height}px` } as CSSProperties)
             : undefined
         }
-        onKeyDown={(event) => {
-          if (!mobile || event.target !== event.currentTarget) return;
-          const index =
-            event.key === 'ArrowRight'
-              ? Math.min(count - 1, active + 1)
-              : event.key === 'ArrowLeft'
-                ? Math.max(0, active - 1)
-                : event.key === 'Home'
-                  ? 0
-                  : event.key === 'End'
-                    ? count - 1
-                    : null;
-          if (index === null) return;
-          event.preventDefault();
-          goTo(index);
-        }}
       >
-        {children}
-      </ol>
+        <ol
+          id="guide-gallery-track"
+          className="howto-steps"
+          ref={track}
+          tabIndex={mobile ? 0 : undefined}
+          aria-label="Guide steps"
+          onKeyDown={(event) => {
+            if (!mobile || event.target !== event.currentTarget) return;
+            const index =
+              event.key === 'ArrowRight'
+                ? Math.min(count - 1, active + 1)
+                : event.key === 'ArrowLeft'
+                  ? Math.max(0, active - 1)
+                  : event.key === 'Home'
+                    ? 0
+                    : event.key === 'End'
+                      ? count - 1
+                      : null;
+            if (index === null) return;
+            event.preventDefault();
+            goTo(index);
+          }}
+        >
+          {children}
+        </ol>
+      </div>
       <nav
         className="guide-gallery-controls"
         aria-label="Guide gallery controls"
