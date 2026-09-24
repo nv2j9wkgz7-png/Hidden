@@ -5,6 +5,7 @@ import localFont from 'next/font/local';
 import { PageMotion } from '@/components/page-motion';
 import { AccountMenu } from '@/components/account-menu';
 import { CopyToast } from '@/components/toast';
+import { ThemeNavigation } from '@/components/theme-toggle';
 import './globals.css';
 import './studio.css';
 import './ribbon.css';
@@ -40,11 +41,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{document.documentElement.dataset.theme=localStorage.getItem('hidn-theme')==='blackout'?'blackout':'light'}catch{}",
+              "var hidnTheme='light';try{hidnTheme=localStorage.getItem('hidn-theme')==='blackout'?'blackout':'light'}catch{}if(/^\\/d\\/[^/]+\\/?$/.test(location.pathname)||/^\\/dashboard\\/drops\\/[^/]+\\/preview\\/?$/.test(location.pathname))hidnTheme='blackout';document.documentElement.dataset.theme=hidnTheme;",
           }}
         />
       </head>
       <body>
+        <Suspense fallback={null}>
+          <ThemeNavigation />
+        </Suspense>
         <header className="site-header">
           <Link className="brand" href="/" aria-label="Hidn home">
             <img

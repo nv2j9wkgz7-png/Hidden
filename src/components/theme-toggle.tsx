@@ -1,6 +1,27 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Moon, Sun } from 'lucide-react';
+
+// Shared drops start dark without changing the visitor's saved site preference.
+// This also covers client navigation, when the initial head script doesn't run.
+export function ThemeNavigation() {
+  const pathname = usePathname();
+  useLayoutEffect(() => {
+    let theme = 'light';
+    try {
+      if (localStorage.getItem('hidn-theme') === 'blackout') theme = 'blackout';
+    } catch {}
+    if (
+      /^\/d\/[^/]+\/?$/.test(pathname) ||
+      /^\/dashboard\/drops\/[^/]+\/preview\/?$/.test(pathname)
+    )
+      theme = 'blackout';
+    document.documentElement.dataset.theme = theme;
+    window.dispatchEvent(new Event('hidn:theme'));
+  }, [pathname]);
+  return null;
+}
 export function ThemeToggle({ compact = false }: { compact?: boolean }) {
   const [blackout, setBlackout] = useState(false);
   useEffect(() => {
