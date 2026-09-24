@@ -993,5 +993,106 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
       }
     },
   );
+  await t.test(
+    'drop analytics deduplicate views, isolate creators and calculate checkout cohorts',
+    async () => {
+      await db.exec(
+        await readFile(
+          'supabase/migrations/20260924070000_drop_analytics.sql',
+          'utf8',
+        ),
+      );
+      const owner = crypto.randomUUID();
+      await db.query('insert into auth.users values($1,$2)', [
+        owner,
+        'analytics@example.com',
+      ]);
+      const id = (
+        await db.query<{ id: string }>(
+          "insert into public.drops(creator_id,title,price_cents,status) values($1,'Analytics test',1000,'PUBLISHED') returning id",
+          [owner],
+        )
+      ).rows[0].id;
+      const view = () =>
+        db.query('select public.record_drop_view($1,$2)', [id, 'a'.repeat(64)]);
+      await Promise.all([view(), view(), view()]);
+      await db.query('select public.record_drop_view($1,$2)', [
+        id,
+        'b'.repeat(64),
+      ]);
+      const read = async (days = 7) =>
+        (
+          await db.query<{ stats: any }>(
+            'select public.drop_analytics($1,$2,$3) as stats',
+            [owner, id, days],
+          )
+        ).rows[0].stats;
+      let stats = await read();
+      assert.equal(stats.views, 2);
+      assert.equal(stats.daily.length, 7);
+      assert.equal(stats.checkouts, 0);
+      await assert.rejects(
+        db.query('select public.drop_analytics($1,$2,7)', [other, id]),
+      );
+      await assert.rejects(read(100));
+      for (const [status, started] of [
+        ['PENDING', true],
+        ['PAID', true],
+        ['REFUNDED', true],
+        ['PENDING', false],
+      ] as const) {
+        await db.query(
+          "insert into public.purchases(drop_id,payment_provider,amount_cents,access_token,status,checkout_started_at) values($1,'stripe',1000,$2,$3,case when $4 then now() else null end)",
+          [id, hashToken(newToken()), status, started],
+        );
+      }
+      await db.query(
+        "insert into public.purchases(drop_id,payment_provider,amount_cents,access_token,status,checkout_started_at) values($1,'stripe',2000,$2,'PAID',now()-interval '10 days')",
+        [id, hashToken(newToken())],
+      );
+      stats = await read();
+      assert.equal(stats.checkouts, 3);
+      assert.equal(stats.purchases, 1);
+      assert.equal(stats.gross_cents, 1000);
+      const thirty = await read(30);
+      assert.equal(thirty.checkouts, 4);
+      assert.equal(thirty.purchases, 2);
+      assert.equal(thirty.gross_cents, 3000);
+      assert.equal(thirty.daily.length, 30);
+      await db.query(
+        "insert into public.drop_view_keys values($1,(now() at time zone 'UTC')::date-3,$2)",
+        [id, 'c'.repeat(64)],
+      );
+      await view();
+      assert.equal(
+        (
+          await db.query<{ count: number }>(
+            'select count(*)::integer as count from public.drop_view_keys where drop_id=$1',
+            [id],
+          )
+        ).rows[0].count,
+        2,
+      );
+      await db.query(
+        "update public.drops set moderation_state='REMOVED' where id=$1",
+        [id],
+      );
+      await db.query('select public.record_drop_view($1,$2)', [
+        id,
+        'd'.repeat(64),
+      ]);
+      assert.equal((await read()).views, 2);
+      for (const role of ['anon', 'authenticated']) {
+        await db.exec(`set role ${role}`);
+        await assert.rejects(
+          db.query('select * from public.drop_analytics_daily'),
+        );
+        await assert.rejects(db.query('select * from public.drop_view_keys'));
+        await assert.rejects(view());
+        await assert.rejects(read());
+        await db.exec('reset role');
+      }
+    },
+  );
   await db.close();
 });

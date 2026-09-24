@@ -1,3 +1,4 @@
+import { TrackDropView } from '@/components/track-drop-view';
 import { ReportDrop } from '@/components/report-drop';
 import { dropModeration } from '@/lib/moderation';
 import type { Metadata } from 'next';
@@ -113,6 +114,7 @@ export default async function DropPage({
             .data.publicUrl,
         }))}
       />
+      {!owner && <TrackDropView dropId={drop.id} />}
       <ReportDrop dropId={drop.id} />
     </>
   );

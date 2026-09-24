@@ -93,6 +93,14 @@ export default async function SharePage({
           </li>
         </ol>
       )}
+      {drop.status !== 'DRAFT' && (
+        <Link
+          className="button secondary"
+          href={`/dashboard/drops/${slug}/analytics`}
+        >
+          View analytics ↗
+        </Link>
+      )}
       <EditDropDetails
         draft={drop.status === 'DRAFT'}
         drop={{

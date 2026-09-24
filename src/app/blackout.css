@@ -276,3 +276,20 @@ html[data-theme='blackout']
 html[data-theme='blackout'] .account-dropdown button:hover {
   background: #302239;
 }
+
+/* The shared upload surface must stay dark in the folder button's margins. */
+html[data-theme='blackout'] .upload-options {
+  background: var(--surface-raised);
+  border-color: #554164;
+}
+html[data-theme='blackout'] .upload-options :is(.upload-zone, .folder-upload) {
+  background: transparent;
+  border-color: var(--line);
+}
+html[data-theme='blackout'] .upload-options .folder-upload:hover {
+  background: #302239;
+}
+html[data-theme='blackout'] .creation-steps li:not([aria-current]) span {
+  background: var(--surface-raised);
+  color: var(--muted);
+}

@@ -133,7 +133,10 @@ export const POST = handler(async (request) => {
   });
   const { error: updateError } = await db
     .from('purchases')
-    .update({ payment_provider_transaction_id: checkout.id })
+    .update({
+      payment_provider_transaction_id: checkout.id,
+      checkout_started_at: new Date().toISOString(),
+    })
     .eq('id', purchase.id)
     .is('payment_provider_transaction_id', null);
   if (updateError) throw updateError;

@@ -280,6 +280,12 @@ export default async function Dashboard({
                       >
                         Manage
                       </Link>
+                      <Link
+                        className="drop-card-action"
+                        href={`/dashboard/drops/${drop.slug}/analytics`}
+                      >
+                        Analytics
+                      </Link>
                       <span className="drop-card-action">
                         <CopyButton path={`/d/${drop.slug}`} />
                       </span>

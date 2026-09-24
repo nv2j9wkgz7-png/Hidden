@@ -1,0 +1,15 @@
+# Drop analytics
+
+Creators open My drops → Analytics, or View analytics from the drop's share page. Each route verifies the server session and drop ownership before calling the service-only aggregate function. Periods cover 7, 30 or 90 UTC calendar days including today.
+
+Views count visible visits after one second, once per tab/drop/UTC day. A random UUID lives in sessionStorage per drop and rotates each UTC day. The server hashes it with drop/day; raw tokens are not stored. No visitor email, account ID, IP, referrer or user agent is stored in the analytics tables. The separate existing abuse limiter hashes an IP-based key. Signed-in owners are excluded on both client and server. Known bot agents are ignored; JS-less unfurling and route prefetches don't count. Estimates can miss blocked requests or count additional tabs/devices, and anonymous owner visits cannot be identified. Storage-disabled browsers may count reloads. This is not a unique-person metric or fraud-proof counter.
+
+View hashes are eligible for deletion after the previous UTC day and pruned in batches of 1,000 during subsequent recording calls. Aggregate daily counts remain. If there is no traffic, eligible keys remain until the next call; this is not a scheduled retention guarantee.
+
+Checkout starts are purchase rows with a successful provider session; `checkout_started_at` is stamped when the session ID is persisted. The migration backfills existing sessions from their purchase creation timestamp (historical approximation). Failed reservations and repeated returns to the same checkout don't add starts. Current PAID rows in that checkout-start cohort count as purchases; full refunds are excluded, partial refunds aren't subtracted. Conversion divides those purchases by checkout starts. Later payment/refund events can change an earlier day's result. This does not attribute a purchase to an individual view or show a payout balance. View history begins at rollout; historic checkout data can exist without recorded views.
+
+Apply `20260924070000_drop_analytics.sql` before deploying. Tracking failures are best effort and don't block buyers. Tables and RPCs are service-only with RLS. Tests cover duplicate/concurrent events, ownership, anonymous privileges, period boundaries, refunds and failed sessions; route tests cover owner/bot exclusions, validation, rate limits and origin checks.
+
+## Arrow 2 design
+
+Quiver Arrow 2 generated the desktop/mobile analytics concept in the existing Hidn design conversation on 2026-09-24 UTC. Original export: `docs/design/arrow-2-analytics-concept.svg`. Implemented its separate metric cards, mobile 2×2 layout, active lavender period pills, lavender/mint chart palette, compact activity and sales sections, and original header ribbon. `public/hidn-analytics-ribbon.svg` extracts only its decorative desktop ribbon paths/gradients with generous padding. UI text retains Hidn's installed sans-serif font. Sample values in the source design are not used by the product; every displayed count comes from the database. No external SVG references, scripts or generated interface text are shipped as part of the ribbon asset.

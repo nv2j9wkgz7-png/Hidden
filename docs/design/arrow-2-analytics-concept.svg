@@ -1,0 +1,371 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="84" height="84" fill="none" viewBox="-2 -2 84 84">
+<!-- SVG created with Arrow, by QuiverAI (https://quiver.ai) -->
+  <rect x="0" y="0" width="80" height="80" fill="#08070b"/>
+  <defs>
+    <linearGradient id="paint0_linear_20021_13433" x1="44.59" x2="45.57" y1="18.17" y2="20.75" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C5A1E3" offset="0"/>
+      <stop stop-color="#EDB7D6" offset=".5156"/>
+      <stop stop-color="#A27AD5" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint1_linear_20021_13433" x1="48.24" x2="47.05" y1="15.56" y2="20.64" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C5A1E3" offset="0"/>
+      <stop stop-color="#A87AD4" offset=".4271"/>
+      <stop stop-color="#CD9ED6" offset=".724"/>
+      <stop stop-color="#9269B7" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint2_linear_20021_13433" x1="49.75" x2="49.43" y1="15.32" y2="17.12" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D6B1E0" offset="0"/>
+      <stop stop-color="#B185D3" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint3_linear_20021_13433" x1="73.41" x2="73.25" y1="18.08" y2="20.98" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D6B1E0" offset="0"/>
+      <stop stop-color="#B989D6" offset=".5365"/>
+      <stop stop-color="#986FB5" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint4_linear_20021_13433" x1="71.64" x2="73.16" y1="19.64" y2="21.03" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D6B1E0" offset="0"/>
+      <stop stop-color="#B989D6" offset=".6354"/>
+      <stop stop-color="#986FB5" offset="1"/>
+    </linearGradient>
+  </defs>
+  <rect y="5.706" width="80" height="68.67" fill="#04040A"/>
+  <rect x="2.835" y="9.047" width="50.64" height="61.55" rx=".7891" fill="#08080D" stroke="#332F45" stroke-width=".1172"/>
+  <rect x="56.22" y="9.047" width="21.27" height="62.03" rx=".8555" fill="#0A0A10" stroke="#332F45" stroke-width=".1211"/>
+  <rect x="4.646" y="60.73" width="47.33" height="8.504" rx=".707" fill="#0B0B11" stroke="#332F45" stroke-width=".08594"/>
+  <rect x="57.11" y="61.06" width="19.58" height="9.039" rx=".707" fill="#0B0B11" stroke="#332F45" stroke-width=".08594"/>
+  <rect x="4.326" y="38.36" width="47.62" height="10.1" stroke="#332F45" stroke-width=".08594"/>
+  <rect x="4.326" y="38.36" width="47.62" height="20.99" rx=".6406" fill="#0C0C12" stroke="#332F45" stroke-width=".09375"/>
+  <rect x="4.645" y="29.84" width="11.29" height="7.211" rx=".6602" fill="#0B0B11" stroke="#332F45" stroke-width=".07812"/>
+  <rect x="16.73" y="29.84" width="11.25" height="7.211" rx=".6602" fill="#0B0B11" stroke="#332F45" stroke-width=".07812"/>
+  <rect x="28.82" y="29.84" width="11.15" height="7.211" rx=".6602" fill="#0B0B11" stroke="#332F45" stroke-width=".07812"/>
+  <rect x="40.82" y="29.84" width="11.16" height="7.211" rx=".6367" fill="#0B0B11" stroke="#332F45" stroke-width=".07812"/>
+  <rect x="57.16" y="30.05" width="9.418" height="6.105" rx=".6055" fill="#0B0B11" stroke="#332F45" stroke-width=".07422"/>
+  <rect x="67.23" y="30.05" width="9.406" height="6.105" rx=".6055" fill="#0B0B11" stroke="#332F45" stroke-width=".07422"/>
+  <rect x="57.16" y="36.93" width="9.418" height="6.105" rx=".6445" fill="#0B0B11" stroke="#332F45" stroke-width=".07422"/>
+  <rect x="67.23" y="36.93" width="9.406" height="6.105" rx=".6328" fill="#0B0B11" stroke="#332F45" stroke-width=".07422"/>
+  <rect x="57.08" y="43.88" width="19.58" height="16.34" rx=".707" fill="#0B0B11" stroke="#332F45" stroke-width=".08594"/>
+  <rect x="4.66" y="25.82" width="8.119" height="2.418" rx="1.203" fill="#0B0B11" stroke="#332F45" stroke-width=".07812"/>
+  <rect x="13.34" y="25.82" width="8.254" height="2.418" rx="1.203" fill="#C397F6" stroke="#443D5C" stroke-width=".07812"/>
+  <rect x="22.21" y="25.82" width="8.238" height="2.418" rx="1.203" fill="#0B0B11" stroke="#332F45" stroke-width=".07812"/>
+  <rect x="57.47" y="26.61" width="5.848" height="2.105" rx="1.047" fill="#0B0B11" stroke="#48415B" stroke-width=".07422"/>
+  <rect x="63.84" y="26.61" width="6.113" height="2.105" rx="1.047" fill="#C397F6" stroke="#524468" stroke-width=".07422"/>
+  <rect x="70.43" y="26.61" width="5.836" height="2.105" rx="1.039" fill="#0B0B11" stroke="#48415B" stroke-width=".07422"/>
+  <line x1="4.652" x2="51.61" y1="24.63" y2="24.63" stroke="#201D29" stroke-width=".07812"/>
+  <line x1="57.51" x2="76.21" y1="25.81" y2="25.81" stroke="#201D29" stroke-width=".0625"/>
+  <line x1="57.58" x2="76.14" y1="13.13" y2="13.13" stroke="#201D29" stroke-width=".0625"/>
+  <path d="m50.51 15.35s-1.75-0.22-2.39 0.39c-0.97 0.95-1.71 3.17-2.03 3.72-0.6-0.44-2.13-1.32-2.96-1.29-0.78 0.03-1.29 0.99-1.99 1.8-0.64 0.77-1.4 0.87-1.4 0.93 0 0.08 1.15 0.46 1.69 0.39 0.94-0.12 1.4-1.56 1.59-1.76 0.49 0.4 2.03 1.37 2.53 1.32s1.67-0.56 2.12-1.21c0.54-0.82 0.78-2.3 1.05-2.52 0.49-0.07 1.51 0.01 1.51 0.01 0.14-0.53 0.28-1.78 0.28-1.78z" fill="url(#paint0_linear_20021_13433)"/>
+  <path d="m48.12 15.74c-0.97 0.95-1.71 3.17-2.03 3.72-0.2 0.67-0.67 1.28-0.67 1.36 0.63-0.02 1.76-0.53 2.2-1.18 0.53-0.82 0.74-2.32 1.07-2.52l-0.57-1.38z" fill="url(#paint1_linear_20021_13433)"/>
+  <path d="m47.51 17.01c0.9-0.19 2.72 0.12 2.72 0.12 0.14-0.53 0.28-1.78 0.28-1.78-1.02-0.04-1.83 0.13-2.27 0.41-0.33 0.33-0.73 1.25-0.73 1.25z" fill="url(#paint2_linear_20021_13433)" opacity=".5"/>
+  <path d="m41.98 19.23c0.64-0.16 1.12 0.17 1.25 0.24 0.09-0.34 0.32-0.97 0.53-1.22-0.25-0.05-0.55-0.11-0.77-0.05-0.56 0.19-1.01 1.03-1.01 1.03z" fill="#C5A1E3" opacity=".5"/>
+  <path d="m75.77 18.09s-0.88-0.11-1.22 0.21c-0.54 0.54-1.03 1.71-1.18 1.92-0.28-0.21-1.13-0.68-1.6-0.61-0.38 0.06-0.61 0.56-1.05 0.97-0.38 0.38-0.77 0.41-0.76 0.46 0.02 0.06 0.58 0.2 0.86 0.16 0.56-0.08 0.83-0.89 0.96-0.93 0.29 0.26 1.14 0.81 1.47 0.79 0.31-0.02 0.96-0.32 1.14-0.7 0.19-0.47 0.28-1.18 0.43-1.29 0.28-0.03 0.87-0.01 0.87-0.01 0.05-0.3 0.08-0.97 0.08-0.97z" fill="url(#paint3_linear_20021_13433)"/>
+  <path d="m71.77 19.61c-0.38 0.06-0.61 0.56-1.05 0.97-0.19 0.2-0.58 0.4-0.58 0.4 0.2 0.15 0.58 0.22 0.76 0.2 0.56-0.13 0.84-0.93 0.96-0.97l0.3-0.56c-0.14-0.03-0.27-0.05-0.39-0.04z" fill="url(#paint4_linear_20021_13433)"/>
+  <path d="m5.68 12.88c-0.05 0.34-0.14-0.04-0.14-0.03-0.03 0.37-0.08-0.2-0.08-0.2l-0.8 0.07c-0.25 0.59-0.35 0.08-0.31 0.08-0.06 0.44-0.05 0.06 0.02-0.03l0.15-0.2 0.56-0.3 1.29-0.19 0.13 0.32-0.36 0.25-0.46 0.23z" fill="#976ABD"/>
+  <path d="m6.42 12.78c-0.11 0.4-0.28 0.14-0.29 0.17-0.07 0.26-0.22-0.29-0.22-0.29l0.79-0.38-0.28 0.5z" fill="#976ABD"/>
+  <path d="m7.44 12.33c-0.11 0.46-0.27 0.52-0.32 0.65-0.13 0.33-0.33 0.55-0.37 0.45-0.07-0.16 0.1-0.49 0.1-0.49l0.59-0.61z" fill="#976ABD"/>
+  <path d="m9.34 12.04c-0.21 0.78-0.45 1-0.54 1.11-0.21 0.32-1.02 0.18-1.02 0.18l0.26-0.51 0.65-0.51 0.65-0.27z" fill="#976ABD"/>
+  <path d="m10.94 12.15c-0.08 0.4-0.65 0.86-0.72 1.02-0.18 0.36-0.8 0.28-0.8 0.28l0.35-0.84 0.83-0.54 0.34 0.08z" fill="#976ABD"/>
+  <path d="m11.29 12.17c-0.04 0.44-0.03 0.91 0 1 0.08 0.33 0.16 0.19 0.16 0.19l-0.03-0.82-0.13-0.37z" fill="#976ABD"/>
+  <path d="m13.41 12.09 0.15-0.48 0.26-0.02-0.11 0.6-0.3-0.1z" fill="#976ABD"/>
+  <path d="m13.09 12.9 0.12-0.55 0.28 0.01-0.06 0.57-0.34-0.03z" fill="#976ABD"/>
+  <path d="m13.55 11.99 0.53-0.11 0.08 0.27-0.56 0.16-0.05-0.32z" fill="#976ABD"/>
+  <path d="m13.38 12.31c0.55-0.17 0.86-0.34 0.97-0.1 0.08 0.22-0.43 0.49-0.91 0.51-0.6 0.13-1.28-0.1-0.06-0.41z" fill="#C5A1E3"/>
+  <path d="m5.49 10.3c-0.15 0.02-0.57 0.12-0.77 0.64-0.21 0.61-0.46 1.74-0.26 1.85 0.18 0.1 0.54-0.07 0.61-0.43 0.05-0.35 0.31-1.41 0.42-1.78 0.03-0.16 0.05-0.28 0-0.28z" fill="#C5A1E3"/>
+  <path d="m6.83 10.28c-0.17 0-0.61 0.14-0.78 0.66-0.21 0.68-0.4 1.72-0.26 1.83 0.13 0.11 0.56-0.04 0.64-0.46 0.08-0.45 0.44-1.69 0.45-1.93 0-0.06-0.01-0.1-0.05-0.1z" fill="#C5A1E3"/>
+  <ellipse cx="7.674" cy="10.63" rx=".2826" ry=".268" fill="#976ABD"/>
+  <path d="m7.51 11.27c-0.55 0.31-0.89 1.42-0.66 1.55 0.19 0.11 0.52-0.1 0.62-0.55 0.09-0.42 0.25-1.05 0.04-1z" fill="#C5A1E3"/>
+  <path d="m9.74 10.24c-0.23 0-0.59 0.14-0.72 0.64-0.12 0.46-0.36 1.23-0.24 1.46 0.11 0.21 0.57 0.05 0.68-0.38 0.12-0.47 0.37-1.35 0.39-1.61 0.01-0.07-0.03-0.11-0.11-0.11z" fill="#C5A1E3"/>
+  <path d="m11.05 11.17c-0.65-0.05-1.57 1.26-1.45 1.54 0.09 0.22 0.52 0.11 0.72-0.24 0.19-0.31 0.48-0.65 0.62-0.63 0.17 0.04-0.28 0.99 0.05 1.07 0.22 0.06 0.43-0.04 0.39-0.42-0.04-0.5 0.06-1.29-0.33-1.32z" fill="#C5A1E3"/>
+  <path d="m5.81 11.86c-0.87 0.04-1.54 0.04-1.54 0.93 0.51-0.46 2.01-0.53 2.29-0.55 0.29-0.34 0.21-0.55-0.75-0.38z" fill="#C5A1E3"/>
+  <text x="4.64453" y="17.9766" fill="#DBD6F0" font-family="Inter" font-size="2.227" font-weight="600" letter-spacing=".01562">
+    <tspan x="4.64453" y="17.9766">Drop analytics</tspan>
+  </text>
+  <text x="4.62891" y="20.0586" fill="#8678AB" font-family="Inter" font-size="1.406" letter-spacing="-.007812">
+    <tspan x="4.62891" y="20.0586">Coastal collection</tspan>
+  </text>
+  <rect x="4.656" y="21.21" width="7.875" height="2.336" rx="1.168" fill="#65CDA6"/>
+  <text x="6.37109" y="22.6797" fill="#090B0F" font-family="Inter" font-size="1.016" font-weight="bold" letter-spacing="-.01562">
+    <tspan x="6.37109" y="22.6797">Open drop</tspan>
+  </text>
+  <text x="4.64062" y="15.3398" fill="#8678AB" font-family="Inter" font-size=".9375" font-weight="bold" letter-spacing=".01562">
+    <tspan x="4.64062" y="15.3398">PRIVATE INSIGHTS</tspan>
+  </text>
+  <text x="18.3555" y="11.9766" fill="#9A8FBC" font-family="Inter" font-size=".9375" letter-spacing="-.007812">
+    <tspan x="18.3555" y="11.9766">Back to My drops</tspan>
+  </text>
+  <path d="m17.55 11.62h-0.8v0" stroke="#9A8FBC" stroke-linecap="round" stroke-width=".1172"/>
+  <path d="m17.14 11.73-0.39-0.11" stroke="#9A8FBC" stroke-linecap="round" stroke-width=".1172"/>
+  <path d="m58.43 11.57c-0.04 0.29-0.1-0.05-0.1-0.03-0.04 0.32-0.1-0.16-0.1-0.16l-0.76 0.2c-0.16 0.49-0.17 0.1-0.13 0.1l0.06-0.32 0.54-0.28h1l0.08 0.24-0.33 0.17-0.26 0.08z" fill="#976ABD"/>
+  <path d="m59.36 11.45c-0.11 0.37-0.21 0.59-0.25 0.68-0.1 0.22-0.34 0.23-0.34 0-0.01-0.16 0.09-0.52 0.09-0.52l0.5-0.16z" fill="#976ABD"/>
+  <path d="m61.22 10.75c-0.21 0.62-0.46 1-0.53 1.13-0.2 0.41-1.01 0.33-0.96-0.04 0.03-0.23 0.41-0.56 0.41-0.56l1.08-0.53z" fill="#976ABD"/>
+  <path d="m62.25 11.02c-0.02 0.41 0.02 0.91 0.05 1.05 0.05 0.22-0.28 0.29-0.36 0.04-0.07-0.22 0.05-0.84 0.05-0.84l0.26-0.25z" fill="#976ABD"/>
+  <path d="m63.69 11.09 0.08-0.43 0.34-0.01-0.07 0.5-0.35-0.06z" fill="#976ABD"/>
+  <path d="m63.42 11.85 0.08-0.58 0.34 0.04-0.07 0.61-0.35-0.07z" fill="#976ABD"/>
+  <path d="m63.59 11.24 0.67-0.17 0.24 0.22-0.65 0.26-0.26-0.31z" fill="#C5A1E3"/>
+  <path d="m58.49 10.12c-0.19 0.01-0.67 0.14-0.8 0.55-0.15 0.51-0.39 1.3-0.2 1.41 0.17 0.1 0.53-0.08 0.6-0.43 0.07-0.41 0.42-1.31 0.42-1.48 0-0.04 0-0.05-0.02-0.05z" fill="#C5A1E3"/>
+  <path d="m59.32 10.1c-0.17 0.02-0.39 0.15-0.49 0.48-0.12 0.48-0.31 1.22-0.13 1.32 0.15 0.09 0.43-0.04 0.52-0.42 0.09-0.39 0.27-1.05 0.29-1.29 0.01-0.07-0.09-0.1-0.19-0.09z" fill="#C5A1E3"/>
+  <circle cx="59.87" cy="10.44" r=".2354" fill="#976ABD"/>
+  <path d="m61.49 10.07c-0.25-0.03-0.53 0.1-0.65 0.6-0.12 0.48-0.3 1.03-0.15 1.12 0.14 0.08 0.37-0.11 0.5-0.55 0.12-0.39 0.42-1.16 0.3-1.17z" fill="#C5A1E3"/>
+  <path d="m62.29 10.81c-0.57-0.13-1.31 0.82-1.17 1.11 0.09 0.19 0.37 0.11 0.53-0.15 0.14-0.26 0.48-0.49 0.59-0.45 0.14 0.04 0.23-0.38 0.05-0.51z" fill="#C5A1E3"/>
+  <path d="m58.55 11.15c-0.64 0.02-1.14 0.04-1.13 0.81 0.39-0.38 1.4-0.5 1.63-0.54 0.17-0.23 0.09-0.29-0.5-0.27z" fill="#C5A1E3"/>
+  <text x="57.4453" y="19.7578" fill="#DBD6F0" font-family="Inter" font-size="1.805" font-weight="600" letter-spacing="-.01172">
+    <tspan x="57.4453" y="19.7578">Drop analytics</tspan>
+  </text>
+  <text x="57.4336" y="21.5781" fill="#8678AB" font-family="Inter" font-size="1.125" letter-spacing="-.007812">
+    <tspan x="57.4336" y="21.5781">Coastal collection</tspan>
+  </text>
+  <rect x="57.48" y="22.76" width="7.059" height="2.105" rx="1.051" fill="#65CDA6"/>
+  <text x="58.9727" y="24.125" fill="#090B0F" font-family="Inter" font-size=".9062" font-weight="bold" letter-spacing="-.01562">
+    <tspan x="58.9727" y="24.125">Open drop</tspan>
+  </text>
+  <text x="57.4453" y="17.3555" fill="#8678AB" font-family="Inter" font-size=".8438" font-weight="bold" letter-spacing=".01562">
+    <tspan x="57.4453" y="17.3555">PRIVATE INSIGHTS</tspan>
+  </text>
+  <text x="59.3047" y="14.7656" fill="#9A8FBC" font-family="Inter" font-size=".9375" letter-spacing="-.007812">
+    <tspan x="59.3047" y="14.7656">Back to My drops</tspan>
+  </text>
+  <path d="m58.39 14.45h-0.72v0" stroke="#9A8FBC" stroke-linecap="round" stroke-width=".1172"/>
+  <path d="m58.09 14.58-0.42-0.13" stroke="#9A8FBC" stroke-linecap="round" stroke-width=".1172"/>
+  <path d="m74.97 10.62h1.25" stroke="#977CB8" stroke-width=".168"/>
+  <path d="m74.97 11.06h1.25" stroke="#977CB8" stroke-width=".168"/>
+  <path d="m74.97 11.49h1.25" stroke="#977CB8" stroke-width=".168"/>
+  <text x="5.54297" y="41.1582" fill="#DBD6F0" font-family="Inter" font-size="1.465" font-weight="600" letter-spacing="-.01016">
+    <tspan x="5.54297" y="41.1582">Activity</tspan>
+  </text>
+  <text x="41.1758" y="41.1465" fill="#D2CCE4" font-family="Inter" font-size=".9375" letter-spacing="-.007812">
+    <tspan x="41.1758" y="41.1465">View daily numbers</tspan>
+  </text>
+  <path d="m49.91 40.69 0.24 0.25 0.26-0.25" stroke="#D2CCE4" stroke-width=".09375"/>
+  <circle cx="5.945" cy="43.27" r=".4062" fill="#B783E8"/>
+  <text x="6.80859" y="43.543" fill="#D2CCE4" font-family="Inter" font-size=".8438" letter-spacing="-.007812">
+    <tspan x="6.80859" y="43.543">Views</tspan>
+  </text>
+  <circle cx="11.53" cy="43.25" r=".4258" fill="#57C99F"/>
+  <text x="12.4023" y="43.5352" fill="#D2CCE4" font-family="Inter" font-size=".8438" letter-spacing="-.007812">
+    <tspan x="12.4023" y="43.5352">Checkout starts</tspan>
+  </text>
+  <path d="m7.33 45.65v10.21h43.15" stroke="#201D29" stroke-width=".05859"/>
+  <path d="m7.33 45.67h43.09" stroke="#201D29" stroke-width=".03516"/>
+  <path d="m7.33 48.17h43.09" stroke="#201D29" stroke-width=".03516"/>
+  <path d="m8.8 51.75v4.08" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m10.31 52.25v3.58" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m11.88 51.8v4.03" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m13.38 50.62v5.21" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m14.87 52.27v3.56" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m16.44 51.45v4.38" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m17.89 50.65v5.18" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m19.39 51.31v4.52" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m20.94 51.75v4.08" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m22.45 49.58v6.25" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m23.94 51.96v3.87" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m25.47 50.75v5.08" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m26.96 49.31v6.52" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m28.45 48.16v7.67" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m29.99 47.62v8.21" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m31.49 48.97v6.86" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m32.99 51.98v3.85" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m34.51 51.27v4.56" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m35.99 53.2v2.63" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m37.48 51.87v3.96" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m38.99 50.44v5.39" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m40.49 51.39v4.44" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m41.99 51.37v4.46" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m43.46 50.64v5.19" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m44.98 52.29v3.54" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m46.53 51.71v4.12" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m48.14 51.76v4.07" stroke="#B78AE6" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m9.23 54.73v1.1" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4219"/>
+  <path d="m10.74 54.73v1.1" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4219"/>
+  <path d="m12.31 54.45v1.38" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4219"/>
+  <path d="m13.76 54.45v1.38" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4219"/>
+  <path d="m15.31 54.95v0.88" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4219"/>
+  <path d="m16.78 54.59v1.24" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4219"/>
+  <path d="m18.3 54.12v1.71" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4219"/>
+  <path d="m19.85 54.77v1.06" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4219"/>
+  <path d="m21.32 54.59v1.24" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4219"/>
+  <path d="m22.83 54.59v1.24" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4219"/>
+  <path d="m24.38 54.83v1" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4219"/>
+  <path d="m25.9 54.68v1.15" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4219"/>
+  <path d="m27.4 53.86v1.97" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4609"/>
+  <path d="m28.94 53.69v2.14" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4453"/>
+  <path d="m30.38 53.33v2.5" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4453"/>
+  <path d="m31.86 53.65v2.18" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4453"/>
+  <path d="m33.37 54.53v1.3" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4805"/>
+  <path d="m34.86 54.32v1.51" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4219"/>
+  <path d="m36.39 54.86v0.97" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4219"/>
+  <path d="m37.89 54.57v1.26" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4844"/>
+  <path d="m39.38 54.31v1.52" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m40.98 54.89v0.94" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".3867"/>
+  <path d="m42.4 54.77v1.06" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4688"/>
+  <path d="m43.87 54.17v1.66" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4492"/>
+  <path d="m45.49 55.08v0.75" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".2773"/>
+  <path d="m46.97 54.55v1.28" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4688"/>
+  <path d="m48.64 53.87v1.96" stroke="#4DD1A2" stroke-linecap="round" stroke-width=".4609"/>
+  <text x="7.46484" y="57.7656" fill="#D2CCE4" font-family="Inter" font-size=".875" letter-spacing="-.007812">
+    <tspan x="7.46484" y="57.7656">Sep 1</tspan>
+  </text>
+  <text x="47.4258" y="57.7578" fill="#D2CCE4" font-family="Inter" font-size=".875" letter-spacing="-.007812">
+    <tspan x="47.4258" y="57.7578">Sep 30</tspan>
+  </text>
+  <text x="5.51953" y="63.2344" fill="#DBD6F0" font-family="Inter" font-size="1.25" font-weight="600" letter-spacing="-.01172">
+    <tspan x="5.51953" y="63.2344">Sales summary</tspan>
+  </text>
+  <text x="5.51562" y="66.2461" fill="#B795E3" font-family="Inter" font-size="2.148" letter-spacing="-.01562">
+    <tspan x="5.51562" y="66.2461">$108</tspan>
+  </text>
+  <text x="5.51172" y="67.8398" fill="#8678AB" font-family="Inter" font-size=".9375" letter-spacing="-.007812">
+    <tspan x="5.51172" y="67.8398">Before fees</tspan>
+  </text>
+  <path d="m28.04 62.72v4.76" stroke="#282536" stroke-width=".05469"/>
+  <circle cx="30.32" cy="65.21" r=".6133" stroke="#645C7E" stroke-width=".1055"/>
+  <circle cx="30.32" cy="65.12" r=".07812" fill="#645C7E"/>
+  <path d="m30.31 65.34v0.19" stroke="#645C7E" stroke-width=".09375"/>
+  <text x="31.6914" y="65.5703" fill="#D2CCE4" font-family="Inter" font-size=".875" letter-spacing="-.007812">
+    <tspan x="31.6914" y="65.5703">How these numbers work</tspan>
+  </text>
+  <path d="m42.99 65.13 0.24 0.18-0.24 0.19" stroke="#D2CCE4" stroke-width=".125"/>
+  <text x="57.8555" y="62.9336" fill="#DBD6F0" font-family="Inter" font-size="1.125" font-weight="600" letter-spacing="-.01172">
+    <tspan x="57.8555" y="62.9336">Sales summary</tspan>
+  </text>
+  <text x="57.8438" y="65.6133" fill="#C5B5E1" font-family="Inter" font-size="1.945" letter-spacing="-.01562">
+    <tspan x="57.8438" y="65.6133">$108</tspan>
+  </text>
+  <text x="57.8907" y="66.9336" fill="#8678AB" font-family="Inter" font-size=".8438" letter-spacing="-.007812">
+    <tspan x="57.8907" y="66.9336">Before fees</tspan>
+  </text>
+  <circle cx="58.33" cy="68.54" r=".4883" stroke="#645C7E" stroke-width=".1133"/>
+  <circle cx="58.33" cy="68.45" r=".0625" fill="#645C7E"/>
+  <path d="m58.33 68.61v0.15" stroke="#645C7E" stroke-width=".08594"/>
+  <text x="59.5547" y="68.9102" fill="#D2CCE4" font-family="Inter" font-size=".75" letter-spacing="-.007812">
+    <tspan x="59.5547" y="68.9102">How these numbers work</tspan>
+  </text>
+  <path d="m68.86 68.65 0.2 0.13-0.2 0.15" stroke="#D2CCE4" stroke-width=".08594"/>
+  <rect x="57.08" y="43.88" width="19.58" height="16.34" rx=".707" stroke="#332F45" stroke-width=".08594"/>
+  <text x="57.8203" y="46.1582" fill="#DBD6F0" font-family="Inter" font-size="1.105" font-weight="600" letter-spacing="-.007812">
+    <tspan x="57.8203" y="46.1582">Activity</tspan>
+  </text>
+  <text x="67.6445" y="46.1094" fill="#8678AB" font-family="Inter" font-size=".75" letter-spacing="-.007812">
+    <tspan x="67.6445" y="46.1094">View daily numbers</tspan>
+  </text>
+  <path d="m74.99 45.8 0.19 0.18 0.19-0.18" stroke="#8678AB" stroke-width=".08594"/>
+  <circle cx="58.15" cy="48.12" r=".3281" fill="#B783E8"/>
+  <text x="58.9727" y="48.3945" fill="#8678AB" font-family="Inter" font-size=".75" letter-spacing="-.007812">
+    <tspan x="58.9727" y="48.3945">Views</tspan>
+  </text>
+  <circle cx="63.21" cy="48.12" r=".3398" fill="#57C99F"/>
+  <text x="63.9492" y="48.3887" fill="#8678AB" font-family="Inter" font-size=".75" letter-spacing="-.007812">
+    <tspan x="63.9492" y="48.3887">Checkout starts</tspan>
+  </text>
+  <path d="m59.11 50.24v7.6h16.6" stroke="#201D29" stroke-width=".04688"/>
+  <path d="m59.11 50.27h16.43" stroke="#201D29" stroke-width=".02344"/>
+  <path d="m59.11 52.25h16.43" stroke="#201D29" stroke-width=".02344"/>
+  <path d="m59.76 54.55v3.26" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m60.52 54.75v3.06" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m61.45 54.23v3.58" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m61.91 53.69v4.12" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m62.96 53.75v4.06" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m63.65 54.01v3.8" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m64.74 52.81v5" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m66.3 52.46v5.35" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m66.94 51.38v6.43" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m67.65 51.33v6.48" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m68.13 52.33v5.48" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m69.26 54.05v3.76" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m70.24 54.54v3.27" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m71.17 53.56v4.25" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m72.16 53.8v4.01" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m73.01 53.8v4.01" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m73.53 54.6v3.21" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m74.32 54.51v3.3" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m74.84 54.59v3.22" stroke="#B78AE6" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m59.97 56.97v0.84" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2383"/>
+  <path d="m60.68 56.93v0.88" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2227"/>
+  <path d="m61.53 56.55v1.26" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m62.55 56.42v1.39" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2266"/>
+  <path d="m63.61 56.69v1.12" stroke="#73C2B5" stroke-linecap="round" stroke-width=".207"/>
+  <path d="m64.62 56.47v1.34" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2305"/>
+  <path d="m65.58 56.15v1.66" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2422"/>
+  <path d="m66.44 55.88v1.93" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m67.37 55.53v2.28" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2461"/>
+  <path d="m68.19 55.87v1.94" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2422"/>
+  <path d="m69.3 56.31v1.5" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2227"/>
+  <path d="m70.07 56.27v1.54" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2266"/>
+  <path d="m71.12 56.47v1.34" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2422"/>
+  <path d="m71.95 56.54v1.27" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2305"/>
+  <path d="m73.08 56.63v1.18" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2305"/>
+  <path d="m74.13 56.76v1.05" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2305"/>
+  <path d="m75.05 56.21v1.6" stroke="#73C2B5" stroke-linecap="round" stroke-width=".2617"/>
+  <text x="59.1953" y="59.2539" fill="#D2CCE4" font-family="Inter" font-size=".7188" letter-spacing="-.007812">
+    <tspan x="59.1953" y="59.2539">Sep 1</tspan>
+  </text>
+  <text x="73.375" y="59.2578" fill="#D2CCE4" font-family="Inter" font-size=".7188" letter-spacing="-.007812">
+    <tspan x="73.375" y="59.2578">Sep 30</tspan>
+  </text>
+  <text x="5.8125" y="32.1055" fill="#D2CCE4" font-family="Inter" font-size=".9688" font-weight="600" letter-spacing="-.007812">
+    <tspan x="5.8125" y="32.1055">Views</tspan>
+  </text>
+  <text x="5.77734" y="35.3164" fill="#B783E6" font-family="Inter" font-size="2.266" letter-spacing="-.01562">
+    <tspan x="5.77734" y="35.3164">148</tspan>
+  </text>
+  <text x="17.9141" y="32.0938" fill="#D2CCE4" font-family="Inter" font-size=".9688" font-weight="600" letter-spacing="-.007812">
+    <tspan x="17.9141" y="32.0938">Checkout starts</tspan>
+  </text>
+  <text x="17.8477" y="35.1328" fill="#DBD6F0" font-family="Inter" font-size="2.266">
+    <tspan x="17.8477" y="35.1328">24</tspan>
+  </text>
+  <text x="29.9766" y="32.0938" fill="#D2CCE4" font-family="Inter" font-size=".9688" font-weight="600" letter-spacing="-.007812">
+    <tspan x="29.9766" y="32.0938">Purchases</tspan>
+  </text>
+  <text x="29.9727" y="35.3359" fill="#B783E6" font-family="Inter" font-size="2.266">
+    <tspan x="29.9727" y="35.3359">6</tspan>
+  </text>
+  <text x="41.9336" y="32.0781" fill="#D2CCE4" font-family="Inter" font-size=".9688" font-weight="600" letter-spacing="-.007812">
+    <tspan x="41.9336" y="32.0781">Checkout conversion</tspan>
+  </text>
+  <text x="41.9023" y="35.1406" fill="#DBD6F0" font-family="Inter" font-size="2.266">
+    <tspan x="41.9023" y="35.1406">25.0%</tspan>
+  </text>
+  <text x="58.1758" y="32.0195" fill="#D2CCE4" font-family="Inter" font-size=".9219" font-weight="600" letter-spacing="-.007812">
+    <tspan x="58.1758" y="32.0195">Views</tspan>
+  </text>
+  <text x="58.125" y="34.7305" fill="#B783E6" font-family="Inter" font-size="2.074">
+    <tspan x="58.125" y="34.7305">148</tspan>
+  </text>
+  <text x="68.25" y="32.0117" fill="#D2CCE4" font-family="Inter" font-size=".9219" font-weight="600" letter-spacing="-.007812">
+    <tspan x="68.25" y="32.0117">Checkout starts</tspan>
+  </text>
+  <text x="68.2031" y="34.625" fill="#DBD6F0" font-family="Inter" font-size="2.074">
+    <tspan x="68.2031" y="34.625">24</tspan>
+  </text>
+  <text x="58.1406" y="38.9063" fill="#D2CCE4" font-family="Inter" font-size=".8906" font-weight="600" letter-spacing="-.007812">
+    <tspan x="58.1406" y="38.9063">Purchases</tspan>
+  </text>
+  <text x="58.0938" y="41.5938" fill="#B783E6" font-family="Inter" font-size="2.074">
+    <tspan x="58.0938" y="41.5938">6</tspan>
+  </text>
+  <text x="68.207" y="38.9219" fill="#D2CCE4" font-family="Inter" font-size=".75" letter-spacing="-.007812">
+    <tspan x="68.207" y="38.9219">Checkout conversion</tspan>
+  </text>
+  <text x="68.2031" y="41.3477" fill="#DBD6F0" font-family="Inter" font-size="1.875">
+    <tspan x="68.2031" y="41.3477">25.0%</tspan>
+  </text>
+  <text x="6.47266" y="27.4023" fill="#D2CCE4" font-family="Inter" font-size=".8594" letter-spacing="-.007812">
+    <tspan x="6.47266" y="27.4023">Last 7 days</tspan>
+  </text>
+  <text x="14.957" y="27.4023" fill="#090B0F" font-family="Inter" font-size=".8594" letter-spacing="-.007812">
+    <tspan x="14.957" y="27.4023">Last 30 days</tspan>
+  </text>
+  <text x="23.7852" y="27.4023" fill="#D2CCE4" font-family="Inter" font-size=".8594" letter-spacing="-.007812">
+    <tspan x="23.7852" y="27.4023">Last 90 days</tspan>
+  </text>
+  <text x="58.6563" y="27.9336" fill="#8678AB" font-family="Inter" font-size=".6406" letter-spacing="-.007812">
+    <tspan x="58.6563" y="27.9336">Last 7 days</tspan>
+  </text>
+  <text x="64.9336" y="27.9336" fill="#090B0F" font-family="Inter" font-size=".6406" letter-spacing="-.007812">
+    <tspan x="64.9336" y="27.9336">Last 30 days</tspan>
+  </text>
+  <text x="71.3398" y="27.9336" fill="#8678AB" font-family="Inter" font-size=".6406" letter-spacing="-.007812">
+    <tspan x="71.3398" y="27.9336">Last 90 days</tspan>
+  </text>
+  <path d="m50.51 15.35s-1.75-0.22-2.39 0.39c-0.97 0.95-1.71 3.17-2.03 3.72-0.6-0.44-2.13-1.32-2.96-1.29-0.78 0.03-1.29 0.99-1.99 1.8-0.64 0.77-1.4 0.87-1.4 0.93 0 0.08 1.15 0.46 1.69 0.39 0.94-0.12 1.4-1.56 1.59-1.76 0.49 0.4 2.03 1.37 2.53 1.32s1.67-0.56 2.12-1.21c0.54-0.82 0.78-2.3 1.05-2.52 0.49-0.07 1.51 0.01 1.51 0.01 0.14-0.53 0.28-1.78 0.28-1.78z" stroke="#000" stroke-opacity=".1" stroke-width=".05859"/>
+  <path d="m75.77 18.09s-0.88-0.11-1.22 0.21c-0.54 0.54-1.03 1.71-1.18 1.92-0.28-0.21-1.13-0.68-1.6-0.61-0.38 0.06-0.61 0.56-1.05 0.97-0.38 0.38-0.77 0.41-0.76 0.46 0.02 0.06 0.58 0.2 0.86 0.16 0.56-0.08 0.83-0.89 0.96-0.93 0.29 0.26 1.14 0.81 1.47 0.79 0.31-0.02 0.96-0.32 1.14-0.7 0.19-0.47 0.28-1.18 0.43-1.29 0.28-0.03 0.87-0.01 0.87-0.01 0.05-0.3 0.08-0.97 0.08-0.97z" stroke="#000" stroke-opacity=".1" stroke-width=".04297"/>
+</svg>
