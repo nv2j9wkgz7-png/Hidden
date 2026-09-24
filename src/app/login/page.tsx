@@ -24,8 +24,9 @@ export default async function Login({
       <div className="auth-form-wrap">
         {params.error && (
           <div role="alert" className="notice error">
-            The confirmation link expired or could not be verified. Please log
-            in or request a new signup confirmation.
+            This sign-in or reset link expired, was already used, or was opened
+            in a different browser. Log in below or use Forgot password to get a
+            fresh reset link.
           </div>
         )}
         <LoginForm

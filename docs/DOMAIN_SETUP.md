@@ -17,6 +17,12 @@ These are the records supplied by this Resend account; do not replace them with 
 Production application sender: `Hidn <purchases@sendhidn.com>`.
 The local app still uses its localhost APP_URL. Automatic purchase emails are enabled in Vercel. The local app remains without EMAIL_FROM to avoid sending localhost links. Secrets are stored only in ignored local files and Vercel environment variables.
 
+### Password recovery
+
+The login screen links to `/forgot-password`. Supabase sends a recovery email through its own authentication email configuration, independently of the application's Resend purchase emails. Recovery exchanges the PKCE code at `/auth/callback`, then opens `/reset-password`. Users must open the link in the browser that requested it. Missing, expired, or already-used links have a retry path; responses do not confirm whether an account exists.
+
+As of September 23, custom SMTP in Supabase is still disabled. The production delivery setup remains pending: use `smtp.resend.com`, port `465`, username `resend`, and a Resend sending API key as the SMTP password. The intended authentication sender is `Hidn <team@sendhidn.com>`. Save those settings in Supabase Authentication → Emails → SMTP Settings, then verify a real inbox-to-reset flow. Never commit the SMTP password or log reset links.
+
 ## Web hosting
 
 Vercel project `hidn/hidden` is connected to the existing GitHub repository and deployed from `main`. The active team is Hidn (currently a Pro trial); the old suspended `dre6` team is not used.

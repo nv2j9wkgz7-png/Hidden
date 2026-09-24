@@ -335,6 +335,50 @@ body:has(.file-drag-overlay) * {
   outline: 2px solid var(--accent);
   outline-offset: -4px;
 }
+.recovery-layout {
+  width: min(100%, 480px);
+  margin: clamp(28px, 7vw, 88px) auto;
+}
+.recovery-panel {
+  padding: clamp(24px, 5vw, 40px);
+}
+.recovery-panel h1 {
+  font-size: clamp(30px, 5vw, 40px);
+  line-height: 1.12;
+  margin: 12px 0;
+}
+.recovery-panel > p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+.recovery-panel input {
+  font-size: 16px;
+}
+.recovery-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 24px;
+  border-radius: 16px;
+  color: var(--accent);
+  background: #eee5f7;
+}
+.recovery-back,
+.forgot-password-link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 14px;
+}
+.forgot-password-link {
+  justify-content: flex-end;
+}
+.recovery-back {
+  justify-content: center;
+  margin-top: 18px;
+}
 .upload-limits {
   margin: 12px 0 18px;
   font-size: 13px;

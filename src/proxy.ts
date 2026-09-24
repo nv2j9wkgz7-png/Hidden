@@ -32,6 +32,8 @@ export const config = {
     '/dashboard',
     '/new',
     '/login',
+    '/forgot-password',
+    '/reset-password',
     '/auth/:path*',
     '/api/creator/:path*',
   ],

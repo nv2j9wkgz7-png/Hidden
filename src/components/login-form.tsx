@@ -3,6 +3,7 @@ import { createBrowserClient } from '@supabase/ssr';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff } from 'lucide-react';
+import { NavigationLink as Link } from './navigation-link';
 export function LoginForm({
   initialSignup = false,
   destination = '/dashboard',
@@ -107,6 +108,11 @@ export function LoginForm({
             </button>
           </div>
           {signup && <small>Use at least 8 characters.</small>}
+          {!signup && (
+            <Link className="forgot-password-link" href="/forgot-password">
+              Forgot password?
+            </Link>
+          )}
         </div>
         {error && (
           <div role="alert" className="notice error">
