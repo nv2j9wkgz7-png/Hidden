@@ -60,7 +60,7 @@ export default async function Payouts({
           <h2>
             {status?.ready
               ? 'Your payouts are connected'
-              : status?.submitted && !status.needsAttention
+              : status?.underReview
                 ? 'Stripe is reviewing your details'
                 : account
                   ? 'Finish setting up payouts'
@@ -69,7 +69,9 @@ export default async function Payouts({
           <p>
             {status?.ready
               ? 'Available funds are paid to your connected bank on your Stripe payout schedule.'
-              : 'Connect your bank and verify your details securely with Stripe. Hidn never stores your bank details.'}
+              : status?.underReview
+                ? 'Your setup is submitted. Stripe is verifying your details; no additional information is currently requested. Payments will become available once Stripe enables your account.'
+                : 'Connect your bank and verify your details securely with Stripe. Hidn never stores your bank details.'}
           </p>
           {params.refresh && (
             <p role="status">
@@ -84,13 +86,17 @@ export default async function Payouts({
           )}
           <PayoutAction
             needsCountry={!account}
-            action={status?.ready ? 'dashboard' : 'onboard'}
+            action={
+              status?.ready || status?.underReview ? 'dashboard' : 'onboard'
+            }
           >
             {status?.ready
               ? 'Manage payouts ↗'
-              : account
-                ? 'Continue setup ↗'
-                : 'Set up payouts ↗'}
+              : status?.underReview
+                ? 'View Stripe status ↗'
+                : account
+                  ? 'Continue setup ↗'
+                  : 'Set up payouts ↗'}
           </PayoutAction>
         </div>
       </section>

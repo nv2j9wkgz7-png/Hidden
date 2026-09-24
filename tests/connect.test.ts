@@ -34,6 +34,60 @@ test('payout eligibility requires charges, payouts and active card payments with
 });
 
 import { hidnFee, earningsEstimate } from '../src/lib/fees';
+test('submitted identity verification shows review without enabling payments', () => {
+  const pending = {
+    charges_enabled: false,
+    payouts_enabled: false,
+    details_submitted: true,
+    capabilities: { card_payments: 'pending', transfers: 'active' },
+    controller: { fees: { payer: 'account' } },
+    requirements: {
+      currently_due: [],
+      past_due: [],
+      errors: [],
+      disabled_reason: 'requirements.pending_verification',
+      pending_verification: [
+        'individual.id_number',
+        'individual.verification.document',
+      ],
+    },
+  } as unknown as Stripe.Account;
+  assert.deepEqual(payoutStatus(pending), {
+    ready: false,
+    submitted: true,
+    needsAttention: false,
+    underReview: true,
+  });
+  for (const requirements of [
+    { currently_due: ['external_account'] },
+    { past_due: ['individual.id_number'] },
+    { errors: [{ code: 'verification_failed' }] },
+    { disabled_reason: 'rejected.fraud' },
+  ]) {
+    const status = payoutStatus({
+      ...pending,
+      requirements: { ...pending.requirements, ...requirements },
+    } as Stripe.Account);
+    assert.equal(status.needsAttention, true);
+    assert.equal(status.underReview, false);
+    assert.equal(status.ready, false);
+  }
+  assert.equal(
+    payoutStatus({ ...pending, details_submitted: false }).underReview,
+    false,
+  );
+  assert.equal(
+    payoutStatus({
+      ...pending,
+      charges_enabled: true,
+      payouts_enabled: true,
+      capabilities: { card_payments: 'active' },
+      requirements: { currently_due: [], pending_verification: [] },
+    } as unknown as Stripe.Account).underReview,
+    false,
+  );
+});
+
 test('5% fee uses integer cents and processing estimates remain separate', () => {
   assert.equal(hidnFee(2500), 125);
   assert.equal(hidnFee(50), 3);
