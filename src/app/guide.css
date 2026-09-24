@@ -2,7 +2,8 @@
 .visual-guide {
   max-width: 1040px;
 }
-.visual-guide .guide-intro {
+.visual-guide .guide-intro,
+html[data-theme='blackout'] .visual-guide .guide-intro {
   border: 0;
   background: transparent;
   padding: 4px 0 12px;
@@ -19,7 +20,8 @@
   color: var(--muted);
   font-size: 16px;
 }
-.visual-guide .howto-steps {
+.visual-guide .howto-steps,
+html[data-theme='blackout'] .visual-guide .howto-steps {
   padding: 0;
   margin: 26px 0;
   gap: 22px;
