@@ -13,7 +13,7 @@ export const POST = handler(async (request) => {
   if (!canAccessPurchase(purchase, drop_id))
     throw new HttpError(
       403,
-      'Downloads require a confirmed purchase within its 72-hour access window.',
+      'Log in to your saved purchase or use an unexpired paid guest link to download files.',
     );
   await rateLimit(`download:${purchase!.id}`, 120);
   const db = admin();

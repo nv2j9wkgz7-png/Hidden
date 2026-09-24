@@ -1682,3 +1682,47 @@ body:has(.image-viewer[open]) {
 body:has(.share-page) > footer {
   display: none;
 }
+
+/* Private purchase library: originals are visible together, grouped by collection. */
+.purchase-library {
+  max-width: 1120px;
+  margin: 36px auto 64px;
+}
+.purchase-library > p {
+  max-width: 680px;
+}
+.purchase-collection {
+  margin-top: 48px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+.purchase-collection-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.purchase-collection-heading h2 {
+  margin: 0;
+}
+.purchase-collection-heading p {
+  margin: 8px 0 0;
+}
+.purchase-library .image-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.purchase-pagination {
+  display: flex;
+  gap: 16px;
+  margin-top: 32px;
+}
+@media (max-width: 640px) {
+  .purchase-library .image-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .purchase-collection-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

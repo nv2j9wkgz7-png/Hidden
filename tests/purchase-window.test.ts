@@ -115,3 +115,43 @@ test('requested email includes the original deadline and optional ZIP attachment
     );
   }
 });
+
+test('only authenticated saved ownership bypasses the guest deadline, never refunds', () => {
+  const purchase = {
+    status: 'PAID',
+    drop_id: 'a',
+    paid_at: '2026-01-01T00:00:00Z',
+    account_access: true,
+  };
+  const later = Date.parse('2026-02-01T00:00:00Z');
+  assert.equal(canAccessPurchase(purchase, 'a', later), true);
+  assert.equal(purchaseViewStatus(purchase, later), 'PAID');
+  assert.equal(originalLinkLifetime(purchase, later), 60);
+  assert.equal(purchaseExpiresAt(purchase), '2026-01-04T00:00:00.000Z');
+  assert.equal(
+    canAccessPurchase({ ...purchase, account_access: false }, 'a', later),
+    false,
+  );
+  assert.equal(
+    canAccessPurchase({ ...purchase, status: 'REFUNDED' }, 'a', later),
+    false,
+  );
+  assert.equal(
+    canAccessPurchase({ ...purchase, paid_at: null }, 'a', later),
+    false,
+  );
+  assert.equal(canAccessPurchase(purchase, 'another-drop', later), false);
+});
+
+test('saved purchase email requires login and never promises a permanent guest link', () => {
+  const message = requestedPurchaseEmail({
+    title: 'Saved',
+    url: 'https://sendhidn.com/purchases',
+    expiresAt: null,
+    attached: false,
+    accountAccess: true,
+  });
+  assert.match(message.text, /requires the account/);
+  assert.match(message.text, /Log in to My purchases/);
+  assert.doesNotMatch(message.text, /#access|No Hidn account needed|72 hours/);
+});

@@ -39,6 +39,9 @@ export async function AccountMenu() {
           <Link className="account-payout-link" href="/dashboard">
             My drops ↗
           </Link>
+          <Link className="account-payout-link" href="/purchases">
+            My purchases ↗
+          </Link>
           <Link className="account-payout-link" href="/dashboard/payouts">
             Earnings & payouts ↗
           </Link>

@@ -71,6 +71,7 @@ export function PaidGallery({
                     <img
                       src={asset.url}
                       alt={asset.name}
+                      loading="lazy"
                       width={800}
                       height={800}
                       referrerPolicy="no-referrer"

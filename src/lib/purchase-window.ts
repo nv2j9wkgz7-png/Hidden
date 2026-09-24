@@ -1,7 +1,12 @@
 import { canDownload } from './security';
 
 export const PURCHASE_ACCESS_MS = 72 * 60 * 60 * 1000;
-type Purchase = { status: string; drop_id: string; paid_at?: string | null };
+type Purchase = {
+  status: string;
+  drop_id: string;
+  paid_at?: string | null;
+  account_access?: boolean;
+};
 export function purchaseExpiresAt(purchase: Purchase | null) {
   const paid = purchase?.paid_at ? Date.parse(purchase.paid_at) : NaN;
   return Number.isFinite(paid)
@@ -15,7 +20,9 @@ export function canAccessPurchase(
 ) {
   const expires = purchaseExpiresAt(purchase);
   return (
-    canDownload(purchase, dropId) && !!expires && now < Date.parse(expires)
+    canDownload(purchase, dropId) &&
+    !!expires &&
+    (purchase?.account_access === true || now < Date.parse(expires))
   );
 }
 export function purchaseViewStatus(
@@ -31,6 +38,11 @@ export function purchaseViewStatus(
   return purchase.status;
 }
 export function originalLinkLifetime(purchase: Purchase, now = Date.now()) {
+  if (
+    purchase.account_access &&
+    canAccessPurchase(purchase, purchase.drop_id, now)
+  )
+    return 60;
   const expires = purchaseExpiresAt(purchase);
   return expires
     ? Math.max(0, Math.min(60, Math.floor((Date.parse(expires) - now) / 1000)))

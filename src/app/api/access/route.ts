@@ -14,16 +14,20 @@ export const GET = handler(async (request) => {
     status: string;
     token?: string;
     expires_at: string | null;
+    account_saved: boolean;
+    library_url?: string;
   } = {
     status: purchaseViewStatus(purchase),
-    expires_at: purchaseExpiresAt(purchase),
+    expires_at: purchase?.account_access ? null : purchaseExpiresAt(purchase),
+    account_saved: purchase?.account_access === true,
   };
   // Requested explicitly by the buyer to save their private recovery link.
   if (
     response.status === 'PAID' &&
     new URL(request.url).searchParams.get('recovery') === '1'
   )
-    response.token = (await cookies()).get(accessCookie(dropId))!.value;
+    if (purchase?.account_access) response.library_url = '/purchases';
+    else response.token = (await cookies()).get(accessCookie(dropId))!.value;
   return json(response);
 });
 export const POST = handler(async (request) => {

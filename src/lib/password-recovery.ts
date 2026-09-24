@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { loginDestination } from './login-destination';
 
 export const newPasswordInput = z
   .object({
@@ -26,5 +27,5 @@ export function authCallbackDestination({
 }) {
   if (failed) return '/login?error=confirmation';
   if (redirectType === 'recovery') return '/reset-password';
-  return next === 'new' ? '/new' : '/dashboard';
+  return loginDestination(next);
 }

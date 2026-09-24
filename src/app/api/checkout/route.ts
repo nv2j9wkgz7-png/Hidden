@@ -16,6 +16,7 @@ import { paymentProvider } from '@/lib/payments';
 import { newToken, hashToken, accessCookie } from '@/lib/security';
 import { cookieOptions, purchaseAccess } from '@/lib/access';
 import { purchaseViewStatus } from '@/lib/purchase-window';
+import { supabase } from '@/lib/supabase/server';
 export const POST = handler(async (request) => {
   sameOrigin(request);
   const { drop_id } = z
@@ -79,7 +80,7 @@ export const POST = handler(async (request) => {
     .eq('status', 'READY')
     .order('sort_order');
   if (assetsError) throw assetsError;
-  const summary = `${assets?.length || 0} files · ${fileSize((assets || []).reduce((sum, asset) => sum + asset.size_bytes, 0))}. View and download originals or ZIP for 72 hours after payment. Keep downloaded files.`;
+  const summary = `${assets?.length || 0} files · ${fileSize((assets || []).reduce((sum, asset) => sum + asset.size_bytes, 0))}. 72-hour guest access, or save to an account for ongoing access while files remain available. Keep downloaded files.`;
   const accountId = await readyPayoutAccount(drop.creator_id);
   if (!accountId)
     throw new HttpError(
@@ -89,6 +90,9 @@ export const POST = handler(async (request) => {
   const platformFee = hidnFee(drop.price_cents);
   const provider = paymentProvider('stripe', accountId);
   const token = newToken();
+  const {
+    data: { user },
+  } = await (await supabase()).auth.getUser();
   const { data: purchase, error: insertError } = await db
     .from('purchases')
     .insert({
@@ -99,6 +103,9 @@ export const POST = handler(async (request) => {
       access_token: hashToken(token),
       stripe_account_id: accountId,
       platform_fee_cents: platformFee,
+      ...(user
+        ? { buyer_id: user.id, saved_at: new Date().toISOString() }
+        : {}),
     })
     .select('id')
     .single();

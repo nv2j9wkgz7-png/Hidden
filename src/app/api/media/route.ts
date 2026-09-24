@@ -17,7 +17,7 @@ export const GET = handler(async (request) => {
   if (!canAccessPurchase(purchase, drop_id))
     throw new HttpError(
       403,
-      'Viewing requires a confirmed purchase within its 72-hour access window.',
+      'Log in to your saved purchase or use an unexpired paid guest link to view files.',
     );
   await rateLimit(`media:${purchase!.id}`, 600);
   const db = admin();

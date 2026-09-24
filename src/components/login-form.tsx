@@ -9,7 +9,7 @@ export function LoginForm({
   destination = '/dashboard',
 }: {
   initialSignup?: boolean;
-  destination?: '/new' | '/dashboard';
+  destination?: string;
 }) {
   const [signup, setSignup] = useState(initialSignup),
     [showPassword, setShowPassword] = useState(false),
@@ -36,7 +36,7 @@ export function LoginForm({
         ? await client.auth.signUp({
             ...credentials,
             options: {
-              emailRedirectTo: `${window.location.origin}/auth/callback${destination === '/new' ? '?next=new' : ''}`,
+              emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(destination)}`,
             },
           })
         : await client.auth.signInWithPassword(credentials);
@@ -56,12 +56,18 @@ export function LoginForm({
   }
   return (
     <div className="panel">
-      <div className="eyebrow">Your creator workspace</div>
+      <div className="eyebrow">
+        {destination.startsWith('/purchases')
+          ? 'Your private library'
+          : 'Your creator workspace'}
+      </div>
       <h1>{signup ? 'Make it yours.' : 'Welcome back.'}</h1>
       <p>
-        {signup
-          ? 'Create an account to publish your first drop.'
-          : 'Log in to manage your drops.'}
+        {destination.startsWith('/purchases')
+          ? 'Save your purchases in one private library. Come back on any device while the files remain available.'
+          : signup
+            ? 'Create an account to publish your first drop.'
+            : 'Log in to manage your drops.'}
       </p>
       <form
         key={signup ? 'signup' : 'login'}

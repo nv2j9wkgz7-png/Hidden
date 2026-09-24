@@ -85,10 +85,25 @@ export async function sendEmail(
 export function requestedPurchaseEmail(input: {
   title: string;
   url: string;
-  expiresAt: string;
+  expiresAt: string | null;
   attached: boolean;
+  accountAccess?: boolean;
 }) {
-  const deadline = new Date(input.expiresAt).toUTCString();
+  if (input.accountAccess) {
+    const intro = input.attached
+      ? 'Your ZIP is attached. Save it to keep your original files.'
+      : 'Your collection is too large to attach. Log in to My purchases, open your collection, and select Download all to save your ZIP.';
+    const note =
+      'Your saved purchase is available in your private library while the files remain available. This link requires the account that saved the purchase. Attachments are yours to keep; keep this email private.';
+    return {
+      subject: input.attached
+        ? 'Your requested Hidn ZIP'
+        : 'Your requested Hidn ZIP download link',
+      text: `${input.title}\n\n${intro}\n\nMy purchases:\n${input.url}\n\n${note}\n\nYou received this email because you requested it.`,
+      html: `<html><body style="font-family:Arial,sans-serif;background:#08070a;color:#f5f0fa;padding:32px"><h1>Hidn</h1><h2>${escapeHtml(input.title)}</h2><p>${intro}</p><p><a style="color:#c399f4" href="${escapeHtml(input.url)}">Log in to My purchases</a></p><p>${note}</p><small>You received this email because you requested it.</small></body></html>`,
+    };
+  }
+  const deadline = new Date(input.expiresAt!).toUTCString();
   const intro = input.attached
     ? 'Your ZIP is attached. Save it to keep your original files.'
     : 'Your collection is too large to attach. Open the private link below and select Download all to save your ZIP.';

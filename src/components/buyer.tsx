@@ -1,4 +1,5 @@
 'use client';
+import { NavigationLink as Link } from './navigation-link';
 import { notifyCopied } from './toast';
 import { PaidGallery } from './paid-gallery';
 import { useEffect, useRef, useState } from 'react';
@@ -31,6 +32,7 @@ export function Buyer({
 }: {
   drop: {
     id: string;
+    slug?: string;
     title: string;
     description?: string;
     price_cents: number;
@@ -44,6 +46,7 @@ export function Buyer({
     [error, setError] = useState(''),
     [recovery, setRecovery] = useState(''),
     [waited, setWaited] = useState(false);
+  const [accountSaved, setAccountSaved] = useState(false);
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
   const [now, setNow] = useState(Date.now());
   const [emailMessage, setEmailMessage] = useState('');
@@ -75,6 +78,7 @@ export function Buyer({
         if (!response.ok) throw new Error(data.error);
         if (cancelled) return;
         setStatus(data.status);
+        setAccountSaved(data.account_saved === true);
         setExpiresAt(data.expires_at || null);
         setNow(Date.now());
         if (data.status === 'PENDING' && attempts++ < 60)
@@ -191,8 +195,12 @@ export function Buyer({
         { cache: 'no-store' },
       );
       const data = await response.json();
-      if (!response.ok || !data.token)
+      if (!response.ok || (!data.token && !data.library_url))
         throw new Error('Access could not be verified.');
+      if (data.library_url) {
+        window.location.assign(data.library_url);
+        return;
+      }
       const link = `${window.location.origin}${window.location.pathname}#access=${data.token}`;
       setRecovery(link);
       if (method === 'download') {
@@ -281,7 +289,10 @@ export function Buyer({
         <p>
           {assets.length} files ·{' '}
           {fileSize(assets.reduce((n, a) => n + a.size_bytes, 0))} · One
-          collection · Download within 72 hours of payment. Keep your downloads.
+          collection ·{' '}
+          {accountSaved
+            ? 'Saved in your private library.'
+            : '72-hour guest access. Save to an account for ongoing access.'}
         </p>
       </div>
       <div className={`buyer-layout${paid ? ' buyer-paid' : ''}`}>
@@ -341,7 +352,10 @@ export function Buyer({
           {paid ? (
             <p className="hint">
               Tap a photo to view it full size, or play a video. Download your
-              originals before your 72-hour access window ends.
+              originals
+              {accountSaved
+                ? ' whenever you like while the files remain available.'
+                : ' before your 72-hour guest access ends, or save this purchase to your account.'}
             </p>
           ) : status === 'EXPIRED' ? (
             <p className="hint">
@@ -356,7 +370,8 @@ export function Buyer({
               <p className="hint">
                 One-time payment. All {assets.length} files ·{' '}
                 {fileSize(assets.reduce((n, a) => n + a.size_bytes, 0))} total.{' '}
-                View and download for 72 hours after payment. No login needed.
+                No login needed. View and download for 72 hours as a guest, or
+                save to an account for ongoing access.
               </p>
             </>
           )}
@@ -367,9 +382,9 @@ export function Buyer({
                 left to download
               </strong>
               <p className="hint">
-                Access ends {new Date(expiresAt).toLocaleString()}. Save your
-                files before then. Reopening or emailing a link does not reset
-                this deadline.
+                Guest access ends {new Date(expiresAt).toLocaleString()}.
+                Download your files or save to your account before then.
+                Reopening or emailing a link does not reset this deadline.
               </p>
             </div>
           )}
@@ -401,31 +416,60 @@ export function Buyer({
                   <Download size={16} />
                   {busy === 'all' ? 'Preparing ZIP…' : 'Download all'}
                 </button>
-                <button
-                  className="secondary full"
-                  style={{ marginTop: 10 }}
-                  onClick={() => saveAccess()}
-                >
-                  <Link2 size={14} /> Copy private access link
-                </button>
-                <button
-                  className="secondary full"
-                  style={{ marginTop: 10 }}
-                  onClick={() => saveAccess('share')}
-                >
-                  <Share2 size={14} /> Share or save access link
-                </button>
-                <button
-                  className="text-button full"
-                  style={{ marginTop: 10 }}
-                  onClick={() => saveAccess('download')}
-                >
-                  <Download size={14} /> Download access link
-                </button>
-                <p className="hint">
-                  Keep your private link safe. Anyone with it can view and
-                  download until the 72-hour deadline.
-                </p>
+                {accountSaved ? (
+                  <div className="notice">
+                    <strong>Saved to My purchases</strong>
+                    <p className="hint">
+                      Log in on any device to find all your purchased photos and
+                      videos.
+                    </p>
+                    <Link className="secondary full" href="/purchases">
+                      Open My purchases ↗
+                    </Link>
+                  </div>
+                ) : (
+                  <>
+                    {drop.slug && (
+                      <div className="notice">
+                        <Link
+                          className="secondary full"
+                          href={`/purchases/save/${drop.slug}`}
+                        >
+                          Save to my account
+                        </Link>
+                        <p className="hint">
+                          Optional. Keep access in your private library while
+                          the files remain available.
+                        </p>
+                      </div>
+                    )}
+                    <button
+                      className="secondary full"
+                      style={{ marginTop: 10 }}
+                      onClick={() => saveAccess()}
+                    >
+                      <Link2 size={14} /> Copy private access link
+                    </button>
+                    <button
+                      className="secondary full"
+                      style={{ marginTop: 10 }}
+                      onClick={() => saveAccess('share')}
+                    >
+                      <Share2 size={14} /> Share or save access link
+                    </button>
+                    <button
+                      className="text-button full"
+                      style={{ marginTop: 10 }}
+                      onClick={() => saveAccess('download')}
+                    >
+                      <Download size={14} /> Download access link
+                    </button>
+                    <p className="hint">
+                      Keep your private link safe. Anyone with it can view and
+                      download until the 72-hour deadline.
+                    </p>
+                  </>
+                )}
                 <button
                   className="secondary full"
                   disabled={!!busy}
@@ -438,7 +482,10 @@ export function Buyer({
                 </button>
                 <p className="hint">
                   Only sent when you ask. ZIPs up to 15 MB are attached; larger
-                  collections get a download link with the same deadline.
+                  collections get{' '}
+                  {accountSaved
+                    ? 'a link to your library that requires your login.'
+                    : 'a download link with the same deadline.'}
                 </p>
                 {emailMessage && (
                   <p className="notice" role="status">
@@ -508,7 +555,9 @@ export function Buyer({
           )}
           <p className="payment-note">
             {paid
-              ? 'Private access lasts 72 hours from payment. Downloads are yours to keep.'
+              ? accountSaved
+                ? 'Saved purchases require your login. Downloads are yours to keep.'
+                : 'Guest access lasts 72 hours. Save to your account for ongoing access.'
               : status === 'EXPIRED'
                 ? 'The original payment deadline cannot be extended by copying or emailing a link.'
                 : 'No account needed · Secure checkout by Stripe'}

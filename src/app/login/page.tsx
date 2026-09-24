@@ -2,6 +2,7 @@ import { configured } from '@/lib/env';
 import { LoginForm } from '@/components/login-form';
 import { Setup } from '@/components/setup';
 import { ExampleDrops } from '@/components/example-drops';
+import { loginDestination } from '@/lib/login-destination';
 export default async function Login({
   searchParams,
 }: {
@@ -9,17 +10,26 @@ export default async function Login({
 }) {
   if (!configured()) return <Setup />;
   const params = await searchParams;
+  const buyerLogin = loginDestination(params.next).startsWith('/purchases');
   return (
     <section className="auth-layout">
       <div className="auth-story">
-        <div className="eyebrow">Your work. Your world.</div>
+        <div className="eyebrow">
+          {buyerLogin
+            ? 'Your collection. Your corner.'
+            : 'Your work. Your world.'}
+        </div>
         <h2>
-          Make something.
+          {buyerLogin ? 'All your favourites.' : 'Make something.'}
           <br />
-          <em>Make it yours.</em>
+          <em>{buyerLogin ? 'All together.' : 'Make it yours.'}</em>
         </h2>
         <ExampleDrops />
-        <p>Add your photos and videos. Set your price. Share your link.</p>
+        <p>
+          {buyerLogin
+            ? 'Your purchased photos and videos, saved in one private place.'
+            : 'Add your photos and videos. Set your price. Share your link.'}
+        </p>
       </div>
       <div className="auth-form-wrap">
         {params.error && (
@@ -30,9 +40,9 @@ export default async function Login({
           </div>
         )}
         <LoginForm
-          key={`${params.mode === 'signup' ? 'signup' : 'login'}-${params.next === 'new' ? 'new' : 'dashboard'}`}
+          key={`${params.mode}-${loginDestination(params.next)}`}
           initialSignup={params.mode === 'signup'}
-          destination={params.next === 'new' ? '/new' : '/dashboard'}
+          destination={loginDestination(params.next)}
         />
       </div>
     </section>

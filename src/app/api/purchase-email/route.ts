@@ -23,7 +23,7 @@ export const POST = handler(async (request) => {
   if (!canAccessPurchase(access, drop_id))
     throw new HttpError(
       403,
-      'Email delivery is available only during your paid 72-hour access window.',
+      'Log in to your saved purchase or open an unexpired paid guest link to request email delivery.',
     );
   await rateLimit(`purchase-email:${access!.id}`, 5);
   if (
@@ -38,11 +38,17 @@ export const POST = handler(async (request) => {
   const db = admin();
   const { data: purchase, error } = await db
     .from('purchases')
-    .select('id,drop_id,status,paid_at,customer_email')
+    .select('id,buyer_id,drop_id,status,paid_at,customer_email')
     .eq('id', access!.id)
     .single();
   if (error) throw error;
-  if (!canAccessPurchase(purchase, drop_id))
+  const accountAccess =
+    access!.account_access &&
+    !!purchase.buyer_id &&
+    purchase.buyer_id === access!.buyer_id;
+  if (
+    !canAccessPurchase({ ...purchase, account_access: accountAccess }, drop_id)
+  )
     throw new HttpError(403, 'Purchase access has ended.');
   if (!purchase.customer_email)
     throw new HttpError(
@@ -68,23 +74,38 @@ export const POST = handler(async (request) => {
     if (error) throw error;
     return new Uint8Array(await data.arrayBuffer());
   });
-  const token = emailAccessToken(purchase.id, env('EMAIL_ACCESS_SECRET'));
-  // Recheck payment and the original deadline before sending. This doesn't renew access.
-  const { data: ready, error: tokenError } = await db
-    .from('purchases')
-    .update({ email_access_token: hashToken(token) })
-    .eq('id', purchase.id)
-    .eq('status', 'PAID')
-    .gt('paid_at', new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString())
-    .select('id')
-    .maybeSingle();
-  if (tokenError) throw tokenError;
-  if (!ready) throw new HttpError(403, 'Purchase access has ended.');
-  const url = new URL(`/d/${drop.slug}`, appUrl());
+  const url = new URL(
+    accountAccess ? '/purchases' : `/d/${drop.slug}`,
+    appUrl(),
+  );
   if (url.protocol !== 'https:')
     throw new HttpError(503, 'Email requires a secure site address.');
-  url.hash = `access=${token}`;
-  const expiresAt = purchaseExpiresAt(purchase)!;
+  if (accountAccess) {
+    // Saved purchases never get a permanent bearer link. Recheck ownership and payment.
+    const { data: ready, error: readyError } = await db
+      .from('purchases')
+      .select('id')
+      .eq('id', purchase.id)
+      .eq('buyer_id', purchase.buyer_id)
+      .eq('status', 'PAID')
+      .maybeSingle();
+    if (readyError) throw readyError;
+    if (!ready) throw new HttpError(403, 'Purchase access has ended.');
+  } else {
+    const token = emailAccessToken(purchase.id, env('EMAIL_ACCESS_SECRET'));
+    const { data: ready, error: tokenError } = await db
+      .from('purchases')
+      .update({ email_access_token: hashToken(token) })
+      .eq('id', purchase.id)
+      .eq('status', 'PAID')
+      .gt('paid_at', new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString())
+      .select('id')
+      .maybeSingle();
+    if (tokenError) throw tokenError;
+    if (!ready) throw new HttpError(403, 'Purchase access has ended.');
+    url.hash = `access=${token}`;
+  }
+  const expiresAt = accountAccess ? null : purchaseExpiresAt(purchase)!;
   const id = await sendEmail({
     apiKey: env('RESEND_API_KEY'),
     from: env('EMAIL_FROM'),
@@ -95,6 +116,7 @@ export const POST = handler(async (request) => {
       url: url.toString(),
       expiresAt,
       attached: !!archive,
+      accountAccess,
     }),
     ...(archive
       ? {

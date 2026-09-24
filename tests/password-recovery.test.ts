@@ -118,3 +118,27 @@ test('regular auth callbacks preserve first-drop signup and reject arbitrary red
     );
   }
 });
+
+test('buyer login returns preserve library and exact save routes without open redirects', () => {
+  for (const next of [
+    'purchases',
+    '/purchases',
+    '/purchases/save/485307130f7e77fcd03bc436',
+  ]) {
+    assert.equal(
+      authCallbackDestination({ failed: false, next }),
+      next === 'purchases' ? '/purchases' : next,
+    );
+  }
+  for (const next of [
+    '/purchases//evil',
+    '/purchases/save/../other',
+    '/purchases?next=https://evil.example',
+    '/purchases/save/485307130f7e77fcd03bc436?next=evil',
+  ]) {
+    assert.equal(
+      authCallbackDestination({ failed: false, next }),
+      '/dashboard',
+    );
+  }
+});

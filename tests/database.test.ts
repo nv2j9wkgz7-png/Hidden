@@ -706,5 +706,68 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
       await db.exec('reset role');
     },
   );
+  await t.test(
+    'saved purchases have private one-time ownership without renewing guest access',
+    async () => {
+      await db.exec(
+        await readFile(
+          'supabase/migrations/20260924040000_saved_purchases.sql',
+          'utf8',
+        ),
+      );
+      const purchase = crypto.randomUUID();
+      await db.query(
+        "insert into public.purchases(id,drop_id,payment_provider,amount_cents,access_token,status,paid_at) values($1,$2,'stripe',100,$3,'PAID',now())",
+        [purchase, drop, hashToken(newToken())],
+      );
+      const claim = (buyer: string) =>
+        db.query(
+          "update public.purchases set buyer_id=$1,saved_at=now() where id=$2 and buyer_id is null and status='PAID' and paid_at > now()-interval '72 hours' returning id",
+          [buyer, purchase],
+        );
+      const before = (
+        await db.query('select paid_at from public.purchases where id=$1', [
+          purchase,
+        ])
+      ).rows;
+      assert.equal((await claim(other)).rows.length, 1);
+      assert.equal((await claim(creator)).rows.length, 0);
+      assert.deepEqual(
+        (
+          await db.query('select paid_at from public.purchases where id=$1', [
+            purchase,
+          ])
+        ).rows,
+        before,
+      );
+      assert.equal(
+        (
+          await db.query(
+            'select id from public.purchases where id=$1 and buyer_id=$2',
+            [purchase, creator],
+          )
+        ).rows.length,
+        0,
+      );
+      for (const role of ['anon', 'authenticated']) {
+        await db.exec(`set role ${role}`);
+        await assert.rejects(db.query('select buyer_id from public.purchases'));
+        await assert.rejects(
+          db.query('update public.purchases set buyer_id=$1', [creator]),
+        );
+        await db.exec('reset role');
+      }
+      await db.query(
+        "update public.purchases set buyer_id=null,paid_at=now()-interval '73 hours' where id=$1",
+        [purchase],
+      );
+      assert.equal((await claim(other)).rows.length, 0);
+      await db.query(
+        "update public.purchases set status='REFUNDED',paid_at=now() where id=$1",
+        [purchase],
+      );
+      assert.equal((await claim(other)).rows.length, 0);
+    },
+  );
   await db.close();
 });

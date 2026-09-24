@@ -36,5 +36,13 @@ export const config = {
     '/reset-password',
     '/auth/:path*',
     '/api/creator/:path*',
+    '/purchases/:path*',
+    '/api/purchases/:path*',
+    '/d/:path*',
+    '/api/access',
+    '/api/media',
+    '/api/downloads',
+    '/api/purchase-email',
+    '/api/checkout',
   ],
 };
