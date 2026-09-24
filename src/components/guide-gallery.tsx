@@ -17,38 +17,91 @@ export function GuideGallery({ children }: { children: ReactNode }) {
   const [height, setHeight] = useState<number>();
   const count = Children.count(children);
 
-  function syncPosition() {
-    const rail = track.current;
-    if (!rail) return;
-    const cards = Array.from(rail.children) as HTMLElement[];
-    const left = rail.getBoundingClientRect().left;
-    let nearest = 0;
-    cards.forEach((card, index) => {
-      if (
-        Math.abs(card.getBoundingClientRect().left - left) <
-        Math.abs(cards[nearest].getBoundingClientRect().left - left)
-      )
-        nearest = index;
-    });
-    setActive(nearest);
-    if (cards[nearest])
-      setHeight(Math.ceil(cards[nearest].getBoundingClientRect().height) + 2);
-  }
-
   useEffect(() => {
     const rail = track.current;
     if (!rail) return;
+    const cards = Array.from(rail.children) as HTMLElement[];
     const query = window.matchMedia('(max-width: 600px)');
+    let current = 0;
+    let touching = false;
+    let scrolling = false;
+    let width = rail.clientWidth;
+    let settleTimer: ReturnType<typeof setTimeout> | undefined;
+
+    const targetLeft = (index: number) =>
+      cards[index].offsetLeft - cards[0].offsetLeft;
+    const nearest = () =>
+      cards.reduce(
+        (best, _, index) =>
+          Math.abs(targetLeft(index) - rail.scrollLeft) <
+          Math.abs(targetLeft(best) - rail.scrollLeft)
+            ? index
+            : best,
+        0,
+      );
+    const measure = () => {
+      if (cards[current])
+        setHeight(Math.ceil(cards[current].getBoundingClientRect().height) + 2);
+    };
+    const settle = () => {
+      if (!query.matches || touching || !cards.length) return;
+      clearTimeout(settleTimer);
+      scrolling = false;
+      current = nearest();
+      const left = targetLeft(current);
+      // Safari can leave a mandatory snap unfinished after touch momentum.
+      // Correct the resting position, then resize; never resize mid-swipe.
+      if (Math.abs(rail.scrollLeft - left) > 0.5)
+        rail.scrollTo({ left, behavior: 'instant' });
+      setActive(current);
+      measure();
+    };
+    const queueSettle = () => {
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(settle, 180);
+    };
+    const onScroll = () => {
+      if (!query.matches || !cards.length) return;
+      scrolling = true;
+      current = nearest();
+      setActive(current);
+      queueSettle();
+    };
+    const onTouchStart = () => {
+      touching = true;
+      clearTimeout(settleTimer);
+    };
+    const onTouchEnd = () => {
+      touching = false;
+      queueSettle();
+    };
     const update = () => {
       setMobile(query.matches);
-      syncPosition();
+      const resized = rail.clientWidth !== width;
+      width = rail.clientWidth;
+      if (query.matches && resized && cards.length) {
+        rail.scrollTo({ left: targetLeft(current), behavior: 'instant' });
+      }
+      if (!touching && !scrolling) measure();
     };
     update();
     query.addEventListener('change', update);
-    const observer = new ResizeObserver(syncPosition);
-    Array.from(rail.children).forEach((card) => observer.observe(card));
+    rail.addEventListener('scroll', onScroll, { passive: true });
+    rail.addEventListener('scrollend', settle);
+    rail.addEventListener('touchstart', onTouchStart, { passive: true });
+    rail.addEventListener('touchend', onTouchEnd, { passive: true });
+    rail.addEventListener('touchcancel', onTouchEnd, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(rail);
+    cards.forEach((card) => observer.observe(card));
     return () => {
+      clearTimeout(settleTimer);
       query.removeEventListener('change', update);
+      rail.removeEventListener('scroll', onScroll);
+      rail.removeEventListener('scrollend', settle);
+      rail.removeEventListener('touchstart', onTouchStart);
+      rail.removeEventListener('touchend', onTouchEnd);
+      rail.removeEventListener('touchcancel', onTouchEnd);
       observer.disconnect();
     };
   }, []);
@@ -58,10 +111,7 @@ export function GuideGallery({ children }: { children: ReactNode }) {
     const card = rail?.children[index] as HTMLElement | undefined;
     if (!rail || !card) return;
     rail.scrollTo({
-      left:
-        rail.scrollLeft +
-        card.getBoundingClientRect().left -
-        rail.getBoundingClientRect().left,
+      left: card.offsetLeft - (rail.children[0] as HTMLElement).offsetLeft,
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
         ? 'instant'
         : 'smooth',
@@ -91,7 +141,6 @@ export function GuideGallery({ children }: { children: ReactNode }) {
             ? ({ '--guide-slide-height': `${height}px` } as CSSProperties)
             : undefined
         }
-        onScroll={syncPosition}
         onKeyDown={(event) => {
           if (!mobile || event.target !== event.currentTarget) return;
           const index =

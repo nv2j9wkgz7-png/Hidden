@@ -700,6 +700,9 @@ html[data-theme='blackout'] .stop-sales-preview {
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0;
+    overflow-anchor: none;
+    position: relative;
     overscroll-behavior-x: contain;
     scrollbar-width: none;
     border-radius: 24px;
@@ -710,7 +713,11 @@ html[data-theme='blackout'] .stop-sales-preview {
   .visual-guide .guide-gallery .howto-steps > li {
     flex: 0 0 100%;
     min-width: 0;
-    scroll-snap-align: start;
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
+    scroll-margin-inline: 0;
+    scroll-snap-align: center;
     scroll-snap-stop: always;
   }
   .guide-gallery-controls {
