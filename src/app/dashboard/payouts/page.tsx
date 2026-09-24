@@ -27,6 +27,9 @@ export default async function Payouts({
   const stripe = connectStripe();
   const account = accountId ? await stripe.accounts.retrieve(accountId) : null;
   const status = account ? payoutStatus(account) : null;
+  const identityDocumentRequired = account?.requirements?.currently_due?.some(
+    (field) => field.startsWith('individual.verification.document'),
+  );
   const balances = accountId
     ? await stripe.balance.retrieve({}, { stripeAccount: accountId })
     : null;
@@ -62,17 +65,34 @@ export default async function Payouts({
               ? 'Your payouts are connected'
               : status?.underReview
                 ? 'Stripe is reviewing your details'
-                : account
-                  ? 'Finish setting up payouts'
-                  : 'Where should we send your earnings?'}
+                : identityDocumentRequired
+                  ? 'Stripe needs identity verification'
+                  : account
+                    ? 'Finish setting up payouts'
+                    : 'Where should we send your earnings?'}
           </h2>
           <p>
             {status?.ready
               ? 'Available funds are paid to your connected bank on your Stripe payout schedule.'
               : status?.underReview
                 ? 'Your setup is submitted. Stripe is verifying your details; no additional information is currently requested. Payments will become available once Stripe enables your account.'
-                : 'Connect your bank and verify your details securely with Stripe. Hidn never stores your bank details.'}
+                : identityDocumentRequired
+                  ? 'Your setup was submitted, but Stripe still needs an identity document before payments can be enabled. Continue in Stripe to resolve this verification step.'
+                  : 'Connect your bank and verify your details securely with Stripe. Hidn never stores your bank details.'}
           </p>
+          {testMode && identityDocumentRequired && (
+            <p className="hint">
+              This is a sandbox account. Use{' '}
+              <a
+                href="https://docs.stripe.com/connect/testing#test-document-images"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Stripe’s test identity documents
+              </a>{' '}
+              for testing instead of uploading your real ID.
+            </p>
+          )}
           {params.refresh && (
             <p role="status">
               Your setup link expired. Continue below to get a new one.
