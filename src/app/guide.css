@@ -204,7 +204,7 @@ html[data-theme='blackout'] .visual-guide .howto-steps {
   width: 46px;
   height: 46px;
   object-fit: contain;
-  filter: drop-shadow(0 2px 7px #fff8);
+  filter: drop-shadow(0 2px 2px #160b2699) drop-shadow(0 0 5px #160b2659);
 }
 .demo-pricing > div {
   min-width: 0;
