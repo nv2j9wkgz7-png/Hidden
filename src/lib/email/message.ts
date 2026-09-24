@@ -79,3 +79,18 @@ export async function sendEmail(
     throw new Error('Email provider did not return a message ID.');
   return result.id as string;
 }
+
+export function saleEmail(input: {
+  title: string;
+  amountCents: number;
+  url: string;
+}) {
+  const title = escapeHtml(input.title),
+    url = escapeHtml(input.url);
+  const amount = money(input.amountCents);
+  return {
+    subject: 'Your drop sold · Hidn',
+    text: `Your drop sold!\n\n${input.title}\nSale total: ${amount} USD (before fees).\n\nView your earnings: ${input.url}\n\nA confirmed sale is not necessarily available for payout yet. Processing fees, refunds, and payout availability are shown in your account.`,
+    html: `<!doctype html><html><body style="margin:0;background:#faf7fc;font-family:Arial,sans-serif;color:#292332"><div style="max-width:520px;margin:32px auto;padding:32px;background:white;border-radius:20px"><p style="color:#7755c4;font-size:26px;font-weight:bold">Hidn</p><h1>Your drop sold.</h1><p>${title}</p><p>Sale total: <strong>${amount} USD</strong> (before fees)</p><p><a href="${url}" style="display:inline-block;background:#7848a7;color:white;padding:16px 24px;border-radius:12px;text-decoration:none">View earnings</a></p><p style="font-size:13px;color:#746c7e">A confirmed sale is not necessarily available for payout yet. Check your account for fees, refunds, and payout availability.</p></div></body></html>`,
+  };
+}

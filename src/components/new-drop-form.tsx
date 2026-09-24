@@ -1,4 +1,12 @@
 'use client';
+import {
+  readDraft,
+  writeDraft,
+  deleteDraft,
+  type StoredDraft,
+} from '@/lib/draft-storage';
+import { uploadFiles } from '@/lib/upload-queue';
+import { uploadWithProgress } from '@/lib/upload-progress';
 import { SortableFiles } from './sortable-files';
 import { uploadMime, droppedFiles } from '@/lib/upload-files';
 import { CreatorGallery } from './creator-gallery';
@@ -31,8 +39,17 @@ type Item = {
   id?: string;
   ready: boolean;
   preview?: string;
+  percent?: number;
+  phase?: string;
+  failure?: string;
 };
-export function NewDropForm({ draft }: { draft?: Draft }) {
+export function NewDropForm({
+  draft,
+  userId,
+}: {
+  draft?: Draft;
+  userId: string;
+}) {
   const router = useRouter();
   const objectUrls = useRef(new Set<string>());
   useEffect(() => {
@@ -104,11 +121,15 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
         continue;
       }
       const pending = next.findIndex(
-        (i) =>
-          !i.ready && !i.file && i.name === file.name && i.size === file.size,
+        (i) => !i.ready && i.name === file.name && i.size === file.size,
       );
       if (pending >= 0)
-        next[pending] = { ...next[pending], file, preview: localPreview(file) };
+        next[pending] = {
+          ...next[pending],
+          file,
+          failure: undefined,
+          preview: localPreview(file),
+        };
       else if (
         next.length < MAX_IMAGES &&
         next.reduce((n, item) => n + item.size, 0) + file.size <= MAX_DROP_BYTES
@@ -130,135 +151,307 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
         `${skipped} file(s) skipped. Use JPEG, PNG, WebP (10 MB) or MP4, MOV, WebM (50 MB). Maximum 20 files and 200 MB per drop.`,
       );
   }
-  async function publish(event: React.FormEvent) {
-    event.preventDefault();
-    if (busy) return;
-    setError('');
-    setInvalidField('');
-    if (!items.length) {
+  const [hydrated, setHydrated] = useState(false);
+  const [reviewing, setReviewing] = useState(false);
+  const [saved, setSaved] = useState('Recovering your draft…');
+  const [localError, setLocalError] = useState('');
+  const creationId = useRef(draft?.id || '');
+  const running = useRef(false);
+  const localWrites = useRef(Promise.resolve());
+  const localPending = useRef(false);
+  const attempted = useRef('');
+  const snapshot = useRef({ title, description, price, items, dropId });
+  snapshot.current = { title, description, price, items, dropId };
+  const fingerprint = JSON.stringify([
+    title,
+    description,
+    price,
+    dropId,
+    items.map((i) => [i.key, i.id, i.ready, !i.ready && !!i.file]),
+  ]);
+  const cloudSaved = useRef(
+    draft && items.every((i) => i.ready) ? fingerprint : '',
+  );
+  useEffect(() => {
+    let cancelled = false;
+    const key = `${userId}:${draft?.id || 'new'}`;
+    void readDraft(key)
+      .then(async (stored) => {
+        if (cancelled) return;
+        if (!stored && draft) {
+          const pending = await readDraft(`${userId}:new`);
+          if (pending?.id === draft.id) stored = pending;
+        }
+        if (cancelled) return;
+        if (stored) {
+          creationId.current = stored.creationId;
+          setTitle(stored.title);
+          setDescription(stored.description);
+          setPrice(stored.price);
+          setDropId(stored.id);
+          const used = new Set<string>();
+          const recovered: Item[] = stored.items.map((item) => {
+            const server = draft?.assets.find(
+              (a) =>
+                !used.has(a.id) &&
+                (a.id === item.id ||
+                  (!item.id &&
+                    a.original_filename === item.name &&
+                    a.size_bytes === item.size &&
+                    a.mime_type === item.mime)),
+            );
+            if (server) used.add(server.id);
+            return {
+              ...item,
+              id: server?.id || item.id,
+              ready: server ? server.status === 'READY' : item.ready,
+              preview:
+                server?.preview_url ||
+                (item.file ? localPreview(item.file) : undefined),
+            };
+          });
+          for (const server of draft?.assets || [])
+            if (!used.has(server.id))
+              recovered.push({
+                key: server.id,
+                id: server.id,
+                name: server.original_filename,
+                size: server.size_bytes,
+                mime: server.mime_type,
+                ready: server.status === 'READY',
+                preview: server.preview_url,
+              });
+          setItems(recovered);
+          if (stored.id && !draft)
+            window.history.replaceState(null, '', `/new?drop=${stored.id}`);
+        }
+        if (!creationId.current) creationId.current = crypto.randomUUID();
+      })
+      .catch(() => {
+        if (!cancelled)
+          setLocalError(
+            'This browser cannot keep a recovery copy. Keep this page open until your drop is saved online.',
+          );
+      })
+      .finally(() => {
+        if (!creationId.current) creationId.current = crypto.randomUUID();
+        if (!cancelled) setHydrated(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, draft]);
+  useEffect(() => {
+    if (!hydrated) return;
+    const current = snapshot.current;
+    const stored: StoredDraft = {
+      id: current.dropId,
+      creationId: creationId.current,
+      title: current.title,
+      description: current.description,
+      price: current.price,
+      items: current.items.map(
+        ({ key, id, name, size, mime, ready, file }) => ({
+          key,
+          id,
+          name,
+          size,
+          mime,
+          ready,
+          file: ready ? undefined : file,
+        }),
+      ),
+    };
+    localPending.current = true;
+    localWrites.current = localWrites.current
+      .catch(() => {})
+      .then(async () => {
+        if (fingerprint === cloudSaved.current) {
+          await deleteDraft(`${userId}:${current.dropId || 'new'}`);
+          await deleteDraft(`${userId}:new`, creationId.current);
+        } else
+          await writeDraft(
+            `${userId}:${current.dropId || 'new'}`,
+            stored,
+            current.dropId ? `${userId}:new` : undefined,
+          );
+      })
+      .then(() => {
+        setLocalError('');
+      })
+      .catch(() =>
+        setLocalError(
+          'Couldn’t save a recovery copy on this device. Keep this page open until uploading finishes.',
+        ),
+      )
+      .finally(() => {
+        localPending.current = false;
+      });
+  }, [fingerprint, hydrated, userId]);
+  useEffect(() => {
+    const warn = (event: BeforeUnloadEvent) => {
+      if (running.current || localPending.current || localError) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, [localError]);
+  function validDetails(value = snapshot.current) {
+    return (
+      !!value.title.trim() &&
+      value.title.trim().length <= 100 &&
+      /^\d+(\.\d{1,2})?$/.test(value.price) &&
+      Number(value.price) >= 0.5 &&
+      Number(value.price) <= 1000
+    );
+  }
+  useEffect(() => {
+    if (
+      !hydrated ||
+      busy ||
+      running.current ||
+      attempted.current === fingerprint
+    )
+      return;
+    if (!validDetails()) {
+      setSaved('Saved on this device · Add a title and price to sync online');
+      return;
+    }
+    setSaved('Unsaved changes…');
+    const timer = setTimeout(() => {
+      attempted.current = fingerprint;
+      void syncDraft();
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [fingerprint, hydrated, busy]);
+
+  async function syncDraft(review = false, retryKey?: string) {
+    if (running.current) return;
+    const current = snapshot.current;
+    if (!validDetails(current)) {
+      if (review || retryKey) {
+        setError(
+          'Add a title and a price between $0.50 and $1,000 to continue.',
+        );
+        if (!current.title.trim()) {
+          setInvalidField('title');
+          titleRef.current?.focus();
+        } else {
+          setInvalidField('price');
+          priceRef.current?.focus();
+        }
+      }
+      return;
+    }
+    if (review && !current.items.length) {
       setError('Add at least one photo or video first.');
       setInvalidField('images');
       imagesRef.current?.focus();
       return;
     }
-    if (items.some((i) => !i.ready && !i.file)) {
-      setError(
-        'Reselect the unfinished files listed below to resume your draft.',
-      );
-      setInvalidField('images');
-      imagesRef.current?.focus();
-      return;
-    }
-    if (!title.trim() || title.trim().length > 100) {
-      setError('Add a title for your drop (up to 100 characters).');
-      setInvalidField('title');
-      titleRef.current?.focus();
-      return;
-    }
-    if (
-      !/^\d+(\.\d{1,2})?$/.test(price) ||
-      Number(price) < 0.5 ||
-      Number(price) > 1000
-    ) {
-      setError(
-        'Set a price between $0.50 and $1,000, with at most two decimals.',
-      );
-      setInvalidField('price');
-      priceRef.current?.focus();
-      return;
-    }
+    setInvalidField('');
+    running.current = true;
+    setReviewing(review);
     setBusy(true);
-    const working = items.map((i) => ({ ...i }));
+    setError('');
+    setSaved('Saving…');
+    const working = current.items.map((item) => ({ ...item }));
+    const update = (item: Item) =>
+      setItems((previous) =>
+        previous.map((old) => (old.key === item.key ? { ...item } : old)),
+      );
     try {
-      let id = dropId;
+      let id = current.dropId;
       if (!id) {
-        setProgress('Saving your drop…');
+        // Persist the creation ID before the request so a lost response cannot duplicate a draft.
+        await localWrites.current;
         const created = await api('/api/creator/drops', {
-          title,
-          description,
-          price_cents: Math.round(Number(price) * 100),
+          id: creationId.current,
+          title: current.title,
+          description: current.description,
+          price_cents: Math.round(Number(current.price) * 100),
         });
-        id = created.id;
+        id = created.id as string;
         setDropId(id);
         window.history.replaceState(null, '', `/new?drop=${id}`);
       }
-      if (dropId)
-        await api(
-          '/api/creator/drops',
-          {
-            id,
-            title,
-            description,
-            price_cents: Math.round(Number(price) * 100),
-          },
-          'PATCH',
-        );
-      for (let index = 0; index < working.length; index++) {
-        const item = working[index];
-        if (item.ready) continue;
-        setProgress(`Uploading file ${index + 1} of ${working.length}…`);
-        // A previous request may have uploaded successfully but lost its response.
-        if (item.id) {
-          try {
-            await api('/api/creator/finalize', {
-              drop_id: id,
-              asset_id: item.id,
-            });
-            item.ready = true;
-            setItems([...working]);
-            continue;
-          } catch {
-            /* Retry the immutable original upload, then finalize again. */
-          }
-        }
-        const reservation = await api('/api/creator/uploads', {
-          drop_id: id,
-          asset_id: item.id,
-          original_filename: item.name,
-          mime_type: item.mime,
-          size_bytes: item.size,
-        });
-        item.id = reservation.asset_id;
-        setItems([...working]);
-        const uploaded = await fetch(reservation.upload_url, {
-          method: 'PUT',
-          headers: { 'Content-Type': item.mime, 'x-upsert': 'false' },
-          body: item.file,
-        });
-        if (!uploaded.ok) {
-          const response = await uploaded.json().catch(() => ({}));
-          if (
-            !['409', '400'].includes(String(response.statusCode)) ||
-            !/exist|duplicate/i.test(response.message || response.error || '')
-          )
-            throw new Error(
-              'Upload failed. Please retry to continue this draft.',
-            );
-        }
-        setProgress(`Creating safe preview ${index + 1} of ${working.length}…`);
-        await api('/api/creator/finalize', { drop_id: id, asset_id: item.id });
-        item.ready = true;
-        setItems([...working]);
-      }
-      setProgress('Saving file order…');
-      await api('/api/creator/reorder', {
-        drop_id: id,
-        asset_ids: working.map((item) => item.id),
-      });
-      setProgress('Preparing your review…');
-      const review = await api('/api/creator/review', { drop_id: id });
-      router.push(review.review_url);
-      router.refresh();
-    } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : 'Unable to save. Please retry.',
+      await api(
+        '/api/creator/drops',
+        {
+          id,
+          title: current.title,
+          description: current.description,
+          price_cents: Math.round(Number(current.price) * 100),
+        },
+        'PATCH',
       );
+      await uploadFiles(
+        working,
+        id!,
+        update,
+        { review, retryKey },
+        { request: api, upload: uploadWithProgress },
+      );
+      if (working.every((item) => item.id))
+        await api('/api/creator/reorder', {
+          drop_id: id,
+          asset_ids: working.map((item) => item.id),
+        });
+      const unfinished = working.some((item) => !item.ready);
+      if (!unfinished)
+        cloudSaved.current = JSON.stringify([
+          current.title,
+          current.description,
+          current.price,
+          id,
+          working.map((i) => [i.key, i.id, i.ready, false]),
+        ]);
+      if (
+        !unfinished &&
+        snapshot.current.title === current.title &&
+        snapshot.current.price === current.price &&
+        snapshot.current.description === current.description
+      ) {
+        localWrites.current = localWrites.current
+          .catch(() => {})
+          .then(async () => {
+            await deleteDraft(`${userId}:${id}`);
+            await deleteDraft(`${userId}:new`, creationId.current);
+          });
+        await localWrites.current.catch(() => {});
+      }
+      setSaved(
+        unfinished ? 'Details saved · Some files need attention' : 'Saved',
+      );
+      if (review) {
+        if (unfinished)
+          throw new Error(
+            'Some files need attention. Retry them below before reviewing.',
+          );
+        const result = await api('/api/creator/review', { drop_id: id });
+        await localWrites.current;
+        router.push(result.review_url);
+        router.refresh();
+      }
+    } catch (cause) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : 'Could not save. Your recovery copy remains on this device.',
+      );
+      setSaved('Couldn’t sync · Retry saving');
     } finally {
+      running.current = false;
+      setReviewing(false);
       setBusy(false);
       setProgress('');
     }
+  }
+  async function publish(event: React.FormEvent) {
+    event.preventDefault();
+    await syncDraft(true);
   }
   const previewImages = items.flatMap((item) =>
     item.preview
@@ -314,7 +507,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
               type="file"
               accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm,.mov"
               multiple
-              disabled={busy}
+              disabled={busy || !hydrated}
               onChange={(e) => {
                 select(e.target.files);
                 e.target.value = '';
@@ -326,7 +519,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
             <input
               type="file"
               multiple
-              disabled={busy}
+              disabled={busy || !hydrated}
               aria-label="Choose folder"
               ref={(element) => {
                 element?.setAttribute('webkitdirectory', '');
@@ -351,7 +544,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
               items={items}
               identify={(item) => item.key}
               label={(item) => item.name}
-              disabled={busy}
+              disabled={busy || !hydrated}
               onChange={setItems}
               render={(item, i) => (
                 <>
@@ -400,17 +593,41 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
                       )}
                       {(item.size / 1024 / 1024).toFixed(1)} MB
                       {item.ready
-                        ? ' · Preview ready'
+                        ? ' · Saved'
                         : !item.file
                           ? ' · Reselect this file to resume'
-                          : ''}
+                          : item.phase
+                            ? ` · ${item.phase}${item.phase === 'Uploading' ? ` ${item.percent || 0}%` : ''}`
+                            : ' · Waiting to upload'}
                     </small>
+                    {item.phase === 'Uploading' && (
+                      <progress
+                        aria-label={`Uploading ${item.name}`}
+                        value={item.percent || 0}
+                        max={100}
+                      />
+                    )}
+                    {item.failure && (
+                      <small className="file-upload-error">
+                        {item.failure}
+                      </small>
+                    )}
                   </span>
+                  {item.failure && item.file && (
+                    <button
+                      type="button"
+                      className="text-button"
+                      disabled={busy}
+                      onClick={() => void syncDraft(false, item.key)}
+                    >
+                      Retry
+                    </button>
+                  )}
                   {item.ready && <Check size={17} color="#267251" />}
                   <button
                     type="button"
                     aria-label={`Remove ${item.name}`}
-                    disabled={busy}
+                    disabled={busy || !hydrated}
                     onClick={() => remove(i)}
                   >
                     <X size={18} />
@@ -429,6 +646,14 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
       </section>
       <aside className="panel">
         <h2>Drop details</h2>
+        <p className="draft-save-status" role="status">
+          {saved}
+        </p>
+        {localError && (
+          <p className="notice error" role="alert">
+            {localError}
+          </p>
+        )}
         <div className="field">
           <label htmlFor="title">Title</label>
           <input
@@ -443,7 +668,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
             onChange={(e) => setTitle(e.target.value)}
             required
             maxLength={100}
-            disabled={busy}
+            disabled={!hydrated || reviewing}
           />
         </div>
         <div className="field">
@@ -458,7 +683,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             maxLength={2000}
-            disabled={busy}
+            disabled={!hydrated || reviewing}
             aria-describedby="description-help"
           />
           <small id="description-help">
@@ -481,7 +706,7 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               required
-              disabled={busy}
+              disabled={!hydrated || reviewing}
             />
           </div>
           <small>One payment unlocks the entire drop.</small>
@@ -503,8 +728,18 @@ export function NewDropForm({ draft }: { draft?: Draft }) {
             />
           </div>
         )}
-        <button className="primary full" disabled={busy}>
-          {busy ? 'Preparing your drop…' : 'Review drop'} {!busy && '↗'}
+        {error && (
+          <button
+            type="button"
+            className="text-button"
+            disabled={busy}
+            onClick={() => void syncDraft()}
+          >
+            Retry saving
+          </button>
+        )}
+        <button className="primary full" disabled={busy || !hydrated}>
+          {busy ? 'Saving your drop…' : 'Review drop'} {!busy && '↗'}
         </button>
       </aside>
     </form>

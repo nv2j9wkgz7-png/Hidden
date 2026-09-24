@@ -2,6 +2,7 @@ import { timingSafeEqual } from 'node:crypto';
 import { admin } from '@/lib/supabase/admin';
 import { handler, HttpError, json } from '@/lib/http';
 import { emailConfigured, sendPurchaseEmail } from '@/lib/email/service';
+import { sendSaleEmail } from '@/lib/email/sale';
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 
@@ -35,5 +36,24 @@ export const POST = handler(async (request) => {
       failed++;
     }
   }
-  return json({ sent, failed, checked: data.length }, failed ? 502 : 200);
+  const pending = await admin()
+    .from('sale_notifications')
+    .select('id,purchases!inner(status)')
+    .is('email_sent_at', null)
+    .eq('purchases.status', 'PAID')
+    .order('created_at')
+    .limit(5);
+  if (pending.error) throw pending.error;
+  let saleSent = 0;
+  for (const notice of pending.data) {
+    try {
+      if ((await sendSaleEmail(notice.id)) === 'sent') saleSent++;
+    } catch {
+      failed++;
+    }
+  }
+  return json(
+    { sent, saleSent, failed, checked: data.length + pending.data.length },
+    failed ? 502 : 200,
+  );
 });

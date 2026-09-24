@@ -1,4 +1,5 @@
 'use client';
+import { notifyCopied } from './toast';
 import { useEffect, useState } from 'react';
 import {
   LockKeyhole,
@@ -23,6 +24,7 @@ export function Buyer({
   drop,
   assets,
   salesClosed = false,
+  previewOnly = false,
 }: {
   drop: {
     id: string;
@@ -32,13 +34,15 @@ export function Buyer({
   };
   assets: Asset[];
   salesClosed?: boolean;
+  previewOnly?: boolean;
 }) {
-  const [status, setStatus] = useState('LOADING'),
+  const [status, setStatus] = useState(previewOnly ? 'LOCKED' : 'LOADING'),
     [busy, setBusy] = useState(''),
     [error, setError] = useState(''),
     [recovery, setRecovery] = useState(''),
     [waited, setWaited] = useState(false);
   useEffect(() => {
+    if (previewOnly) return;
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout>;
     let attempts = 0;
@@ -83,8 +87,14 @@ export function Buyer({
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [drop.id]);
+  }, [drop.id, previewOnly]);
   async function checkout() {
+    if (previewOnly) {
+      setError(
+        'This is your buyer preview. Publish your drop to accept payments.',
+      );
+      return;
+    }
     setBusy('checkout');
     setError('');
     try {
@@ -164,6 +174,7 @@ export function Buyer({
       setRecovery(link);
       try {
         await navigator.clipboard.writeText(link);
+        notifyCopied('Access link copied');
       } catch {
         /* Show a selectable link as fallback. */
       }

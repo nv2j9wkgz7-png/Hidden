@@ -1,4 +1,5 @@
 'use client';
+import { notifyCopied } from './toast';
 import { useEffect, useState } from 'react';
 import { fileSize } from '@/lib/format';
 import { Copy, MessageCircle, Share2, Link2 } from 'lucide-react';
@@ -75,6 +76,7 @@ export function ShareDrop({
   async function copy(value: string, confirmation: string) {
     try {
       await navigator.clipboard.writeText(value);
+      notifyCopied(value === url ? 'Link copied' : 'Message and link copied');
       setNotice(confirmation);
       setManual(false);
     } catch {

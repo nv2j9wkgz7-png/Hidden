@@ -645,5 +645,66 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
       );
     },
   );
+  await t.test(
+    'sale notices are atomic, deduplicated and isolated by creator',
+    async () => {
+      await db.exec(
+        await readFile(
+          'supabase/migrations/20260924020000_sale_notifications.sql',
+          'utf8',
+        ),
+      );
+      const id = crypto.randomUUID(),
+        sale = crypto.randomUUID();
+      await db.query(
+        "insert into public.drops(id,creator_id,title,price_cents,status) values($1,$2,'Notification test',100,'PUBLISHED')",
+        [id, creator],
+      );
+      await db.query(
+        "insert into public.purchases(id,drop_id,payment_provider,amount_cents,access_token) values($1,$2,'stripe',100,$3)",
+        [sale, id, hashToken(newToken())],
+      );
+      assert.equal(
+        (await db.query('select * from public.sale_notifications')).rows.length,
+        0,
+      );
+      await db.query("update public.purchases set status='PAID' where id=$1", [
+        sale,
+      ]);
+      await db.query("update public.purchases set status='PAID' where id=$1", [
+        sale,
+      ]);
+      assert.equal(
+        (await db.query('select * from public.sale_notifications')).rows.length,
+        1,
+      );
+      await db.exec('set role authenticated');
+      await db.query("select set_config('test.user_id',$1,false)", [other]);
+      assert.equal(
+        (await db.query('select * from public.sale_notifications')).rows.length,
+        0,
+      );
+      await db.query("select set_config('test.user_id',$1,false)", [creator]);
+      assert.equal(
+        (await db.query('select * from public.sale_notifications')).rows.length,
+        1,
+      );
+      await assert.rejects(
+        db.query('update public.sale_notifications set read_at=now()'),
+      );
+      await db.exec('reset role');
+      await db.query(
+        "update public.purchases set status='REFUNDED' where id=$1",
+        [sale],
+      );
+      assert.equal(
+        (await db.query('select * from public.sale_notifications')).rows.length,
+        1,
+      );
+      await db.exec('set role anon');
+      await assert.rejects(db.query('select * from public.sale_notifications'));
+      await db.exec('reset role');
+    },
+  );
   await db.close();
 });

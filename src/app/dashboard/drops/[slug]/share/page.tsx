@@ -93,6 +93,7 @@ export default async function SharePage({
         </ol>
       )}
       <EditDropDetails
+        draft={drop.status === 'DRAFT'}
         drop={{
           id: drop.id,
           title: drop.title,
@@ -105,6 +106,12 @@ export default async function SharePage({
           Add files or drag to reorder ↗
         </Link>
       )}
+      <Link
+        href={`/dashboard/drops/${slug}/preview`}
+        className="button secondary"
+      >
+        Preview as buyer ↗
+      </Link>
       <section className="panel creator-gallery-panel">
         <h2>Your photos & videos</h2>
         <p className="hint">

@@ -79,7 +79,7 @@ export default async function NewDrop({
           <span>2</span> Review & share
         </li>
       </ol>
-      <NewDropForm draft={draft} />
+      <NewDropForm key={draft?.id || 'new'} draft={draft} userId={user.id} />
     </>
   );
 }

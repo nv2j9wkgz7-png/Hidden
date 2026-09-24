@@ -1,4 +1,5 @@
 'use client';
+import { NavigationLink as Link } from './navigation-link';
 import { EarningsEstimate } from './earnings-estimate';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -6,7 +7,9 @@ import { api } from '@/lib/client-api';
 
 export function EditDropDetails({
   drop,
+  draft = false,
 }: {
+  draft?: boolean;
   drop: { id: string; title: string; description: string; price_cents: number };
 }) {
   const [price, setPrice] = useState((drop.price_cents / 100).toFixed(2));
@@ -14,6 +17,22 @@ export function EditDropDetails({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  if (draft)
+    return (
+      <section className="panel review-details">
+        <div className="review-details-heading">
+          <h2>Drop details</h2>
+          <Link className="text-button" href={`/new?drop=${drop.id}`}>
+            Edit details ↗
+          </Link>
+        </div>
+        <p className="drop-description">
+          {drop.description ||
+            'Add an optional description so buyers know what’s included.'}
+        </p>
+        <EarningsEstimate cents={drop.price_cents} />
+      </section>
+    );
   return (
     <section className="panel review-details">
       <div className="review-details-heading">

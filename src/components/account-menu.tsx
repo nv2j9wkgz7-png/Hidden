@@ -3,17 +3,33 @@ import { UserRound, ChevronDown } from 'lucide-react';
 import { configured } from '@/lib/env';
 import { supabase } from '@/lib/supabase/server';
 import { LogoutButton } from './logout-button';
+import { AccountDropdown } from './account-dropdown';
+import { ThemeToggle } from './theme-toggle';
+import { SaleNotifications } from './sale-notifications';
 
 export async function AccountMenu() {
-  if (!configured()) return <Link href="/login">Log in</Link>;
+  if (!configured())
+    return (
+      <>
+        <ThemeToggle compact />
+        <Link href="/login">Log in</Link>
+      </>
+    );
   const {
     data: { user },
   } = await (await supabase()).auth.getUser();
-  if (!user) return <Link href="/login">Log in</Link>;
+  if (!user)
+    return (
+      <>
+        <ThemeToggle compact />
+        <Link href="/login">Log in</Link>
+      </>
+    );
   return (
     <>
       <Link href="/dashboard">My drops</Link>
-      <details className="account-menu">
+      <SaleNotifications />
+      <AccountDropdown>
         <summary>
           <UserRound size={18} /> Account <ChevronDown size={14} />
         </summary>
@@ -26,9 +42,10 @@ export async function AccountMenu() {
           <Link className="account-payout-link" href="/dashboard/payouts">
             Earnings & payouts ↗
           </Link>
+          <ThemeToggle />
           <LogoutButton />
         </div>
-      </details>
+      </AccountDropdown>
     </>
   );
 }

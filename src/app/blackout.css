@@ -1,0 +1,278 @@
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 12px;
+  margin: 4px 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  font-size: 14px;
+}
+.theme-toggle-value {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12px;
+}
+.theme-toggle-compact {
+  width: 44px;
+  padding: 0;
+  justify-content: center;
+  margin: 0;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+html[data-theme='blackout'] {
+  color-scheme: dark;
+  --bg: #050506;
+  --ink: #f5f0fa;
+  --muted: #b0a5bb;
+  --line: #332c3c;
+  --accent: #c399f4;
+  --accent-light: #261b33;
+  --green: #85dcb0;
+  --surface: #121015;
+  --surface-raised: #1b171f;
+}
+html[data-theme='blackout'] body {
+  background:
+    radial-gradient(ellipse at 95% 12%, #29143555, transparent 42%), var(--bg);
+}
+html[data-theme='blackout'] .site-header {
+  background: #08070aee;
+  border-color: var(--line);
+}
+html[data-theme='blackout']
+  :is(
+    .panel,
+    .editor > aside,
+    .share-panel,
+    .share-page .creator-gallery-panel,
+    .drop-card,
+    .flow,
+    .howto-steps li,
+    .checkout-panel,
+    .account-dropdown,
+    .drop-sort-options,
+    .notification-panel,
+    .compact-link-preview,
+    .art-card-front,
+    .example-sheet,
+    .example-details
+  ) {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: 0 10px 30px #0003;
+}
+html[data-theme='blackout'] :is(.auth-story, .guide-intro, .create-drop-card) {
+  background: linear-gradient(145deg, #24182e, #151018);
+  border-color: var(--line);
+}
+html[data-theme='blackout'] :is(.stats, .stat, .auth-form-wrap .panel) {
+  background: transparent;
+}
+html[data-theme='blackout']
+  :is(
+    .field input,
+    .field textarea,
+    .share-link-row input,
+    .payout-country select,
+    input[readonly]
+  ) {
+  background: #0c0a0f;
+  color: var(--ink);
+  border-color: #42364d;
+}
+html[data-theme='blackout'] :is(input, textarea)::placeholder {
+  color: #a397af;
+  opacity: 1;
+}
+html[data-theme='blackout']
+  :is(
+    .upload-zone,
+    .file-row,
+    .earnings-estimate,
+    .account-payout-link,
+    .notification-panel li.unread,
+    .payout-test,
+    .owner-preview,
+    .recovery-icon,
+    .step-number,
+    .file-cover-badge
+  ) {
+  background: var(--surface-raised);
+  border-color: #554164;
+}
+html[data-theme='blackout']
+  :is(
+    .file-row,
+    .account-payout-link,
+    .owner-preview,
+    .step-number,
+    .file-cover-badge,
+    .recovery-icon
+  ) {
+  color: var(--accent);
+}
+html[data-theme='blackout'] .file-name {
+  color: var(--ink);
+}
+html[data-theme='blackout']
+  :is(
+    .button.secondary,
+    button.secondary,
+    .example-navigation button,
+    .share-link-row button,
+    .share-link-copy,
+    .copy-link-button
+  ) {
+  background: var(--surface-raised);
+  color: var(--ink);
+  border-color: #4b3c58;
+}
+html[data-theme='blackout']
+  :is(.button.secondary, button.secondary, .example-navigation button):hover {
+  background: #302239;
+}
+html[data-theme='blackout'] :is(.site-header nav > a, .theme-toggle) {
+  border-color: #4b3c58;
+  color: var(--ink);
+}
+html[data-theme='blackout']
+  :is(.account-menu summary, .sale-notifications summary):hover {
+  background: #23192d;
+}
+html[data-theme='blackout'] .notice {
+  background: #271b35;
+  color: #e2c9fa;
+}
+html[data-theme='blackout'] :is(.notice.error, .stop-confirm) {
+  background: #35191d;
+  color: #ffb6b0;
+  border-color: #68414b;
+}
+html[data-theme='blackout'] .file-upload-error {
+  color: #ffb6b0;
+}
+html[data-theme='blackout'] :is(.badge, .badge.draft) {
+  background: #2e203c;
+  color: #dbc2f5;
+}
+html[data-theme='blackout'] .badge.paid {
+  background: #142c23;
+  color: #a6e4bc;
+}
+html[data-theme='blackout']
+  :is(
+    .draft-save-status,
+    .flow-top,
+    .create-drop-card strong,
+    .example-price-row > span,
+    .art-chip
+  ) {
+  color: #dcc8ed;
+}
+html[data-theme='blackout']
+  :is(
+    .example-details > p,
+    .example-navigation > span,
+    .example-navigation > span > span,
+    .example-disclaimer,
+    .example-price-row > span small,
+    .auth-story > p
+  ) {
+  color: var(--muted);
+}
+html[data-theme='blackout'] :is(.example-price-row > strong, .auth-story em) {
+  color: #d1a5f4;
+}
+html[data-theme='blackout']
+  :is(.example-price-row, .example-image, .example-eyebrow span) {
+  border-color: var(--line);
+}
+html[data-theme='blackout'] :is(.example-category, .art-chip) {
+  background: #17121fe8;
+  color: #efddff;
+}
+html[data-theme='blackout'] .example-drops::before {
+  opacity: 0.3;
+}
+html[data-theme='blackout'] .home h1 em {
+  background-image: linear-gradient(110deg, #e09fd8, #b998ef);
+}
+html[data-theme='blackout'] .checkout-panel .status-icon {
+  background: #2e203c;
+  color: #c9a4ec;
+}
+html[data-theme='blackout'] :is(.image-card, .image-caption) {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+}
+html[data-theme='blackout'] .copy-toast {
+  background: #eee5f6;
+  color: #261c30;
+  box-shadow: 0 8px 32px #0008;
+}
+html[data-theme='blackout'] .copy-toast svg {
+  color: #28754a;
+}
+html[data-theme='blackout']
+  :is(.theme-toggle, .text-button, .password-control button) {
+  background: transparent;
+}
+html[data-theme='blackout'] :is(.theme-toggle, .text-button):hover {
+  color: #e5cdff;
+}
+html[data-theme='blackout']
+  :is(a, button, input, textarea, summary):focus-visible {
+  outline-color: #c8a4ed;
+}
+
+html[data-theme='blackout']
+  :is(
+    .howto-steps,
+    .drop-sort summary,
+    .share-url-row input,
+    .share-url-row button
+  ) {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+}
+html[data-theme='blackout'] :is(.example-heading, .example-label) {
+  color: var(--muted);
+  border-color: var(--line);
+}
+html[data-theme='blackout'] .private-drop-cover::after {
+  background: #130f1b66;
+}
+html[data-theme='blackout'] .private-drop-label {
+  background: #18121ee6;
+  color: #dfc7f1;
+}
+html[data-theme='blackout'] .drop-sort-options a:is(:hover, [aria-current]) {
+  background: #291d35;
+  color: #dcc2f5;
+}
+html[data-theme='blackout']
+  :is(
+    .account-dropdown button,
+    .share-panel textarea,
+    .private-drop-cover,
+    .creator-thumbnail,
+    .file-drag-overlay,
+    .file-drop-slot
+  ) {
+  background: var(--surface-raised);
+  color: var(--ink);
+  border-color: var(--line);
+}
+html[data-theme='blackout'] .account-dropdown button:hover {
+  background: #302239;
+}

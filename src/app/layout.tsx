@@ -4,11 +4,13 @@ import { Suspense } from 'react';
 import localFont from 'next/font/local';
 import { PageMotion } from '@/components/page-motion';
 import { AccountMenu } from '@/components/account-menu';
+import { CopyToast } from '@/components/toast';
 import './globals.css';
 import './studio.css';
 import './ribbon.css';
 import './examples.css';
 import './navigation.css';
+import './blackout.css';
 const outfit = localFont({
   src: [
     {
@@ -33,7 +35,15 @@ export const metadata: Metadata = {
 };
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={outfit.variable}>
+    <html lang="en" className={outfit.variable} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{document.documentElement.dataset.theme=localStorage.getItem('hidn-theme')==='blackout'?'blackout':'light'}catch{}",
+          }}
+        />
+      </head>
       <body>
         <header className="site-header">
           <Link className="brand" href="/" aria-label="Hidn home">
@@ -54,6 +64,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <main>
           <PageMotion>{children}</PageMotion>
         </main>
+        <CopyToast />
         <footer>
           <Link href="/" className="footer-brand">
             Hidn <span>Made to share. Yours to sell.</span>

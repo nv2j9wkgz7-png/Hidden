@@ -5,10 +5,23 @@ export const POST = handler(async (request) => {
   sameOrigin(request);
   const user = await creator();
   await rateLimit(`new-drop:${user.id}`, 30);
-  const input = dropInput.parse(await request.json());
+  const { id, ...input } = dropInput
+    .extend({ id: uuid.optional() })
+    .parse(await request.json());
+  if (id) {
+    const existing = await admin()
+      .from('drops')
+      .select('id,slug')
+      .eq('id', id)
+      .eq('creator_id', user.id)
+      .eq('status', 'DRAFT')
+      .maybeSingle();
+    if (existing.error) throw existing.error;
+    if (existing.data) return json(existing.data);
+  }
   const { data, error } = await admin()
     .from('drops')
-    .insert({ ...input, creator_id: user.id })
+    .insert({ ...input, ...(id ? { id } : {}), creator_id: user.id })
     .select('id,slug')
     .single();
   if (error) throw error;
