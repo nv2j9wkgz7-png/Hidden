@@ -672,3 +672,109 @@ html[data-theme='blackout'] .stop-sales-preview {
   object-fit: contain;
   filter: drop-shadow(0 2px 2px #160b2699) drop-shadow(0 0 5px #160b2659);
 }
+
+/* The guide remains a grid on desktop and becomes a native swipe gallery on phones. */
+.guide-gallery {
+  min-width: 0;
+}
+.guide-gallery-heading,
+.guide-gallery-controls {
+  display: none;
+}
+@media (max-width: 600px) {
+  .guide-gallery-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 12px;
+    margin: 18px 2px 12px;
+  }
+  .visual-guide .guide-gallery .howto-steps,
+  html[data-theme='blackout'] .visual-guide .guide-gallery .howto-steps {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin: 0;
+    height: var(--guide-slide-height, auto);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    border-radius: 24px;
+  }
+  .guide-gallery .howto-steps::-webkit-scrollbar {
+    display: none;
+  }
+  .visual-guide .guide-gallery .howto-steps > li {
+    flex: 0 0 100%;
+    min-width: 0;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  .guide-gallery-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 12px;
+  }
+  .guide-gallery-controls > button {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--utility-surface);
+    color: var(--ink);
+    box-shadow: none;
+  }
+  .guide-gallery-controls > button:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .guide-gallery-dots {
+    display: flex;
+    gap: 0;
+  }
+  .guide-gallery-dots button {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  .guide-gallery-dots button span {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--muted);
+    opacity: 0.4;
+    transition: width 0.18s ease;
+  }
+  .guide-gallery-dots button[aria-current='step'] span {
+    width: 20px;
+    background: var(--accent);
+    opacity: 1;
+  }
+  .guide-gallery-announcement {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guide-gallery-dots button span {
+    transition: none;
+  }
+}

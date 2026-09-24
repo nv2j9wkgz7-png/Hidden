@@ -2,6 +2,7 @@ import { NavigationLink as Link } from '@/components/navigation-link';
 import { ArrowUpRight, LockKeyhole, Images } from 'lucide-react';
 import { configured } from '@/lib/env';
 import { supabase } from '@/lib/supabase/server';
+import { GuideGallery } from '@/components/guide-gallery';
 import { GuideVisual } from '@/components/guide-visual';
 import { ExampleDrops } from '@/components/example-drops';
 
@@ -90,7 +91,7 @@ function HowToGuide() {
           Your content. A simple link. Their next favorite collection.
         </p>
       </div>
-      <ol className="howto-steps">
+      <GuideGallery>
         {[
           [
             'Gather your files',
@@ -122,7 +123,7 @@ function HowToGuide() {
             </div>
           </li>
         ))}
-      </ol>
+      </GuideGallery>
       <aside className="guide-stop-note">
         <span
           className="stop-sales-preview"
