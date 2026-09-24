@@ -306,16 +306,57 @@ html[data-theme='blackout'] .visual-guide .howto-steps {
 .demo-bio {
   transform: rotate(-2deg);
 }
-.demo-bio-heading {
+.demo-x-profile {
+  padding: 0;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+.demo-x-top {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
+  padding: 9px 12px;
 }
-.demo-bio-heading > img {
-  width: 40px;
-  height: 40px;
+.demo-x-top strong {
+  font-size: 12px;
+}
+.demo-x-top > span {
+  margin-left: auto;
+  font-size: 17px;
+  line-height: 1;
+}
+.demo-x-cover {
+  display: block;
+  width: 100%;
+  height: 54px;
+  object-fit: cover;
+  object-position: center 45%;
+}
+.demo-x-body {
+  padding: 0 12px 10px;
+}
+.demo-x-avatar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 35px;
+}
+.demo-x-avatar-row > img {
+  width: 46px;
+  height: 46px;
+  margin-top: -18px;
+  position: relative;
   object-fit: cover;
   border-radius: 50%;
+  border: 3px solid var(--utility-surface);
+}
+.demo-x-follow {
+  border-radius: 999px;
+  padding: 6px 13px;
+  background: var(--ink);
+  color: var(--utility-surface);
+  font-size: 10px;
+  font-weight: 700;
 }
 .demo-bio-heading strong {
   display: block;
@@ -323,45 +364,67 @@ html[data-theme='blackout'] .visual-guide .howto-steps {
 }
 .demo-bio-heading span {
   display: block;
-  font-size: 9px;
+  font-size: 10px;
   color: var(--muted);
-  margin-top: 3px;
+  margin-top: 2px;
 }
 .visual-guide .demo-bio p {
   font-size: 11px;
-  line-height: 1.5;
-  margin: 12px 0 8px;
+  line-height: 1.4;
+  margin: 10px 0 6px;
 }
 .demo-bio-caption {
   font-size: 10px;
-  color: var(--muted);
 }
 .demo-bio-link {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: var(--accent);
+  color: #1d9bf0;
   font-size: 11px;
-  margin: 8px 0 14px;
+  margin: 8px 0 11px;
 }
 .demo-bio-link span {
-  flex: 1;
   min-width: 0;
   overflow-wrap: anywhere;
 }
 .demo-bio-link svg {
   flex-shrink: 0;
+  color: var(--muted);
 }
-.demo-bio-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 5px;
+.demo-x-stats {
+  display: flex;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 9px;
 }
-.demo-bio-grid img {
-  width: 100%;
-  height: 54px;
-  border-radius: 6px;
-  object-fit: cover;
+.demo-x-stats strong {
+  color: var(--ink);
+}
+.demo-x-tabs {
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 10px;
+}
+.demo-x-tabs span {
+  position: relative;
+  padding: 11px 5px;
+}
+.demo-x-tabs span:first-child {
+  color: var(--ink);
+  font-weight: 700;
+}
+.demo-x-tabs span:first-child::after {
+  content: '';
+  height: 3px;
+  border-radius: 3px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1d9bf0;
 }
 .demo-imessage {
   transform: rotate(1.5deg);
