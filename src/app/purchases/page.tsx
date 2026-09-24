@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation';
 import { supabase } from '@/lib/supabase/server';
 import { admin } from '@/lib/supabase/admin';
 import { NavigationLink as Link } from '@/components/navigation-link';
+import { CollectionArtwork } from '@/components/utility-art';
+import { ArrowUpRight, LockKeyhole, Mail, Images } from 'lucide-react';
 import { PurchasedCollection } from '@/components/purchased-collection';
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'My purchases' };
@@ -57,22 +59,53 @@ export default async function Purchases({
     }),
   );
   return (
-    <section className="purchase-library">
-      <div className="eyebrow">Only yours to see</div>
-      <h1>My purchases</h1>
-      <p>
-        Your purchased photos and videos, together. Saved purchases stay
-        accessible when you log in, while the files remain available.
-      </p>
-      {!count && (
-        <div className="panel">
-          <h2>Your library starts here.</h2>
-          <p>
-            After a guest purchase, choose “Save to my account” before its
-            72-hour access ends. New purchases made while logged in appear here
-            automatically.
-          </p>
+    <section className="purchase-library utility-page">
+      <header className="utility-heading library-heading">
+        <div>
+          <div className="eyebrow">Your private library</div>
+          <h1>
+            My purchases<span className="heading-dot">.</span>
+          </h1>
+          <p>Your photos and videos, all in one place.</p>
         </div>
+        <span className="utility-label">
+          <LockKeyhole size={14} /> Only you can see this
+        </span>
+      </header>
+      {!count ? (
+        <section className="library-empty utility-surface">
+          <CollectionArtwork />
+          <div className="library-empty-copy">
+            <span className="eyebrow">A little space for what’s yours</span>
+            <h2>A place for your purchases.</h2>
+            <p>
+              Bought a drop as a guest? Bring it into your library with your
+              checkout email.
+            </p>
+            <Link className="button" href="/purchases/recover">
+              Recover a purchase <ArrowUpRight size={17} />
+            </Link>
+            <Link className="utility-text-link" href="/help#access">
+              How saving purchases works <span aria-hidden="true">→</span>
+            </Link>
+          </div>
+        </section>
+      ) : (
+        <div className="library-toolbar">
+          <span>
+            <Images size={17} /> {count} saved{' '}
+            {count === 1 ? 'collection' : 'collections'}
+          </span>
+          <Link href="/purchases/recover">
+            Missing a purchase? <ArrowUpRight size={16} />
+          </Link>
+        </div>
+      )}
+      {!!count && !collections.length && (
+        <p className="notice">
+          No purchases on this page.{' '}
+          <Link href="/purchases">Return to your library</Link>.
+        </p>
       )}
       {collections.map(({ purchase, drop, assets }) => (
         <section className="purchase-collection" key={purchase.id}>
@@ -111,23 +144,36 @@ export default async function Purchases({
           )}
         </section>
       ))}
-      <p>
-        <Link href="/purchases/recover">
-          Missing a guest purchase? Recover it with your checkout email ↗
-        </Link>
-      </p>
-      <nav className="purchase-pagination" aria-label="Purchase pages">
-        {page > 1 && (
-          <Link className="secondary" href={`/purchases?page=${page - 1}`}>
-            ← Newer purchases
-          </Link>
-        )}
-        {(count || 0) > page * pageSize && (
-          <Link className="secondary" href={`/purchases?page=${page + 1}`}>
-            Older purchases →
-          </Link>
-        )}
-      </nav>
+      <div className="library-notes">
+        <p>
+          <LockKeyhole size={16} />
+          <span>
+            Saved purchases remain here while the files are available. Log in on
+            any device to return.
+          </span>
+        </p>
+        <p>
+          <Mail size={16} />
+          <span>
+            Buying while logged in saves your purchase automatically. Guest
+            purchases need checkout-email verification.
+          </span>
+        </p>
+      </div>
+      {(page > 1 || (count || 0) > page * pageSize) && (
+        <nav className="purchase-pagination" aria-label="Purchase pages">
+          {page > 1 && (
+            <Link className="secondary" href={`/purchases?page=${page - 1}`}>
+              ← Newer purchases
+            </Link>
+          )}
+          {(count || 0) > page * pageSize && (
+            <Link className="secondary" href={`/purchases?page=${page + 1}`}>
+              Older purchases →
+            </Link>
+          )}
+        </nav>
+      )}
     </section>
   );
 }

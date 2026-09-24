@@ -1,3 +1,4 @@
+import { RecoveryFrame } from '@/components/recovery-frame';
 import { RequestPurchaseRecovery } from '@/components/purchase-recovery';
 export const metadata = { title: 'Recover purchases' };
 export default async function Recover({
@@ -6,8 +7,8 @@ export default async function Recover({
   searchParams: Promise<{ expired?: string }>;
 }) {
   return (
-    <section className="recovery-layout">
+    <RecoveryFrame>
       <RequestPurchaseRecovery expired={(await searchParams).expired === '1'} />
-    </section>
+    </RecoveryFrame>
   );
 }

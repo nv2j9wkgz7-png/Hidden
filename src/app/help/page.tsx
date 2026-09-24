@@ -1,4 +1,11 @@
 import { NavigationLink as Link } from '@/components/navigation-link';
+import {
+  ArrowUpRight,
+  Mail,
+  ShoppingBag,
+  LockKeyhole,
+  Sparkles,
+} from 'lucide-react';
 export const metadata = { title: 'Help & FAQ' };
 
 const questions = [
@@ -120,37 +127,109 @@ const questions = [
   },
 ];
 
+const groups = [
+  {
+    id: 'buying',
+    title: 'Buying a drop',
+    note: 'From the first click to the originals.',
+    icon: ShoppingBag,
+    items: [0, 1, 9],
+  },
+  {
+    id: 'access',
+    title: 'Your purchases & access',
+    note: 'Find, save, and return to what’s yours.',
+    icon: LockKeyhole,
+    items: [2, 3, 4, 5, 6],
+  },
+  {
+    id: 'creating',
+    title: 'Creating & sharing',
+    note: 'Get your next drop ready to go.',
+    icon: Sparkles,
+    items: [7, 8],
+  },
+];
 export default function Help() {
   return (
-    <section className="help-page">
-      <div className="eyebrow">A little help</div>
-      <h1>Help & answers.</h1>
-      <p className="help-intro">
-        For your drops, downloads, and everything you’ve saved.
-      </p>
-      <div className="help-recovery">
+    <section className="help-page utility-page">
+      <header className="utility-heading">
+        <div>
+          <div className="eyebrow">A little help</div>
+          <h1>
+            Help, without the hassle<span className="heading-dot">.</span>
+          </h1>
+          <p>Quick answers. A way back to your purchases.</p>
+        </div>
+      </header>
+      <Link
+        href="/purchases/recover"
+        className="help-recovery-card utility-surface"
+      >
+        <span className="utility-icon">
+          <Mail size={25} />
+        </span>
         <div>
           <h2>Looking for a purchase?</h2>
-          <p>
-            Use your checkout email to find it again—even after guest access
-            ends.
-          </p>
+          <p>Find it with your checkout email—even after guest access ends.</p>
         </div>
-        <Link className="secondary" href="/purchases/recover">
-          Recover a purchase ↗
-        </Link>
-      </div>
-      <section id="faq" aria-labelledby="faq-heading" className="help-faq">
-        <h2 id="faq-heading">Frequently asked questions</h2>
-        {questions.map(({ question, answer }) => (
-          <details key={question}>
-            <summary>{question}</summary>
-            <div className="help-answer">
-              <p>{answer}</p>
-            </div>
-          </details>
-        ))}
+        <span className="help-recovery-action">
+          Recover a purchase <ArrowUpRight size={20} />
+        </span>
+      </Link>
+      <section
+        id="faq"
+        className="help-faq utility-faq"
+        aria-labelledby="faq-heading"
+      >
+        <div className="utility-section-heading">
+          <h2 id="faq-heading">Frequently asked questions</h2>
+        </div>
+        <div className="help-directory">
+          <nav className="help-topics" aria-label="Help topics">
+            {groups.map(({ id, title, icon: Icon }) => (
+              <Link key={id} href={`#${id}`}>
+                <Icon size={17} />
+                {title}
+                <span aria-hidden="true">↗</span>
+              </Link>
+            ))}
+          </nav>
+          <div className="help-groups">
+            {groups.map(({ id, title, note, items, icon: Icon }) => (
+              <section
+                id={id}
+                key={id}
+                className="help-group"
+                aria-labelledby={`${id}-heading`}
+              >
+                <div className="help-group-heading">
+                  <Icon size={21} />
+                  <div>
+                    <h3 id={`${id}-heading`}>{title}</h3>
+                    <p>{note}</p>
+                  </div>
+                </div>
+                {items.map((index) => (
+                  <details key={questions[index].question} name={id}>
+                    <summary>{questions[index].question}</summary>
+                    <div className="help-answer">
+                      <p>{questions[index].answer}</p>
+                    </div>
+                  </details>
+                ))}
+              </section>
+            ))}
+          </div>
+        </div>
       </section>
+      <div className="help-bottom-note">
+        <LockKeyhole size={18} />
+        <p>
+          Keep your access links and verification codes private. Your saved
+          purchases belong in your account.
+        </p>
+      </div>
     </section>
   );
 }

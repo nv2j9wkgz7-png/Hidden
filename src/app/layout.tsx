@@ -12,6 +12,8 @@ import './ribbon.css';
 import './examples.css';
 import './navigation.css';
 import './blackout.css';
+import './utility.css';
+import './guide.css';
 const outfit = localFont({
   src: [
     {

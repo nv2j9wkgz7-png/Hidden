@@ -1,0 +1,216 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="92.4" height="84.4" fill="none" viewBox="-2.2 1.7999999999999998 92.4 84.4">
+<!-- SVG created with Arrow, by QuiverAI (https://quiver.ai) -->
+  <defs>
+    <linearGradient id="paint0_linear_3870_86475" x1="24.79" x2="32.42" y1="75.78" y2="75.78" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#B48FE2" offset="0"/>
+      <stop stop-color="#F2CCE4" offset=".5208"/>
+      <stop stop-color="#BA8CBD" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint1_linear_3870_86475" x1="32.91" x2="45.98" y1="72.87" y2="72.87" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#AF8BDB" offset="0"/>
+      <stop stop-color="#E3C3F5" offset=".4896"/>
+      <stop stop-color="#9067CE" offset=".8021"/>
+    </linearGradient>
+    <linearGradient id="paint2_linear_3870_86475" x1="55.02" x2="61.55" y1="73.38" y2="73.38" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#996ED6" offset="0"/>
+      <stop stop-color="#E9D2F8" offset=".5104"/>
+      <stop stop-color="#DAB4F9" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint3_linear_3870_86475" x1="56.58" x2="56.58" y1="73.05" y2="76.82" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#56319C" offset="0"/>
+      <stop stop-color="#986EDB" offset=".5208"/>
+      <stop stop-color="#6B47AF" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint4_linear_3870_86475" x1="27.26" x2="27.26" y1="75.23" y2="78.36" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7146B9" offset="0"/>
+      <stop stop-color="#B48FE2" offset=".5208"/>
+      <stop stop-color="#C0A1E7" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint5_linear_3870_86475" x1="4.435" x2="20.94" y1="30.66" y2="30.66" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8A64C8" offset="0"/>
+      <stop stop-color="#C7A5E7" offset=".2396"/>
+      <stop stop-color="#F2D0EC" offset=".4635"/>
+      <stop stop-color="#C28FDD" offset=".6927"/>
+      <stop stop-color="#E7C8F0" offset=".8594"/>
+      <stop stop-color="#D1A8E5" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint6_linear_3870_86475" x1="17.1" x2="17.1" y1="29.44" y2="32.44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7751B5" offset="0"/>
+      <stop stop-color="#D896D3" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint7_linear_3870_86475" x1="9.474" x2="9.474" y1="29.63" y2="33.08" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7751B5" offset="0"/>
+      <stop stop-color="#C0A1E7" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint8_linear_3870_86475" x1="34.41" x2="32.06" y1="27.77" y2="31.51" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F9D9E9" offset="0"/>
+      <stop stop-color="#D3A7E4" offset=".5156"/>
+      <stop stop-color="#B88CD5" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint9_linear_3870_86475" x1="28.35" x2="27.02" y1="29.45" y2="31.94" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D9A4C0" offset="0"/>
+      <stop stop-color="#AF83D9" offset=".5104"/>
+      <stop stop-color="#9875CE" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint10_linear_3870_86475" x1="43.22" x2="41.62" y1="28.01" y2="31.25" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C194D7" offset="0"/>
+      <stop stop-color="#AB77D4" offset=".5104"/>
+      <stop stop-color="#925FBD" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint11_linear_3870_86475" x1="28.13" x2="35.32" y1="28.28" y2="24.31" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#BE9AEC" offset="0"/>
+      <stop stop-color="#F2D7F0" offset="1"/>
+    </linearGradient>
+    <linearGradient id="paint12_linear_3870_86475" x1="34.61" x2="41.92" y1="29.07" y2="26.65" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E4BEF3" offset="0"/>
+      <stop stop-color="#F7DFF2" offset="1"/>
+    </linearGradient>
+  </defs>
+  <rect y="4" width="88" height="80" fill="#FAF7F6"/>
+  <rect x="1.824" y="7.645" width="21.73" height="54.44" rx=".9004" fill="#03040A"/>
+  <rect x="24.62" y="7.645" width="21.73" height="54.44" rx=".9004" fill="#030309"/>
+  <rect x="47.46" y="7.664" width="21.73" height="54.44" rx=".9004" fill="#FAF7F6" stroke="#747092" stroke-width=".1362"/>
+  <rect x="70.31" y="7.664" width="15.94" height="28.12" rx=".8369" fill="#FAF7F6" stroke="#747092" stroke-width=".1074"/>
+  <rect x="3.152" y="26.41" width="19.13" height="33.7" rx=".832" fill="#0B0C14" stroke="#45405D" stroke-width=".09766"/>
+  <rect x="3.383" y="22.72" width="6.305" height="1.945" rx=".9727" fill="#86E0C2"/>
+  <text x="4.29688" y="23.9766" fill="#201A43" font-family="Inter" font-size=".9375" font-weight="bold" letter-spacing="-.01367">Test mode</text>
+  <text x="4.31641" y="35.8047" fill="#F5EDFC" font-family="Inter" font-size="1.641" font-weight="bold" letter-spacing="-.01367">Connect your bank</text>
+  <text x="4.31641" y="37.7578" fill="#F5EDFC" font-family="Inter" font-size="1.641" font-weight="bold" letter-spacing="-.01367">securely with Stripe.</text>
+  <rect x="4.348" y="39.3" width="16.8" height="3.18" rx=".7461" stroke="#45405D" stroke-width=".08594"/>
+  <circle cx="5.984" cy="40.91" r=".8945" fill="#FF8693"/>
+  <path d="m5.98 40.02c-0.14 0-0.26 0.03-0.37 0.08v0.5h1.21c-0.06-0.32-0.43-0.58-0.84-0.58z" fill="#201A43"/>
+  <path d="m5.61 40.6v0.32h1.22s0.02-0.15-0.01-0.32h-1.21z" fill="#F5EDFC"/>
+  <path d="m5.61 40.92v0.43h1.08c0.07-0.11 0.12-0.26 0.14-0.43h-1.22z" fill="#FF8693"/>
+  <text x="7.62109" y="41.2578" fill="#F5EDFC" font-family="Inter" font-size=".9688" font-weight="bold" letter-spacing="-.01367">United States</text>
+  <path d="m19.67 40.86 0.24 0.21 0.28-0.21" stroke="#B29ED3" stroke-linecap="round" stroke-width=".1367"/>
+  <rect x="4.348" y="43.5" width="16.78" height="3.586" rx=".9766" fill="#DCB7FF"/>
+  <text x="9.42578" y="45.6367" fill="#201A43" font-family="Inter" font-size=".9375" font-weight="bold" letter-spacing="-.01367">Set up payouts</text>
+  <circle cx="5.387" cy="49.96" r=".9258" fill="#A189C0"/>
+  <text x="5.22656" y="50.2734" fill="#0B0C14" font-family="Inter" font-size=".8438" font-weight="bold" letter-spacing="-.01367">1</text>
+  <text x="7.36328" y="50.3047" fill="#B29ED3" font-family="Inter" font-size=".9375" letter-spacing="-.01367">Verify details</text>
+  <circle cx="5.387" cy="53.39" r=".9258" fill="#A189C0"/>
+  <text x="5.18359" y="53.7031" fill="#0B0C14" font-family="Inter" font-size=".8438" font-weight="bold" letter-spacing="-.01367">2</text>
+  <text x="7.35938" y="53.7539" fill="#B29ED3" font-family="Inter" font-size=".9375" letter-spacing="-.01367">Connect bank</text>
+  <circle cx="5.387" cy="56.81" r=".9258" fill="#A189C0"/>
+  <text x="5.125" y="57.1328" fill="#0B0C14" font-family="Inter" font-size=".8438" font-weight="bold" letter-spacing="-.01367">3</text>
+  <text x="7.34766" y="57.1758" fill="#B29ED3" font-family="Inter" font-size=".9375" letter-spacing="-.01367">Get paid</text>
+  <path d="m5.38 50.89v1.33" stroke="#585174" stroke-width=".07422"/>
+  <path d="m5.38 54.34v1.38" stroke="#585174" stroke-width=".07422"/>
+  <text x="3.34375" y="16.2656" fill="#B29ED3" font-family="Inter" font-size=".8594" font-weight="bold" letter-spacing="-.01367">YOUR Earnings</text>
+  <text x="3.35547" y="19.2734" fill="#F5EDFC" font-family="Inter" font-size="2.109" font-weight="bold" letter-spacing="-.01367">Make it yours.</text>
+  <text x="3.35547" y="21.3242" fill="#BFAAD8" font-family="Inter" font-size="1.055" letter-spacing="-.01367">5% Hidn fee; processing fees apply</text>
+  <text x="5.20703" y="13.3477" fill="#BFAAD8" font-family="Inter" font-size="1.016" letter-spacing="-.01367">Back to My drops</text>
+  <path d="m4.43 12.99h-0.87l0.23 0.23" stroke="#B29ED3" stroke-linecap="round" stroke-width=".1367"/>
+  <text x="26.2695" y="17.1953" fill="#F5EDFC" font-family="Inter" font-size="1.875" font-weight="bold" letter-spacing="-.01367">Your private library</text>
+  <text x="26.125" y="19.7266" fill="#BFAAD8" font-family="Inter" font-size=".9375" font-weight="bold" letter-spacing="-.01367">SAVEDPURCHASES</text>
+  <text x="28.0234" y="13.3477" fill="#BFAAD8" font-family="Inter" font-size="1.016" letter-spacing="-.01367">Back to My drops</text>
+  <path d="m27.13 12.91h-0.82l0.2 0.21" stroke="#B29ED3" stroke-linecap="round" stroke-width=".1367"/>
+  <text x="48.75" y="16.9258" fill="#201A43" font-family="Inter" font-size="1.953" font-weight="bold" letter-spacing="-.01613">Help, without</text>
+  <text x="48.7266" y="19.3086" fill="#201A43" font-family="Inter" font-size="2.031" font-weight="bold" letter-spacing="-.01613">the hassle.</text>
+  <text x="48.75" y="13.8086" fill="#393460" font-family="Inter" font-size=".9062" font-weight="bold" letter-spacing="-.01465">A LITTLE HELP</text>
+  <rect x="48.75" y="21.23" width="19.14" height="7.031" rx=".9219" fill="#F3EAFB"/>
+  <circle cx="51.51" cy="24.12" r="1.785" fill="#774CC6"/>
+  <path d="m50.69 23.55h1.62v1.24h-1.62v-1.24z" stroke="#F5EDFC" stroke-width=".1289"/>
+  <path d="m50.71 23.6 0.78 0.58 0.8-0.58" stroke="#F5EDFC" stroke-width=".1289"/>
+  <text x="54.25" y="23.6445" fill="#201A43" font-family="Inter" font-size="1.094" font-weight="bold" letter-spacing="-.01411">Recover a purchase</text>
+  <text x="54.25" y="25.2344" fill="#4D496E" font-family="Inter" font-size=".9062" letter-spacing="-.01411">Get a verification link</text>
+  <text x="54.2266" y="26.6562" fill="#4D496E" font-family="Inter" font-size=".8906" letter-spacing="-.01411">sent to your email.</text>
+  <path d="m66.61 24.61 0.32 0.3-0.32 0.29" stroke="#201A43" stroke-width=".1562"/>
+  <rect x="71.57" y="23.77" width="13.61" height="3.406" rx=".9375" fill="#774CC6"/>
+  <text x="73.9258" y="25.8047" fill="#F5EDFC" font-family="Inter" font-size=".9375" font-weight="bold" letter-spacing="-.01367">Send verification link</text>
+  <rect x="71.57" y="19.09" width="13.55" height="3.203" rx=".75" stroke="#B7B2D0" stroke-width=".09766"/>
+  <text x="72.4258" y="21.0547" fill="#8882A8" font-family="Inter" font-size=".9375" letter-spacing="-.01367">you@example.com</text>
+  <text x="71.5547" y="18.2148" fill="#201A43" font-family="Inter" font-size="1.016" font-weight="bold" letter-spacing="-.01367">Email address</text>
+  <path d="m72.51 13.59h-0.82l0.23 0.2" stroke="#393460" stroke-linecap="round" stroke-width=".1367"/>
+  <text x="73.25" y="13.8594" fill="#201A43" font-family="Inter" font-size="1.016" letter-spacing="-.01367">Back</text>
+  <text x="71.5547" y="10.75" fill="#201A43" font-family="Inter" font-size="1.422" font-weight="bold" letter-spacing="-.01465">Recover a purchase</text>
+  <rect x="71.61" y="29.79" width="1.258" height="1.258" rx=".6289" stroke="#393460" stroke-width=".1367"/>
+  <path d="m72.03 30.39 0.12 0.12 0.26-0.26" stroke="#393460" stroke-linecap="round" stroke-width=".1055"/>
+  <text x="73.4336" y="30.5781" fill="#201A43" font-family="Inter" font-size=".9062" font-weight="bold" letter-spacing="-.01411">Privacy note</text>
+  <text x="73.4141" y="31.8672" fill="#646180" font-family="Inter" font-size=".75" letter-spacing="-.01411">5% Hidn fee; processing fees apply</text>
+  <path d="m48.77 29.9h19.01" stroke="#D9D5E8" stroke-width=".04297"/>
+  <text x="48.7461" y="31.9336" fill="#282350" font-family="Inter" font-size="1.219" font-weight="bold" letter-spacing="-.01357">Buying &amp; access</text>
+  <text x="48.7617" y="34.4453" fill="#4D496E" font-family="Inter" font-size=".9375" letter-spacing="-.01411">How do i make a purchase?</text>
+  <path d="m48.77 35.61h19.01" stroke="#D9D5E8" stroke-width=".03516"/>
+  <text x="48.75" y="37.3477" fill="#4D496E" font-family="Inter" font-size=".9375" letter-spacing="-.01411">Can i access my files offline?</text>
+  <path d="m48.77 38.39h19.01" stroke="#D9D5E8" stroke-width=".03516"/>
+  <text x="48.7656" y="40.207" fill="#4D496E" font-family="Inter" font-size=".9375" letter-spacing="-.01411">What if i need a refund?</text>
+  <path d="m48.77 42.02h19.01" stroke="#D9D5E8" stroke-width=".03516"/>
+  <text x="48.7344" y="44.8164" fill="#282350" font-family="Inter" font-size="1.25" font-weight="bold" letter-spacing="-.01398">Creating &amp; payouts</text>
+  <text x="48.75" y="47.25" fill="#4D496E" font-family="Inter" font-size=".9375" letter-spacing="-.01411">How do i create a drop?</text>
+  <path d="m48.77 48.38h19.01" stroke="#D9D5E8" stroke-width=".03516"/>
+  <text x="48.7695" y="50.0898" fill="#4D496E" font-family="Inter" font-size=".9375" letter-spacing="-.01411">When do i get paid?</text>
+  <path d="m48.77 51.22h19.01" stroke="#D9D5E8" stroke-width=".03516"/>
+  <text x="48.7734" y="52.9492" fill="#4D496E" font-family="Inter" font-size=".9375" letter-spacing="-.01411">What fees apply?</text>
+  <path d="m48.77 54.83h19.01" stroke="#D9D5E8" stroke-width=".03516"/>
+  <rect x="48.73" y="56.41" width="19.14" height="4.25" rx=".8438" fill="#E9F4EF"/>
+  <text x="51.3477" y="58.2148" fill="#201A43" font-family="Inter" font-size=".9062" font-weight="bold" letter-spacing="-.01411">Privacy note</text>
+  <text x="51.3359" y="59.4766" fill="#58606E" font-family="Inter" font-size=".75" letter-spacing="-.01411">5% Hidn fee; processing fees apply</text>
+  <path d="m49.57 57.49 0.54-0.14 0.54 0.17v0.52c0 0.34-0.37 0.61-0.54 0.61s-0.54-0.27-0.54-0.61v-0.55z" stroke="#393460" stroke-width=".1289"/>
+  <path d="m49.76 57.99 0.17 0.15 0.31-0.29" stroke="#393460" stroke-linecap="round" stroke-width=".1055"/>
+  <path d="m67.05 46.74h0.51" stroke="#393460" stroke-linecap="round" stroke-width=".1406"/>
+  <path d="m67.2 46.99h0.22" stroke="#393460" stroke-linecap="round" stroke-width=".1406"/>
+  <path d="m67.2 49.74h0.36" stroke="#393460" stroke-linecap="round" stroke-width=".1406"/>
+  <path d="m67.2 52.65h0.36" stroke="#393460" stroke-linecap="round" stroke-width=".1406"/>
+  <path d="m67.08 34.13h0.48" stroke="#393460" stroke-linecap="round" stroke-width=".1406"/>
+  <path d="m67.19 34.38h0.23" stroke="#393460" stroke-linecap="round" stroke-width=".1406"/>
+  <path d="m67.19 36.99h0.37" stroke="#393460" stroke-linecap="round" stroke-width=".1406"/>
+  <path d="m67.19 39.9h0.37" stroke="#393460" stroke-linecap="round" stroke-width=".1406"/>
+  <rect x="26.15" y="45.82" width="18.67" height="3.641" rx=".9844" fill="#D9B3FC"/>
+  <text x="31.1758" y="48.0234" fill="#201A43" font-family="Inter" font-size=".9688" font-weight="bold" letter-spacing="-.01367">Recover a purchase</text>
+  <path d="m26.14 51.41h18.67" stroke="#45405D" stroke-width=".05859"/>
+  <circle cx="26.88" cy="53.73" r=".7188" stroke="#B29ED3" stroke-width=".125"/>
+  <path d="m26.88 53.44c-0.13 0-0.19 0.08-0.19 0.15 0 0.08 0.15 0.11 0.15 0.18 0 0.06-0.04 0.08-0.04 0.14" stroke="#B29ED3" stroke-linecap="round" stroke-width=".1172"/>
+  <text x="28.5742" y="54.0938" fill="#B29ED3" font-family="Inter" font-size=".9375" letter-spacing="-.01367">How it works</text>
+  <path d="m34.81 53.72 0.21 0.19-0.21 0.2" stroke="#B29ED3" stroke-linecap="round" stroke-width=".1406"/>
+  <text x="26.125" y="37.6953" fill="#F5EDFC" font-family="Inter" font-size="1.719" font-weight="bold" letter-spacing="-.01411">A place for your</text>
+  <text x="26.0742" y="39.8945" fill="#F5EDFC" font-family="Inter" font-size="1.75" font-weight="bold" letter-spacing="-.01411">purCHASES.</text>
+  <text x="26.1367" y="41.9336" fill="#BFAAD8" font-family="Inter" font-size="1.078" letter-spacing="-.01367">Keep track of what you’ve bought</text>
+  <text x="26.125" y="43.75" fill="#BFAAD8" font-family="Inter" font-size="1.055" letter-spacing="-.01367">and revisit it anytime.</text>
+  <path d="m3.81 9.17c-0.21 0-0.33 0.1-0.39 0.27-0.1 0.32-0.14 0.57-0.05 0.57 0.01 0 0.03-0.01 0.06-0.01l-0.06 0.26c-0.04 0.27 0.04 0.65 0.52 0.59l0.15-0.77h0.56l-0.08 0.39c-0.04 0.25 0.16 0.49 0.5 0.38l0.27-1.47c0.04-0.19-0.07-0.26-0.19-0.26s-0.25 0.07-0.28 0.2l-0.1 0.48h-0.57l0.1-0.4c0.03-0.18-0.19-0.23-0.44-0.23z" fill="#D6C1E8"/>
+  <path d="m5.78 9.63c-0.11 0-0.26 0.05-0.29 0.18l-0.15 0.76c-0.05 0.22 0.21 0.39 0.47 0.28l0.18-1.01c0.03-0.14-0.08-0.21-0.21-0.21z" fill="#D6C1E8"/>
+  <circle cx="5.785" cy="9.348" r=".207" fill="#D6C1E8"/>
+  <path d="m7.36 9.1c-0.11 0-0.23 0.06-0.26 0.17l-0.07 0.4c-0.06-0.03-0.13-0.05-0.23-0.05-0.42 0-0.81 0.37-0.84 0.87-0.02 0.27 0.16 0.42 0.35 0.42 0.14 0 0.28-0.06 0.38-0.17 0.06 0.12 0.22 0.2 0.42 0.13l0.4-1.52c0.04-0.17-0.04-0.25-0.15-0.25zm-0.67 0.92c-0.08 0.09-0.26 0.11-0.26-0.05 0-0.21 0.19-0.36 0.41-0.28l-0.15 0.33z" fill="#D6C1E8"/>
+  <path d="m8.46 9.62c-0.18 0-0.34 0.1-0.46 0.22 0-0.12-0.11-0.21-0.28-0.2l-0.23 1.01c-0.04 0.2 0.13 0.31 0.38 0.24l0.15-0.6c0.06-0.15 0.19-0.22 0.27-0.22 0.07 0 0.1 0.06 0.08 0.18l-0.06 0.38c-0.03 0.22 0.18 0.36 0.44 0.24l0.1-0.7c0.06-0.36-0.09-0.55-0.39-0.55z" fill="#D6C1E8"/>
+  <path d="m20.67 9.61h1.3" stroke="#BFAAD8" stroke-linecap="round" stroke-width=".1758"/>
+  <path d="m20.67 10.12h1.3" stroke="#BFAAD8" stroke-linecap="round" stroke-width=".1758"/>
+  <path d="m20.67 10.56h1.3" stroke="#BFAAD8" stroke-linecap="round" stroke-width=".1758"/>
+  <path d="m43.43 9.61h1.27" stroke="#BFAAD8" stroke-linecap="round" stroke-width=".1758"/>
+  <path d="m43.43 10.12h1.27" stroke="#BFAAD8" stroke-linecap="round" stroke-width=".1758"/>
+  <path d="m43.43 10.56h1.27" stroke="#BFAAD8" stroke-linecap="round" stroke-width=".1758"/>
+  <path d="m26.71 9.17c-0.21 0-0.33 0.1-0.39 0.27-0.1 0.32-0.23 0.57-0.15 0.57 0.01 0 0.03-0.01 0.06-0.01l-0.06 0.26c-0.13 0.33 0 0.69 0.48 0.59l0.19-0.77h0.56l-0.08 0.39c-0.04 0.25 0.16 0.49 0.5 0.38l0.27-1.47c0.04-0.19-0.07-0.26-0.19-0.26s-0.25 0.07-0.28 0.2l-0.1 0.48h-0.57l0.1-0.4c0.03-0.18-0.09-0.23-0.34-0.23z" fill="#D6C1E8"/>
+  <path d="m28.58 9.63c-0.11 0-0.26 0.05-0.29 0.18l-0.18 0.8c-0.03 0.22 0.2 0.36 0.44 0.27l0.2-1.04c0.03-0.14-0.04-0.21-0.17-0.21z" fill="#D6C1E8"/>
+  <circle cx="28.56" cy="9.348" r=".207" fill="#D6C1E8"/>
+  <path d="m30.16 9.1c-0.11 0-0.23 0.06-0.26 0.17l-0.07 0.4c-0.06-0.03-0.13-0.05-0.23-0.05-0.42 0-0.81 0.37-0.84 0.87-0.02 0.27 0.16 0.42 0.35 0.42 0.14 0 0.28-0.06 0.38-0.17 0.06 0.12 0.22 0.2 0.42 0.13l0.4-1.52c0.04-0.17-0.04-0.25-0.15-0.25zm-0.67 0.92c-0.08 0.09-0.26 0.11-0.26-0.05 0-0.21 0.19-0.36 0.41-0.28l-0.15 0.33z" fill="#D6C1E8"/>
+  <path d="m31.26 9.62c-0.18 0-0.34 0.1-0.46 0.22 0-0.12-0.1-0.21-0.28-0.2l-0.2 0.97c-0.05 0.24 0.1 0.38 0.38 0.3l0.12-0.62c0.06-0.15 0.19-0.22 0.27-0.22 0.07 0 0.1 0.06 0.08 0.18l-0.05 0.38c-0.04 0.22 0.17 0.36 0.43 0.24l0.1-0.7c0.06-0.36-0.09-0.55-0.39-0.55z" fill="#D6C1E8"/>
+  <path d="m49.41 9.17c-0.21 0-0.33 0.1-0.39 0.27-0.1 0.32-0.2 0.57-0.15 0.57 0.01 0 0.09-0.01 0.08-0.01l-0.11 0.32c-0.14 0.31-0.02 0.65 0.45 0.53l0.18-0.77h0.56l-0.1 0.43c-0.06 0.25 0.17 0.46 0.49 0.34l0.26-1.47c0.04-0.19-0.07-0.26-0.19-0.26s-0.25 0.07-0.28 0.2l-0.1 0.48h-0.58l0.1-0.4c0.04-0.18 0.03-0.23-0.22-0.23z" fill="#282350"/>
+  <path d="m51.14 9.63c-0.11 0-0.25 0.05-0.28 0.18l-0.17 0.78c-0.04 0.23 0.17 0.38 0.42 0.29l0.19-1.04c0.03-0.14-0.03-0.21-0.16-0.21z" fill="#282350"/>
+  <circle cx="51.12" cy="9.348" r=".207" fill="#282350"/>
+  <path d="m52.61 9.1c-0.11 0-0.18 0.06-0.21 0.17l-0.08 0.4c-0.06-0.03-0.12-0.05-0.23-0.05-0.42 0-0.78 0.37-0.82 0.87-0.01 0.27 0.15 0.42 0.34 0.42 0.14 0 0.3-0.06 0.41-0.17 0.04 0.13 0.21 0.2 0.39 0.13l0.4-1.52c0.04-0.17-0.09-0.25-0.2-0.25zm-0.58 0.92c-0.08 0.09-0.26 0.11-0.26-0.05 0-0.21 0.17-0.36 0.39-0.28l-0.13 0.33z" fill="#282350"/>
+  <path d="m53.65 9.62c-0.17 0-0.33 0.1-0.45 0.22 0-0.12-0.1-0.21-0.26-0.2l-0.22 0.98c-0.04 0.23 0.1 0.37 0.36 0.29l0.14-0.62c0.06-0.15 0.19-0.22 0.27-0.22 0.07 0 0.1 0.06 0.08 0.18l-0.05 0.38c-0.03 0.22 0.15 0.36 0.43 0.24l0.09-0.7c0.06-0.36-0.08-0.55-0.39-0.55z" fill="#282350"/>
+  <path d="m66.39 9.61h1.27" stroke="#282350" stroke-linecap="round" stroke-width=".1758"/>
+  <path d="m66.39 10.12h1.27" stroke="#282350" stroke-linecap="round" stroke-width=".1758"/>
+  <path d="m66.39 10.56h1.27" stroke="#282350" stroke-linecap="round" stroke-width=".1758"/>
+  <path d="m32.41 73.34c-1.14-0.28-3.22-0.46-5.2 2.25-1.01 1.4-1.97 1.95-2.42 2.1l2.25 0.66c1.19-0.73 1.98-2.26 2.75-2.85l2.68 0.69-0.06-2.85z" fill="url(#paint0_linear_3870_86475)"/>
+  <path d="m45.97 70.12c-1.55-0.32-3.49-0.02-5.63 2l0.16 0.02 0.45 0.52-0.61-0.52c-0.79 0.9-1.61 2.02-2.36 3.23-0.5 0.8-1.25 1.56-1.82 1.96l-3.21 1.76 6.49-1.34c1.26-1.37 2.47-3.42 3.82-4.54 0.99-0.81 1.83-0.66 2.33-0.5l0.38-2.59z" fill="url(#paint1_linear_3870_86475)"/>
+  <path d="m61.54 70.26c-1.18-0.17-3.23-0.05-4.61 2.36l-1.84 2.83c-0.1 0.63-0.48 1.74-0.57 2.43 0.97-0.04 2.18-0.38 2.88-1.52 0.64-1.08 0.74-2.69 1.32-3.39 0.84-0.16 1.98-0.06 2.53-0.05l0.29-2.66z" fill="url(#paint2_linear_3870_86475)"/>
+  <path d="m58.59 72.98c-0.72 0.03-1.68 0.53-2.27 1.48l-1.2 1.05c-0.09 0.94 1.18 1.67 2.04 1.17 0.83-0.99 0.91-2.75 1.43-3.7z" fill="url(#paint3_linear_3870_86475)"/>
+  <path d="m29.75 75.44c-0.75-0.35-1.88-0.21-2.52 0.3-0.7 1.15-1.74 1.84-2.45 1.97l2.24 0.65c1.14-0.74 1.85-2.1 2.73-2.92z" fill="url(#paint4_linear_3870_86475)"/>
+  <path d="m30.93 68.6 2.04 10.57 9.45-1.88-0.43-2.56-0.82 1.19 0.21 0.62-2.65 0.86 0.77-0.46-3.07 0.71-2.65 0.42-1.69-8.94 7.54-1.47 0.89 4.33 0.79-0.57-0.87-4.83-9.51 2.01z" fill="#D4BAF3" stroke="#9374C3" stroke-width=".09766"/>
+  <path d="m46.53 67.46-2.13 10.97 9.83 2.04 2.14-11.17-9.84-1.84zm0.81 1.12 7.78 1.52-1.7 9.04-7.81-1.62 1.73-8.94z" fill="#E5CAF4" stroke="#B192D7" stroke-width=".09766"/>
+  <path d="m9.79 29.59c-0.8 0.17-1.61 1.11-2.71 1.86-0.98 0.67-2.17 0.83-2.65 0.81 0.63 0.42 1.79 0.88 2.75 0.79 1.73-0.2 3.11-2.22 3.96-2.73-0.27-0.52-0.85-0.75-1.35-0.73z" fill="url(#paint7_linear_3870_86475)"/>
+  <path d="m20.94 27.99c-0.73-0.15-1.9-0.15-2.91 0.7s-1.85 2.34-2.38 2.79c-0.16 0.63 0.71 1.01 1.34 0.89 1.07-0.58 1.28-2.28 1.77-2.8 0.73-0.09 1.53 0.03 1.9 0.08 0.2-0.43 0.29-1.13 0.28-1.66z" fill="url(#paint5_linear_3870_86475)"/>
+  <path d="m17.32 29.5c-0.68 0.77-1.23 1.7-1.71 1.97-0.09 0.53 0.65 1.05 1.35 0.88 0.98-0.68 1.17-2.15 1.68-2.8-0.46-0.17-0.98-0.15-1.32-0.05z" fill="url(#paint6_linear_3870_86475)"/>
+  <path d="m11.72 28.65c-0.78 0-1.58 0.57-2.28 0.98 0.74-0.06 1.51 0.35 2.12 0.88 1 0.98 2.22 2.57 3.05 2.57 0.79 0.02 1.79-0.51 2.28-0.83-0.42-0.21-1.13-0.82-1.9-1.64-0.98-1.06-2.08-1.96-3.27-1.96z" fill="url(#paint5_linear_3870_86475)"/>
+  <path d="m14.78 33.08c0.81 0.06 1.79-0.41 2.33-0.83-0.29-0.12-0.59-0.34-0.77-0.57-0.32 0.62-0.92 1.11-1.56 1.4z" fill="#E39ED4"/>
+  <path d="m34.66 27.71c-1.35 0.34-2.31 2.9-3.13 3.27l-0.29 0.61 3.32-0.72 0.43-2.5-0.33-0.66z" fill="url(#paint8_linear_3870_86475)"/>
+  <path d="m29.07 29.45c-0.65-0.04-1.34 0.37-1.84 1.11-0.44 0.71-0.94 1.09-1.17 1.19 0.22 0.14 0.76 0.27 1.12 0.27 0.55-0.37 0.86-1.15 1.24-1.32l0.86-0.11-0.21-1.14z" fill="url(#paint9_linear_3870_86475)"/>
+  <path d="m44.69 28.01c-0.62-0.11-1.55-0.02-2.18 0.86-0.47 0.72-1.12 1.22-1.41 1.32l0.03 1.05c0.5 0.1 1.28-0.14 1.73-0.95 0.28-0.56 0.39-1.32 0.77-1.57 0.4-0.11 0.86-0.11 1.03-0.11l0.03-0.6z" fill="url(#paint10_linear_3870_86475)"/>
+  <path d="m34.39 23.27-6.41 1.41 1.53 7.3 5.29-1.08 0.41-2.7-0.82-4.93z" fill="url(#paint11_linear_3870_86475)"/>
+  <path d="m33.85 24.08-5.08 1.15 1.22 6 1.69-0.37c0.84-0.82 1.8-2.88 3.02-3.08l-0.85-3.7z" fill="#13141E"/>
+  <path d="m35.47 24.87-0.96 7.59 6.62 0.77 0.82-7.62-6.48-0.74z" fill="url(#paint12_linear_3870_86475)"/>
+  <path d="m35.99 25.63-0.81 6.23 5.38 0.56 0.67-6.26-5.24-0.53z" fill="#13131E"/>
+  <path d="m28.21 30.07c-0.4 0.1-0.82 0.39-1.1 0.78l1.22-0.14 0.26-0.12-0.13-0.49-0.25-0.03z" fill="#C394D0"/>
+  <path d="m34.56 30.21-1.54 0.51-0.3 0.57 1.86-0.41 0.05-0.6-0.07-0.07z" fill="#9873C8"/>
+  <path d="m41.43 30.14-0.19 0.69 0.07 0.36 0.76-0.21 0.31-0.67-0.95-0.17z" fill="#BF82C3"/>
+</svg>

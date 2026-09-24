@@ -2,6 +2,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { NavigationLink as Link } from './navigation-link';
+import {
+  Mail,
+  MailCheck,
+  ShieldCheck,
+  Check,
+  ArrowUpRight,
+} from 'lucide-react';
 import { api } from '@/lib/client-api';
 
 export function RequestPurchaseRecovery({
@@ -31,12 +38,16 @@ export function RequestPurchaseRecovery({
     }
   }
   return (
-    <div className="panel">
-      <div className="eyebrow">Your private library</div>
-      <h1>Recover your purchases</h1>
+    <div className="panel recovery-form-panel utility-surface">
+      <div className="recovery-state-icon" aria-hidden="true">
+        {sent ? <MailCheck size={25} /> : <Mail size={25} />}
+      </div>
+      <div className="eyebrow">Purchase recovery</div>
+      <h1>{sent ? 'Check your inbox.' : 'Back to your purchases.'}</h1>
       <p>
-        Guest access ended? Verify the email you used at checkout, then log in
-        or create an account to save your purchases.
+        {sent
+          ? 'Your next step is waiting in your checkout email.'
+          : 'Enter the email you used to pay. We’ll help you bring your purchases into your private library.'}
       </p>
       {expired && !sent && (
         <p className="notice">
@@ -45,8 +56,10 @@ export function RequestPurchaseRecovery({
         </p>
       )}
       {sent ? (
-        <div className="notice" role="status">
-          <strong>Check your inbox.</strong>
+        <div className="notice recovery-success" role="status">
+          <strong>
+            <Check size={16} /> Verification link sent
+          </strong>
           <p>
             Open the verification link within 30 minutes, then sign in to claim
             eligible purchases. Check spam if it hasn’t arrived.
@@ -67,11 +80,18 @@ export function RequestPurchaseRecovery({
               autoCapitalize="none"
               spellCheck={false}
               maxLength={254}
+              placeholder="you@example.com"
               required
             />
           </div>
           <button className="primary full" disabled={busy}>
-            {busy ? 'Sending…' : 'Send verification link'}
+            {busy ? (
+              'Sending…'
+            ) : (
+              <>
+                Send verification link <ArrowUpRight size={16} />
+              </>
+            )}
           </button>
         </form>
       )}
@@ -95,7 +115,12 @@ export function RequestPurchaseRecovery({
         Email is only sent when you ask. Refunded purchases and purchases saved
         to another account cannot be claimed.
       </p>
-      <Link href="/purchases">Already saved? Open My purchases ↗</Link>
+      <Link
+        className="utility-text-link recovery-library-link"
+        href="/purchases"
+      >
+        Already saved? Open My purchases <ArrowUpRight size={16} />
+      </Link>
     </div>
   );
 }
@@ -136,7 +161,10 @@ export function VerifyPurchaseRecovery() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
-    <div className="panel">
+    <div className="panel recovery-form-panel utility-surface">
+      <div className="recovery-state-icon" aria-hidden="true">
+        <ShieldCheck size={25} />
+      </div>
       <h1>{busy ? 'Verifying your email…' : 'Unable to verify'}</h1>
       {error && (
         <p className="notice error" role="alert">
@@ -190,7 +218,10 @@ export function ClaimRecoveredPurchases({
     }
   }
   return (
-    <div className="panel">
+    <div className="panel recovery-form-panel utility-surface">
+      <div className="recovery-state-icon" aria-hidden="true">
+        <Check size={25} />
+      </div>
       <div className="eyebrow">Checkout email verified</div>
       <h1>Add your purchases</h1>
       <p>

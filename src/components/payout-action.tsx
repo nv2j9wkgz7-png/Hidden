@@ -31,7 +31,7 @@ export function PayoutAction({
     }
   }
   return (
-    <div>
+    <div className="payout-action">
       {needsCountry && (
         <label className="payout-country">
           Business country
@@ -45,7 +45,7 @@ export function PayoutAction({
         </label>
       )}
       <button
-        className="button"
+        className="button payout-action-button"
         disabled={busy || (needsCountry && !country)}
         onClick={open}
       >

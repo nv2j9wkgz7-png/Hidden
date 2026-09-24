@@ -1,3 +1,4 @@
+import { RecoveryFrame } from '@/components/recovery-frame';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { admin } from '@/lib/supabase/admin';
@@ -27,11 +28,11 @@ export default async function Claim() {
       proof.used_by === user.id ? '/purchases' : '/purchases/recover?expired=1',
     );
   return (
-    <section className="recovery-layout">
+    <RecoveryFrame>
       <ClaimRecoveredPurchases
         checkoutEmail={maskRecoveryEmail(proof.email)}
         accountEmail={user.email || 'your signed-in account'}
       />
-    </section>
+    </RecoveryFrame>
   );
 }

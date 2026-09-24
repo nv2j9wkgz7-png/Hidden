@@ -2,6 +2,7 @@ import { NavigationLink as Link } from '@/components/navigation-link';
 import { ArrowUpRight, LockKeyhole, Images } from 'lucide-react';
 import { configured } from '@/lib/env';
 import { supabase } from '@/lib/supabase/server';
+import { GuideVisual } from '@/components/guide-visual';
 import { ExampleDrops } from '@/components/example-drops';
 
 export default async function Home() {
@@ -80,47 +81,64 @@ export default async function Home() {
 
 function HowToGuide() {
   return (
-    <div className="howto-page">
+    <div className="howto-page utility-page visual-guide">
       <div className="guide-intro">
         <img src="/hidn-arrow-mark.svg" alt="" width={92} height={92} />
         <div className="eyebrow">A quick guide</div>
         <h1>How to use Hidn</h1>
-        <p className="lead">From your content to their inbox in a few steps.</p>
+        <p className="lead">
+          Your content. A simple link. Their next favorite collection.
+        </p>
       </div>
       <ol className="howto-steps">
         {[
           [
-            'Upload your photos and videos',
-            'Go to My drops and select the + card. Add the files you want to sell together.',
+            'Gather your files',
+            'Add photos and videos. Drag to reorder them and choose your cover.',
           ],
           [
-            'Add a title and price',
-            'Name your drop, set a price in USD, and publish. One payment unlocks the whole collection.',
+            'Make it a drop',
+            'Give it a title and a price in USD. One payment unlocks the collection.',
           ],
           [
             'Share your link',
-            'Copy the link or choose a sharing app. Recipients see blurred previews, the file count, file size, and price.',
+            'Copy your link into a message. Buyers see a blurred preview and the price.',
           ],
           [
-            'Your buyer pays and downloads',
-            'No Hidn account needed. Once payment is confirmed, they can download the originals individually or as a ZIP. They can save their private access link to return later.',
+            'Paid. Unlocked. Theirs.',
+            'After payment, buyers can view the originals and download a ZIP. No account required.',
           ],
         ].map(([title, detail], i) => (
           <li key={title}>
-            <span className="step-number" aria-hidden="true">
-              0{i + 1}
-            </span>
-            <div>
-              <h2>{title}</h2>
-              <p>{detail}</p>
+            <GuideVisual step={i} />
+            <div className="guide-step-copy">
+              <span className="step-number" aria-hidden="true">
+                0{i + 1}
+              </span>
+              <div>
+                <h2>{title}</h2>
+                <p>{detail}</p>
+              </div>
             </div>
           </li>
         ))}
       </ol>
-      <p className="howto-tip">
-        <strong>Want to stop selling?</strong> Open your drop and select Stop
-        sales. New purchases stop; buyers who already paid keep access.
-      </p>
+      <aside className="guide-stop-note">
+        <span
+          className="stop-sales-preview"
+          role="img"
+          aria-label="Example of the Stop sales button"
+        >
+          Stop sales
+        </span>
+        <div>
+          <strong>Done selling this drop?</strong>
+          <p>
+            Open your drop and select this button. New sales stop; paid buyers
+            keep their existing access.
+          </p>
+        </div>
+      </aside>
       <Link href="/dashboard" className="button">
         Go to my drops <ArrowUpRight size={17} />
       </Link>
