@@ -402,7 +402,7 @@ html[data-theme='blackout'] .visual-guide .howto-steps {
   display: grid;
   place-items: center;
 }
-.demo-chat-photo img {
+.demo-chat-photo img:not(.demo-chat-watermark) {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -410,10 +410,12 @@ html[data-theme='blackout'] .visual-guide .howto-steps {
   filter: blur(6px);
   transform: scale(1.15);
 }
-.demo-chat-photo svg {
+.demo-chat-photo .demo-chat-watermark {
   position: relative;
-  color: #fff;
-  filter: drop-shadow(0 1px 4px #000);
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 7px #fff8);
 }
 .demo-chat-detail {
   padding: 9px 10px;

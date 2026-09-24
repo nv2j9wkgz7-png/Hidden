@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowUpRight, ChevronLeft, Link2, LockKeyhole } from 'lucide-react';
+import { ArrowUpRight, ChevronLeft, Link2 } from 'lucide-react';
 
 export function ShareExamples() {
   const [view, setView] = useState<'bio' | 'message'>('bio');
@@ -75,7 +75,13 @@ export function ShareExamples() {
                   height={100}
                   alt="Blurred coastal collection preview"
                 />
-                <LockKeyhole size={22} />
+                <img
+                  className="demo-chat-watermark"
+                  src="/hidn-arrow-mark.svg"
+                  width={40}
+                  height={40}
+                  alt="Hidn watermark"
+                />
               </div>
               <div className="demo-chat-detail">
                 <strong>Unlock Coastal collection</strong>
