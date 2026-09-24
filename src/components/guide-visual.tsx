@@ -26,7 +26,7 @@ export function GuideVisual({ step }: { step: number }) {
                 <img
                   src={`/examples/${name}.webp`}
                   alt=""
-                  loading="lazy"
+                  loading="eager"
                   width={100}
                   height={100}
                 />

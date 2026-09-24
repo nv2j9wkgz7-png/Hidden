@@ -2,7 +2,7 @@
 
 import {
   Children,
-  useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
@@ -17,7 +17,7 @@ export function GuideGallery({ children }: { children: ReactNode }) {
   const [height, setHeight] = useState<number>();
   const count = Children.count(children);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const rail = track.current;
     if (!rail) return;
     const cards = Array.from(rail.children) as HTMLElement[];
@@ -41,7 +41,7 @@ export function GuideGallery({ children }: { children: ReactNode }) {
       );
     const measure = () => {
       if (cards[current])
-        setHeight(Math.ceil(cards[current].getBoundingClientRect().height) + 2);
+        setHeight(Math.ceil(cards[current].getBoundingClientRect().height));
     };
     const settle = () => {
       if (!query.matches || touching || !cards.length) return;
@@ -121,6 +121,7 @@ export function GuideGallery({ children }: { children: ReactNode }) {
   return (
     <section
       className="guide-gallery"
+      data-ready={height !== undefined ? 'true' : undefined}
       aria-label="How to use Hidn, four steps"
       aria-roledescription={mobile ? 'carousel' : undefined}
     >

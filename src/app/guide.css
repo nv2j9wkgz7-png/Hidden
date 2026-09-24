@@ -83,7 +83,6 @@ html[data-theme='blackout'] .visual-guide .howto-steps {
 }
 .guide-visual > div {
   transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
-  animation: guide-card-arrive 0.7s ease-out 1;
 }
 .demo-upload,
 .demo-pricing,
@@ -292,7 +291,6 @@ html[data-theme='blackout'] .visual-guide .howto-steps {
   border-radius: 16px;
   background: var(--utility-surface);
   box-shadow: 0 12px 24px #34204212;
-  animation: guide-card-arrive 0.3s ease-out;
 }
 .demo-bio {
   transform: rotate(-2deg);
@@ -573,16 +571,6 @@ html[data-theme='blackout'] .stop-sales-preview {
   font-size: 13px;
   line-height: 1.6;
 }
-@keyframes guide-card-arrive {
-  from {
-    opacity: 0.65;
-    translate: 0 10px;
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-  }
-}
 @media (hover: hover) {
   .visual-guide .howto-steps li:hover .demo-upload {
     transform: translateY(-4px) rotate(-1deg);
@@ -783,5 +771,20 @@ html[data-theme='blackout'] .stop-sales-preview {
 @media (prefers-reduced-motion: reduce) {
   .guide-gallery-dots button span {
     transition: none;
+  }
+}
+
+/* Reserve the first card's real height before hydration. The taller off-screen
+   sharing card must not stretch the initial mobile gallery. */
+@media (max-width: 600px) {
+  .visual-guide
+    .guide-gallery:not([data-ready])
+    .howto-steps
+    > li:not(:first-child) {
+    height: 0;
+    min-height: 0;
+    padding-block: 0;
+    border-block-width: 0;
+    visibility: hidden;
   }
 }
