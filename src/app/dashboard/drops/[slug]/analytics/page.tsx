@@ -9,7 +9,7 @@ import {
 } from '@/lib/analytics';
 import { money } from '@/lib/format';
 export const dynamic = 'force-dynamic';
-export const metadata = { title: 'Drop analytics · Hidn' };
+export const metadata = { title: 'Drop analytics' };
 export default async function AnalyticsPage({
   params,
   searchParams,

@@ -89,7 +89,7 @@ nav {
   gap: 28px;
   align-items: center;
 }
-nav > a:first-child {
+.site-header nav > a:first-child {
   font-size: 14px;
   color: var(--muted);
 }
@@ -803,7 +803,7 @@ progress {
   .image-grid {
     grid-template-columns: 1fr;
   }
-  nav > a:first-child {
+  .site-header nav > a:first-child {
     display: none;
   }
   .stats {

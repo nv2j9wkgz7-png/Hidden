@@ -18,7 +18,7 @@ body {
   background: #faf8f6e8;
   border-color: #e8e1ec90;
 }
-nav > a:first-child {
+.site-header nav > a:first-child {
   color: var(--ink);
 }
 main {
