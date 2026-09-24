@@ -1,17 +1,20 @@
 import {
   ArrowUpRight,
   Check,
-  Copy,
   Download,
   GripVertical,
   ImagePlus,
-  LockKeyhole,
   Play,
 } from 'lucide-react';
 
+import { ShareExamples } from './share-examples';
+
 export function GuideVisual({ step }: { step: number }) {
   return (
-    <div className={`guide-visual guide-visual-${step}`} aria-hidden="true">
+    <div
+      className={`guide-visual guide-visual-${step}`}
+      aria-hidden={step === 2 ? undefined : true}
+    >
       <span className="guide-example-label">Example</span>
       {step === 0 && (
         <div className="demo-upload">
@@ -48,16 +51,30 @@ export function GuideVisual({ step }: { step: number }) {
       )}
       {step === 1 && (
         <div className="demo-pricing">
-          <img
-            src="/examples/coast.webp"
-            alt=""
-            width={100}
-            height={140}
-            loading="lazy"
-          />
+          <div className="demo-pricing-cover">
+            <img
+              className="demo-pricing-photo"
+              src="/examples/coast.webp"
+              alt=""
+              width={100}
+              height={220}
+              loading="lazy"
+            />
+            <img
+              className="demo-watermark"
+              src="/hidn-arrow-mark.svg"
+              alt=""
+              width={46}
+              height={46}
+            />
+          </div>
           <div>
             <span className="demo-field-label">Drop title</span>
             <strong>Coastal collection</strong>
+            <span className="demo-description">
+              Sunlit cliffs and quiet coves, in full resolution.
+            </span>
+            <span className="demo-drop-size">3 files · 18.4 MB</span>
             <span className="demo-field-label">Your price</span>
             <span className="demo-price">
               $18<small>USD</small>
@@ -68,35 +85,7 @@ export function GuideVisual({ step }: { step: number }) {
           </div>
         </div>
       )}
-      {step === 2 && (
-        <div className="demo-sharing">
-          <div className="demo-link">
-            <LockKeyhole size={14} />
-            <span>sendhidn.com/d/…</span>
-            <Copy size={15} />
-          </div>
-          <div className="demo-message">
-            <div className="demo-message-photo">
-              <img
-                src="/examples/coast.webp"
-                alt=""
-                width={80}
-                height={80}
-                loading="lazy"
-              />
-              <LockKeyhole size={14} />
-            </div>
-            <div>
-              <strong>Coastal collection</strong>
-              <span>3 files · $18</span>
-            </div>
-            <ArrowUpRight size={16} />
-          </div>
-          <span className="demo-copied">
-            <Check size={12} /> Link copied
-          </span>
-        </div>
-      )}
+      {step === 2 && <ShareExamples />}
       {step === 3 && (
         <div className="demo-unlocked">
           <span className="demo-paid">

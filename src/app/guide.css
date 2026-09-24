@@ -71,7 +71,7 @@ html[data-theme='blackout'] .visual-guide .howto-steps {
   isolation: isolate;
   display: grid;
   place-items: center;
-  min-height: 236px;
+  min-height: 280px;
   width: 100%;
   border-radius: 16px;
   overflow: hidden;
@@ -184,16 +184,36 @@ html[data-theme='blackout'] .visual-guide .howto-steps {
   color: var(--green);
 }
 .demo-pricing {
+  width: min(100%, 320px);
   display: grid;
   grid-template-columns: 80px minmax(0, 1fr);
   gap: 14px;
   transform: rotate(2deg);
 }
-.demo-pricing > img {
+.demo-pricing-cover {
+  position: relative;
   width: 80px;
-  height: 144px;
-  object-fit: cover;
+  min-height: 190px;
+  align-self: stretch;
+  overflow: hidden;
   border-radius: 8px;
+  display: grid;
+  place-items: center;
+}
+.demo-pricing-photo {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(5px);
+  transform: scale(1.15);
+}
+.demo-pricing-cover .demo-watermark {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 7px #fff8);
 }
 .demo-pricing > div {
   min-width: 0;
@@ -207,7 +227,19 @@ html[data-theme='blackout'] .visual-guide .howto-steps {
   display: block;
   font-size: 12px;
   font-weight: 600;
-  margin: 3px 0 11px;
+  margin: 3px 0 6px;
+}
+.demo-description {
+  display: block;
+  font-size: 10px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.demo-drop-size {
+  display: block;
+  margin: 8px 0 10px;
+  font-size: 10px;
+  color: var(--accent);
 }
 .demo-price {
   display: flex;
@@ -232,100 +264,190 @@ html[data-theme='blackout'] .visual-guide .howto-steps {
   color: white;
   font-size: 10px;
 }
-.demo-sharing {
-  position: relative;
-  width: min(100%, 295px);
-  padding-bottom: 15px;
+/* Switchable profile and message scenes; only the selector is interactive. */
+.share-examples {
+  width: min(100%, 340px);
+}
+.share-example-switch {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin: 0 0 14px;
+}
+.share-example-switch button {
+  min-height: 36px;
+  padding: 6px 13px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  box-shadow: none;
+}
+.share-example-switch button[aria-pressed='true'] {
+  background: var(--utility-surface);
+  border-color: var(--line);
+  color: var(--accent);
+}
+.share-example-stage {
+  min-height: 254px;
+  display: grid;
+  align-items: center;
+}
+.demo-bio,
+.demo-imessage {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--utility-surface);
+  box-shadow: 0 12px 24px #34204212;
+  animation: guide-card-arrive 0.3s ease-out;
+}
+.demo-bio {
   transform: rotate(-2deg);
 }
-.demo-link {
+.demo-bio-heading {
   display: flex;
-  gap: 9px;
   align-items: center;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 14px;
-  font-size: 12px;
-  background: var(--utility-surface);
-  box-shadow: 0 12px 24px #3420420c;
+  gap: 10px;
 }
-.demo-link span {
+.demo-bio-heading > img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.demo-bio-heading strong {
+  display: block;
+  font-size: 13px;
+}
+.demo-bio-heading span {
+  display: block;
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+.visual-guide .demo-bio p {
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 12px 0 8px;
+}
+.demo-bio-caption {
+  font-size: 10px;
+  color: var(--muted);
+}
+.demo-bio-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  font-size: 11px;
+  margin: 8px 0 14px;
+}
+.demo-bio-link span {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
-.demo-link svg {
-  color: var(--accent);
+.demo-bio-link svg {
   flex-shrink: 0;
 }
-.demo-message {
+.demo-bio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+.demo-bio-grid img {
+  width: 100%;
+  height: 54px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+.demo-imessage {
+  transform: rotate(1.5deg);
+}
+.demo-chat-heading {
   display: flex;
-  gap: 10px;
   align-items: center;
-  margin: 12px 0 0 20px;
-  padding: 10px;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 10px;
+  margin-bottom: 10px;
+}
+.demo-chat-heading svg {
+  color: #368eff;
+}
+.demo-chat-bubble {
+  margin-left: auto;
+  width: fit-content;
+  padding: 8px 11px;
+  border-radius: 14px 14px 4px 14px;
+  color: #fff;
+  background: #0874e8;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.demo-chat-preview {
+  width: 88%;
+  margin: 7px 0 0 auto;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: var(--utility-surface);
+  background: var(--utility-soft);
 }
-.demo-message-photo {
+.demo-chat-photo {
   position: relative;
-  height: 54px;
-  width: 50px;
+  height: 78px;
   overflow: hidden;
-  border-radius: 7px;
-  flex-shrink: 0;
+  display: grid;
+  place-items: center;
 }
-.demo-message-photo img {
+.demo-chat-photo img {
+  position: absolute;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: blur(4px);
-  transform: scale(1.12);
+  filter: blur(6px);
+  transform: scale(1.15);
 }
-.demo-message-photo svg {
-  position: absolute;
-  left: 18px;
-  top: 20px;
-  color: white;
-  filter: drop-shadow(0 1px 3px #000);
+.demo-chat-photo svg {
+  position: relative;
+  color: #fff;
+  filter: drop-shadow(0 1px 4px #000);
 }
-.demo-message > div:nth-child(2) {
-  flex: 1;
-  min-width: 0;
+.demo-chat-detail {
+  padding: 9px 10px;
 }
-.demo-message strong {
+.demo-chat-detail strong,
+.demo-chat-detail span,
+.demo-chat-detail small {
+  display: block;
+}
+.demo-chat-detail strong {
   font-size: 11px;
-  display: block;
 }
-.demo-message span {
-  display: block;
-  font-size: 10px;
+.demo-chat-detail span {
+  font-size: 9px;
   color: var(--muted);
   margin-top: 4px;
 }
-.demo-message > svg {
-  color: var(--accent);
-  flex-shrink: 0;
+.demo-chat-detail small {
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 6px;
 }
-.demo-copied {
-  position: absolute;
-  bottom: -1px;
-  left: 5px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 10px;
-  background: #2f2837;
-  color: #fff;
-  border: 1px solid #ffffff24;
-  border-radius: 8px;
-  padding: 7px 10px;
-  box-shadow: 0 5px 12px #0002;
+.share-example-note {
+  display: block;
+  text-align: center;
+  margin-top: 12px;
+  font-size: 9px;
+  color: var(--muted);
 }
-.demo-copied svg {
-  color: #9de5ba;
+@media (prefers-reduced-motion: reduce) {
+  .demo-bio,
+  .demo-imessage {
+    animation: none;
+  }
 }
 .demo-unlocked {
   transform: rotate(2deg);
@@ -413,9 +535,6 @@ html[data-theme='blackout'] .stop-sales-preview {
     transform: translateY(-4px) rotate(-1deg);
   }
   .visual-guide .howto-steps li:hover .demo-pricing {
-    transform: translateY(-4px) rotate(0deg);
-  }
-  .visual-guide .howto-steps li:hover .demo-sharing {
     transform: translateY(-4px) rotate(0deg);
   }
   .visual-guide .howto-steps li:hover .demo-unlocked {

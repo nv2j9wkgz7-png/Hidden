@@ -98,11 +98,11 @@ function HowToGuide() {
           ],
           [
             'Make it a drop',
-            'Give it a title and a price in USD. One payment unlocks the collection.',
+            'Add a title, description, and price in USD. Buyers can see the file count and total size.',
           ],
           [
             'Share your link',
-            'Copy your link into a message. Buyers see a blurred preview and the price.',
+            'Put your link in your bio or send it in a message. Link previews keep the originals blurred.',
           ],
           [
             'Paid. Unlocked. Theirs.',
