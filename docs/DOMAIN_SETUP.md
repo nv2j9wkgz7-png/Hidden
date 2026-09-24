@@ -21,7 +21,7 @@ The local app still uses its localhost APP_URL. Automatic purchase emails are en
 
 The login screen links to `/forgot-password`. Supabase sends a recovery email through its own authentication email configuration, independently of the application's Resend purchase emails. Recovery exchanges the PKCE code at `/auth/callback`, then opens `/reset-password`. Users must open the link in the browser that requested it. Missing, expired, or already-used links have a retry path; responses do not confirm whether an account exists.
 
-As of September 23, custom SMTP in Supabase is still disabled. The production delivery setup remains pending: use `smtp.resend.com`, port `465`, username `resend`, and a Resend sending API key as the SMTP password. The intended authentication sender is `Hidn <team@sendhidn.com>`. Save those settings in Supabase Authentication → Emails → SMTP Settings, then verify a real inbox-to-reset flow. Never commit the SMTP password or log reset links.
+Custom SMTP was enabled and verified to persist in Supabase on September 23. It uses `smtp.resend.com`, port `465`, username `resend`, and a Resend sending API key stored by Supabase as the SMTP password. Authentication emails send as `Hidn <team@sendhidn.com>`. A real inbox-to-reset flow still needs verification. Never commit the SMTP password or log reset links.
 
 ## Web hosting
 
