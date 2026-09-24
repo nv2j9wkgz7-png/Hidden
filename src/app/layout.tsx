@@ -69,11 +69,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <PageMotion>{children}</PageMotion>
         </main>
         <CopyToast />
-        <footer>
+        <footer className="site-footer">
           <Link href="/" className="footer-brand">
             Hidn <span>Made to share. Yours to sell.</span>
           </Link>
           <span>Your content. Your price. One link.</span>
+          <nav className="footer-help" aria-label="Help">
+            <Link className="footer-help-title" href="/help">
+              Help
+            </Link>
+            <Link href="/help#faq">FAQ</Link>
+            <Link href="/purchases/recover">Recover a purchase</Link>
+          </nav>
         </footer>
       </body>
     </html>

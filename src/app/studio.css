@@ -384,6 +384,116 @@ footer {
   color: var(--muted);
   letter-spacing: 0;
 }
+.site-footer {
+  align-items: flex-start;
+  gap: 24px;
+}
+.footer-help {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  font-size: 12px;
+}
+.footer-help a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+}
+.footer-help-title {
+  color: var(--ink);
+  font-weight: 600;
+}
+.footer-help a:hover {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.help-page {
+  max-width: 780px;
+  margin: 20px auto 40px;
+}
+.help-intro {
+  color: var(--muted);
+}
+.help-recovery {
+  margin: 36px 0 48px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+}
+.help-recovery > div {
+  flex: 1 1 280px;
+}
+.help-recovery h2 {
+  font-size: 22px;
+  margin: 0 0 8px;
+}
+.help-recovery p {
+  margin: 0;
+  color: var(--muted);
+}
+.help-faq {
+  scroll-margin-top: 32px;
+}
+.help-faq > h2 {
+  font-size: 28px;
+  margin-bottom: 24px;
+}
+.help-faq details {
+  border-bottom: 1px solid var(--line);
+}
+.help-faq summary {
+  padding: 22px 30px 22px 0;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 600;
+  position: relative;
+  list-style: none;
+}
+.help-faq summary::-webkit-details-marker {
+  display: none;
+}
+.help-faq summary::after {
+  content: '+';
+  position: absolute;
+  right: 2px;
+  top: 22px;
+  color: var(--muted);
+}
+.help-faq details[open] summary::after {
+  content: '−';
+}
+.help-answer {
+  padding: 0 24px 22px 0;
+  color: var(--muted);
+}
+.help-answer p {
+  margin: 0;
+}
+.help-answer a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (max-width: 640px) {
+  .site-footer {
+    flex-wrap: wrap;
+  }
+  .site-footer > span {
+    display: none;
+  }
+  .footer-help {
+    margin-left: auto;
+  }
+  .help-page {
+    margin-top: 8px;
+  }
+}
 .brand-home .home {
   gap: 40px;
   min-height: 510px;
