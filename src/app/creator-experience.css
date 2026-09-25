@@ -1,6 +1,19 @@
 /* Exact stops from the front ribbon (gradient h) in hidn-arrow-mark.svg.
    SVG vector (7.54, 13.37) maps to a 150.6-degree CSS gradient. */
+/* Preview accents use a brighter pink variation of the ribbon palette. */
 :root {
+  --hidn-preview-gradient: linear-gradient(
+    150.6deg,
+    #ffd1e9 0%,
+    #ff88c8 22%,
+    #ef4da8 47%,
+    #ffc5d6 69%,
+    #ff91c8 86%,
+    #ed64b2 100%
+  );
+  --hidn-preview-surface:
+    linear-gradient(110deg, transparent 42%, #ffffff40 50%, transparent 58%),
+    var(--hidn-preview-gradient);
   --hidn-ribbon-surface:
     linear-gradient(110deg, transparent 42%, #ffffff40 50%, transparent 58%),
     var(--hidn-ribbon-gradient);
@@ -747,12 +760,12 @@
 .file-row .file-preview-toggle[aria-pressed='true'],
 .studio-settings-actions > .preview-settings-button {
   color: #fff;
-  background: var(--hidn-ribbon-surface);
-  border: 1px solid #edd7ff;
+  background: var(--hidn-preview-surface);
+  border: 1px solid #ffd1e9;
   box-shadow:
     inset 0 1px 0 #fff9,
     inset 0 -1px 0 #4b0b3580,
-    0 0 0 1px #b587db66,
+    0 0 0 1px #ff88c866,
     0 2px 5px #0004;
   text-shadow:
     0 1px 2px #431781,
@@ -804,7 +817,7 @@
   font-weight: 600;
 }
 .studio-settings-actions > .preview-settings-button:hover {
-  background-image: var(--hidn-ribbon-surface);
+  background-image: var(--hidn-preview-surface);
 }
 .studio-settings-actions > :is(button, a),
 .studio-toolbar a {
@@ -846,6 +859,7 @@
 .studio-share-bar .primary,
 .studio-publish-bar .primary,
 .checkout-compact button.primary {
+  background-repeat: no-repeat;
   background-size:
     250% 100%,
     140% 140%;
@@ -875,6 +889,7 @@
 @media (prefers-reduced-motion: reduce) {
   :root {
     --hidn-ribbon-surface: var(--hidn-ribbon-gradient);
+    --hidn-preview-surface: var(--hidn-preview-gradient);
   }
   :is(.gallery-free-label, .free-preview-label),
   .file-row .file-preview-toggle[aria-pressed='true'],
