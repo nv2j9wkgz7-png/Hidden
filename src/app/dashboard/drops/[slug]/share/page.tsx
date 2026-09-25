@@ -10,6 +10,7 @@ import { ReviewActions } from '@/components/review-actions';
 import { PublishDrop } from '@/components/publish-drop';
 import { CreatorGallery } from '@/components/creator-gallery';
 import { ShareDrop } from '@/components/share-drop';
+import { PublicPreviewSettings } from '@/components/public-preview-settings';
 import { StopSales } from '@/components/stop-sales';
 
 export const dynamic = 'force-dynamic';
@@ -28,7 +29,7 @@ export default async function SharePage({
   const { data: drop, error } = await admin()
     .from('drops')
     .select(
-      'id,status,title,description,price_cents,assets(id,mime_type,size_bytes,storage_path,original_filename,status,sort_order)',
+      'id,status,title,description,price_cents,assets(id,mime_type,size_bytes,storage_path,original_filename,status,sort_order,is_public_preview)',
     )
     .eq('slug', slug)
     .eq('creator_id', user.id)
@@ -124,11 +125,21 @@ export default async function SharePage({
       <section className="panel creator-gallery-panel">
         <h2>Your photos & videos</h2>
         <p className="hint">
-          Tap a photo or video to view it. Buyers see blurred previews until
-          they pay.
+          Tap a photo or video to view it. Only a file you mark as a free
+          preview is visible before purchase.
         </p>
         <CreatorGallery images={originals} />
       </section>
+      {['DRAFT', 'PUBLISHED'].includes(drop.status) && originals.length > 0 && (
+        <PublicPreviewSettings
+          dropId={drop.id}
+          published={drop.status === 'PUBLISHED'}
+          assets={originals}
+          selectedIds={drop.assets
+            .filter((a) => a.is_public_preview)
+            .map((a) => a.id)}
+        />
+      )}
       <section className="panel share-panel">
         {drop.status === 'DRAFT' ? (
           <PublishDrop id={drop.id} />

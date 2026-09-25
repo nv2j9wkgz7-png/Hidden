@@ -2,7 +2,10 @@ import type { NextConfig } from 'next';
 const config: NextConfig = {
   poweredByHeader: false,
   outputFileTracingIncludes: {
-    '/d/*/card': ['./public/hidn-arrow-mark.svg'],
+    '/d/*/card': [
+      './public/hidn-arrow-mark.svg',
+      './public/free-preview-badges/*.png',
+    ],
     '/api/creator/finalize': [
       './public/hidn-arrow-mark.svg',
       './node_modules/ffmpeg-static/ffmpeg',

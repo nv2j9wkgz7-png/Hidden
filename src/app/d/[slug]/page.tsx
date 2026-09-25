@@ -21,7 +21,10 @@ export async function generateMetadata({
   const { slug } = await params;
   const drop = await publicDrop(slug);
   if (!drop) return { title: 'Drop unavailable' };
-  const description = `${drop.assets.length} private files · ${fileSize(drop.assets.reduce((n, a) => n + a.size_bytes, 0))} · ${money(drop.price_cents)} USD. Preview, pay, and unlock full-resolution originals.`;
+  const previewText = drop.freePreviewCount
+    ? `${drop.freePreviewCount} free unblurred ${drop.freePreviewCount === 1 ? 'preview' : 'previews'}. `
+    : '';
+  const description = `${previewText}${drop.assets.length} private files · ${fileSize(drop.assets.reduce((n, a) => n + a.size_bytes, 0))} · ${money(drop.price_cents)} USD. Preview, pay, and unlock full-resolution originals.`;
   const socialTitle = `Unlock ${drop.title} · ${drop.assets.length} private files · ${fileSize(drop.assets.reduce((n, a) => n + a.size_bytes, 0))} · ${money(drop.price_cents)} USD | Hidn`;
   const url = `${appUrl()}/d/${slug}`;
   return {
@@ -35,10 +38,12 @@ export async function generateMetadata({
       type: 'website',
       images: [
         {
-          url: `${url}/card?v=11`,
+          url: `${url}/card?v=12-${drop.freePreviewCount}`,
           width: 1000,
           height: 1000,
-          alt: 'Blurred collection cover watermarked with the Hidn H',
+          alt: drop.freePreviewCount
+            ? `Hidn collection with ${drop.freePreviewCount} free unblurred previews`
+            : 'Blurred collection cover watermarked with the Hidn H',
         },
       ],
     },
@@ -46,7 +51,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title: socialTitle,
       description,
-      images: [`${url}/card?v=11`],
+      images: [`${url}/card?v=12-${drop.freePreviewCount}`],
     },
   };
 }
@@ -87,7 +92,9 @@ export default async function DropPage({
   const { creator_id, ...buyerDrop } = drop;
   const { data: assets, error: assetError } = await db
     .from('assets')
-    .select('id,preview_path,original_filename,size_bytes,mime_type')
+    .select(
+      'id,preview_path,original_filename,size_bytes,mime_type,is_public_preview',
+    )
     .eq('drop_id', drop.id)
     .eq('status', 'READY')
     .order('sort_order');
@@ -110,6 +117,11 @@ export default async function DropPage({
         }
         assets={(assets || []).map(({ preview_path, ...asset }) => ({
           ...asset,
+          is_public_preview:
+            asset.is_public_preview &&
+            drop.status === 'PUBLISHED' &&
+            moderation?.moderation_state === 'ACTIVE' &&
+            !moderation?.users?.creator_suspended,
           preview_url: db.storage.from('previews').getPublicUrl(preview_path)
             .data.publicUrl,
         }))}

@@ -2,6 +2,7 @@
 import { NavigationLink as Link } from './navigation-link';
 import { notifyCopied } from './toast';
 import { PurchaseVerification } from './purchase-verification';
+import { FreePreview } from './free-preview';
 import { PaidGallery } from './paid-gallery';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -20,6 +21,7 @@ import { money, fileSize } from '@/lib/format';
 type Asset = {
   id: string;
   preview_url: string;
+  is_public_preview?: boolean;
   original_filename: string;
   size_bytes: number;
   mime_type?: string;
@@ -314,24 +316,30 @@ export function Buyer({
           />
         ) : (
           <div className="image-grid">
-            {assets.map((asset, index) => (
-              <article className="image-card" key={asset.id}>
-                <img
-                  src={asset.preview_url}
-                  alt={`Locked preview ${index + 1}`}
-                  width={800}
-                  height={600}
-                />
-                <div className="image-caption">
-                  <span>
-                    {asset.mime_type?.startsWith('video/') ? 'Video' : 'Photo'}{' '}
-                    {String(index + 1).padStart(2, '0')} ·{' '}
-                    {fileSize(asset.size_bytes)}
-                  </span>
-                  <LockKeyhole size={14} color="#8a829f" />
-                </div>
-              </article>
-            ))}
+            {assets.map((asset, index) =>
+              asset.is_public_preview ? (
+                <FreePreview key={asset.id} asset={asset} />
+              ) : (
+                <article className="image-card" key={asset.id}>
+                  <img
+                    src={asset.preview_url}
+                    alt={`Locked preview ${index + 1}`}
+                    width={800}
+                    height={600}
+                  />
+                  <div className="image-caption">
+                    <span>
+                      {asset.mime_type?.startsWith('video/')
+                        ? 'Video'
+                        : 'Photo'}{' '}
+                      {String(index + 1).padStart(2, '0')} ·{' '}
+                      {fileSize(asset.size_bytes)}
+                    </span>
+                    <LockKeyhole size={14} color="#8a829f" />
+                  </div>
+                </article>
+              ),
+            )}
           </div>
         )}
         <aside className="panel checkout-panel">

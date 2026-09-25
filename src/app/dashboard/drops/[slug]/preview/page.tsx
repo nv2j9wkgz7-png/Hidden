@@ -18,7 +18,7 @@ export default async function BuyerPreview({
   const { data: drop, error } = await db
     .from('drops')
     .select(
-      'id,title,description,price_cents,assets(id,preview_path,original_filename,size_bytes,mime_type,status,sort_order)',
+      'id,title,description,price_cents,assets(id,preview_path,original_filename,size_bytes,mime_type,status,sort_order,is_public_preview)',
     )
     .eq('slug', slug)
     .eq('creator_id', user.id)

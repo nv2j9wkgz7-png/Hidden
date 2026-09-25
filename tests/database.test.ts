@@ -1094,5 +1094,107 @@ test('Postgres primary flow and authorization boundaries', async (t) => {
       }
     },
   );
+  await t.test(
+    'public preview is opt-in, owner-only, ready-only, and restricted to its package',
+    async () => {
+      await db.exec(
+        await readFile(
+          'supabase/migrations/20260925120000_public_preview.sql',
+          'utf8',
+        ),
+      );
+      const owner = crypto.randomUUID();
+      await db.query('insert into auth.users values($1,$2)', [
+        owner,
+        'preview@example.com',
+      ]);
+      const id = (
+        await db.query<{ id: string }>(
+          "insert into public.drops(creator_id,title,price_cents) values($1,'Preview test',1000) returning id",
+          [owner],
+        )
+      ).rows[0].id;
+      const add = async (
+        name: string,
+        mime: string,
+        status: string,
+        order: number,
+      ) =>
+        (
+          await db.query<{ id: string }>(
+            'insert into public.assets(drop_id,storage_path,preview_path,original_filename,mime_type,size_bytes,status,sort_order) values($1,$2,$2,$2,$3,100,$4,$5) returning id',
+            [id, name, mime, status, order],
+          )
+        ).rows[0].id;
+      const photo = await add('photo.jpg', 'image/jpeg', 'READY', 0);
+      const video = await add('video.mp4', 'video/mp4', 'READY', 1);
+      const pending = await add('pending.jpg', 'image/jpeg', 'UPLOADING', 2);
+      const selected = async () =>
+        (
+          await db.query<{ id: string }>(
+            'select id from public.assets where drop_id=$1 and is_public_preview',
+            [id],
+          )
+        ).rows.map((a) => a.id);
+      const choose = (asset: string | null, user = owner) =>
+        db.query('select public.set_public_previews($1,$2,$3)', [
+          id,
+          user,
+          asset ? [asset] : [],
+        ]);
+      assert.deepEqual(await selected(), []);
+      await assert.rejects(choose(photo, other));
+      await assert.rejects(choose(pending));
+      await assert.rejects(choose(crypto.randomUUID()));
+      await choose(photo);
+      assert.deepEqual(await selected(), [photo]);
+      await db.query("update public.drops set status='PUBLISHED' where id=$1", [
+        id,
+      ]);
+      await choose(video);
+      assert.deepEqual(await selected(), [video]);
+      await db.query('select public.set_public_previews($1,$2,$3)', [
+        id,
+        owner,
+        [photo, video],
+      ]);
+      assert.deepEqual((await selected()).sort(), [photo, video].sort());
+      await assert.rejects(
+        db.query('select public.set_public_previews($1,$2,$3)', [
+          id,
+          owner,
+          [photo, photo],
+        ]),
+      );
+      await choose(null);
+      assert.deepEqual(await selected(), []);
+      await db.query(
+        'update public.users set creator_suspended=true where id=$1',
+        [owner],
+      );
+      await assert.rejects(choose(photo));
+      await db.query(
+        'update public.users set creator_suspended=false where id=$1',
+        [owner],
+      );
+      for (const state of ['PAUSED', 'REMOVED']) {
+        await db.query(
+          'update public.drops set moderation_state=$1 where id=$2',
+          [state, id],
+        );
+        await assert.rejects(choose(photo));
+      }
+      await db.query(
+        "update public.drops set moderation_state='ACTIVE',status='CLOSED' where id=$1",
+        [id],
+      );
+      await assert.rejects(choose(photo));
+      for (const role of ['anon', 'authenticated']) {
+        await db.exec(`set role ${role}`);
+        await assert.rejects(choose(photo));
+        await db.exec('reset role');
+      }
+    },
+  );
   await db.close();
 });
