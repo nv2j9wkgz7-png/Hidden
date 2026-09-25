@@ -1,5 +1,5 @@
 /* A shared clock keeps newly mounted buttons in phase. The color layer uses
-   horizontal percentage stops so narrow and wide buttons show the same pink. */
+   horizontal percentage stops so the finish stays consistent at every width. */
 @property --hidn-button-shimmer {
   syntax: '<percentage>';
   inherits: true;
@@ -15,9 +15,15 @@
     #ff91c8 86%,
     #ed64b2 100%
   );
-  --hidn-button-surface:
-    linear-gradient(90deg, transparent 42%, #ffffff30 50%, transparent 58%),
-    var(--hidn-button-pink);
+  --hidn-button-brand: linear-gradient(
+    90deg,
+    #edd7ff 0%,
+    #b587db 22%,
+    #af7cd2 47%,
+    #fdc9d8 69%,
+    #f8b2d1 86%,
+    #d69ed5 100%
+  );
   animation: hidn-button-shimmer-clock 10s ease-in-out infinite;
 }
 @keyframes hidn-button-shimmer-clock {
@@ -33,7 +39,6 @@
 @media (prefers-reduced-motion: reduce) {
   :root {
     animation: none;
-    --hidn-button-surface: var(--hidn-button-pink);
   }
 }
 
@@ -53,8 +58,14 @@
     .guide-gallery-controls > button,
     .drop-sort > summary
   ):not(.danger-button, .stop-sales-trigger) {
+  --button-palette: var(--hidn-button-brand);
+  --button-fill: #af7cd2;
+  --button-edge: #d6a9e3;
+  --hidn-button-surface:
+    linear-gradient(90deg, transparent 42%, #ffffff30 50%, transparent 58%),
+    var(--button-palette);
   color: #fff;
-  background-color: #ef4da8;
+  background-color: var(--button-fill);
   background-image: var(--hidn-button-surface);
   background-repeat: no-repeat;
   background-size:
@@ -63,7 +74,7 @@
   background-position:
     var(--hidn-button-shimmer) 50%,
     center;
-  border: 1px solid #f49ccd;
+  border: 1px solid var(--button-edge);
   border-radius: 12px;
   box-shadow: none;
   text-shadow: 0 1px 2px #6c144d80;
@@ -74,9 +85,15 @@
     filter 120ms ease,
     transform 120ms ease;
 
+  &.preview-settings-button {
+    --button-palette: var(--hidn-button-pink);
+    --button-fill: #ef4da8;
+    --button-edge: #f49ccd;
+  }
+
   &:hover {
     color: #fff;
-    background-color: #ef4da8;
+    background-color: var(--button-fill);
     background-image: var(--hidn-button-surface);
     box-shadow: none;
     filter: none;
@@ -102,6 +119,7 @@
   @media (prefers-reduced-motion: reduce) {
     animation: none;
     transition: none;
+    --hidn-button-surface: var(--button-palette);
     background-size: 100% 100%;
     background-position: center;
     &:active {
