@@ -10,20 +10,23 @@ export function ShareDrop({
   price,
   count,
   bytes,
+  compact = false,
 }: {
   url: string;
   title: string;
   price: string;
   count: number;
   bytes: number;
+  compact?: boolean;
 }) {
   const [notice, setNotice] = useState('');
   const [manual, setManual] = useState(false);
   const message = `${title} — ${count} hidden files · ${fileSize(bytes)} · ${price} USD. Preview, pay, and unlock the originals.`;
   const [card, setCard] = useState<File>();
   useEffect(() => {
+    if (compact) return;
     const controller = new AbortController();
-    fetch(`${url}/card?v=11`, { signal: controller.signal })
+    fetch(`${url}/card?v=14`, { signal: controller.signal })
       .then(async (response) => {
         if (!response.ok) return;
         const blob = await response.blob();
@@ -34,7 +37,7 @@ export function ShareDrop({
       })
       .catch(() => {});
     return () => controller.abort();
-  }, [url]);
+  }, [url, compact]);
   async function instagram() {
     if (navigator.share) {
       setNotice(
@@ -99,6 +102,39 @@ export function ShareDrop({
       }
     }
   }
+  if (compact)
+    return (
+      <div className="studio-share">
+        <div className="studio-share-bar">
+          <button
+            type="button"
+            className="primary"
+            onClick={() => copy(url, '')}
+          >
+            <Copy size={18} aria-hidden="true" />
+            Copy link
+          </button>
+          <button type="button" className="secondary" onClick={share}>
+            <Share2 size={18} aria-hidden="true" />
+            Share
+          </button>
+        </div>
+        {manual && (
+          <textarea
+            aria-label="Message and link to copy"
+            readOnly
+            rows={3}
+            value={text}
+            onFocus={(e) => e.target.select()}
+          />
+        )}
+        {notice && (
+          <p className="share-notice" role="status">
+            {notice}
+          </p>
+        )}
+      </div>
+    );
   return (
     <>
       <label className="share-label" htmlFor="purchase-link">
@@ -173,7 +209,7 @@ export function ShareDrop({
       </div>
       <section className="compact-link-preview" aria-label="Link preview">
         <img
-          src={`${url}/card?v=11`}
+          src={`${url}/card?v=14`}
           alt="Blurred collection cover with the Hidn H watermark"
           width={112}
           height={112}

@@ -11,6 +11,14 @@ import { PublishDrop } from '@/components/publish-drop';
 import { CreatorGallery } from '@/components/creator-gallery';
 import { ShareDrop } from '@/components/share-drop';
 import { PublicPreviewSettings } from '@/components/public-preview-settings';
+import {
+  Eye,
+  Pencil,
+  ChartNoAxesColumn,
+  ChevronDown,
+  SlidersHorizontal,
+} from 'lucide-react';
+import { EarningsEstimate } from '@/components/earnings-estimate';
 import { StopSales } from '@/components/stop-sales';
 
 export const dynamic = 'force-dynamic';
@@ -48,103 +56,104 @@ export default async function SharePage({
       url: `/api/creator/media?asset_id=${asset.id}&view=original`,
       thumbnailUrl: `/api/creator/media?asset_id=${asset.id}`,
       mime: asset.mime_type,
+      freePreview: asset.is_public_preview,
     }));
   return (
-    <div className="share-page">
+    <div className="share-page creator-studio">
       <Link className="back" href="/dashboard">
         ← My drops
       </Link>
-      <div className="page-heading review-heading">
-        <div>
-          <div className="eyebrow">
-            {drop.status === 'DRAFT'
-              ? 'Step 2 · The final look'
-              : 'Your drop, ready to travel'}
-          </div>
+      <header className="creator-heading">
+        <div className="studio-title-row">
           <h1>{drop.title}</h1>
-          <p>
-            {originals.length} files ·{' '}
-            {fileSize(originals.reduce((n, a) => n + a.size, 0))} ·{' '}
-            {money(drop.price_cents)} USD
-          </p>
+          <span
+            className={`badge ${drop.status === 'PUBLISHED' ? 'paid' : ''}`}
+          >
+            {drop.status === 'DRAFT'
+              ? 'Draft'
+              : drop.status === 'PUBLISHED'
+                ? 'Live'
+                : 'Sales stopped'}
+          </span>
         </div>
-        <span className="badge paid">
-          {drop.status === 'DRAFT'
-            ? 'Draft'
-            : drop.status === 'PUBLISHED'
-              ? 'Ready to share'
-              : 'Sales stopped'}
-        </span>
-      </div>
-      {drop.status === 'DRAFT' && (
-        <ol className="creation-steps" aria-label="Create a drop">
-          <li>
-            <span>1</span> Create
-          </li>
-          <li aria-current="step">
-            <span>2</span> Review & share
-          </li>
-        </ol>
-      )}
-      {drop.status !== 'DRAFT' && (
-        <Link
-          className="button secondary"
-          href={`/dashboard/drops/${slug}/analytics`}
-        >
-          View analytics ↗
-        </Link>
-      )}
-      <EditDropDetails
-        draft={drop.status === 'DRAFT'}
-        drop={{
-          id: drop.id,
-          title: drop.title,
-          description: drop.description,
-          price_cents: drop.price_cents,
-        }}
-      />
-      {drop.status === 'DRAFT' && (
-        <Link href={`/new?drop=${drop.id}`} className="text-button">
-          Add files or drag to reorder ↗
-        </Link>
-      )}
-      <Link
-        href={`/dashboard/drops/${slug}/preview`}
-        className="button secondary"
-      >
-        Preview as buyer ↗
-      </Link>
-      <section className="panel creator-gallery-panel">
-        <h2>Your photos & videos</h2>
-        <p className="hint">
-          Tap a photo or video to view it. Only a file you mark as a free
-          preview is visible before purchase.
+        <p>
+          {originals.length} files ·{' '}
+          {fileSize(originals.reduce((n, a) => n + a.size, 0))} ·{' '}
+          {money(drop.price_cents)} USD
         </p>
+      </header>
+      <nav className="studio-toolbar" aria-label="Drop tools">
+        {drop.status === 'DRAFT' && (
+          <Link href={`/new?drop=${drop.id}`}>
+            <Pencil size={17} aria-hidden="true" />
+            Edit
+          </Link>
+        )}
+        <Link href={`/dashboard/drops/${slug}/preview`}>
+          <Eye size={18} aria-hidden="true" />
+          Preview
+        </Link>
+        {drop.status !== 'DRAFT' && (
+          <Link href={`/dashboard/drops/${slug}/analytics`}>
+            <ChartNoAxesColumn size={18} aria-hidden="true" />
+            Stats
+          </Link>
+        )}
+      </nav>
+      <section className="studio-files" aria-label="Your files">
         <CreatorGallery images={originals} />
       </section>
+      <EarningsEstimate cents={drop.price_cents} />
+      <details className="studio-disclosure">
+        <summary>
+          <Pencil size={18} aria-hidden="true" />
+          <span>Edit details</span>
+          <ChevronDown size={16} aria-hidden="true" />
+        </summary>
+        <EditDropDetails
+          draft={drop.status === 'DRAFT'}
+          drop={{
+            id: drop.id,
+            title: drop.title,
+            description: drop.description,
+            price_cents: drop.price_cents,
+          }}
+        />
+      </details>
       {['DRAFT', 'PUBLISHED'].includes(drop.status) && originals.length > 0 && (
-        <PublicPreviewSettings
-          dropId={drop.id}
-          published={drop.status === 'PUBLISHED'}
-          assets={originals}
-          selectedIds={drop.assets
-            .filter((a) => a.is_public_preview)
-            .map((a) => a.id)}
+        <details className="studio-disclosure">
+          <summary>
+            <SlidersHorizontal size={18} aria-hidden="true" />
+            <span>Free previews</span>
+            <small>
+              {originals.filter((a) => a.freePreview).length} selected
+            </small>
+            <ChevronDown size={16} aria-hidden="true" />
+          </summary>
+          <PublicPreviewSettings
+            dropId={drop.id}
+            published={drop.status === 'PUBLISHED'}
+            assets={originals}
+            selectedIds={drop.assets
+              .filter((a) => a.is_public_preview)
+              .map((a) => a.id)}
+          />
+        </details>
+      )}
+      {drop.status === 'DRAFT' ? (
+        <div className="studio-publish-bar">
+          <PublishDrop id={drop.id} />
+        </div>
+      ) : (
+        <ShareDrop
+          compact
+          url={`${appUrl()}/d/${slug}`}
+          title={drop.title}
+          price={money(drop.price_cents)}
+          count={drop.assets.length}
+          bytes={drop.assets.reduce((n, a) => n + a.size_bytes, 0)}
         />
       )}
-      <section className="panel share-panel">
-        {drop.status === 'DRAFT' ? (
-          <PublishDrop id={drop.id} />
-        ) : (
-          <ShareDrop
-            url={`${appUrl()}/d/${slug}`}
-            title={drop.title}
-            price={money(drop.price_cents)}
-            count={drop.assets.length}
-            bytes={drop.assets.reduce((n, a) => n + a.size_bytes, 0)}
-          />
-        )}
-      </section>
       <ReviewActions draft={drop.status === 'DRAFT'} />
       {drop.status !== 'DRAFT' && (
         <StopSales dropId={drop.id} status={drop.status} compact />

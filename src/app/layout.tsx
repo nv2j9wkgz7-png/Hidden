@@ -14,6 +14,7 @@ import './navigation.css';
 import './blackout.css';
 import './utility.css';
 import './guide.css';
+import './creator-experience.css';
 const outfit = localFont({
   src: [
     {

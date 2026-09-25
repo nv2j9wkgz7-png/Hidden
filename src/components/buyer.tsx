@@ -2,15 +2,13 @@
 import { NavigationLink as Link } from './navigation-link';
 import { notifyCopied } from './toast';
 import { PurchaseVerification } from './purchase-verification';
-import { FreePreview } from './free-preview';
+import { BuyerPreviewGallery } from './buyer-preview-gallery';
 import { PaidGallery } from './paid-gallery';
 import { useEffect, useRef, useState } from 'react';
 import {
   LockKeyhole,
   Check,
   Download,
-  ShieldCheck,
-  ImageIcon,
   Link2,
   Share2,
   Mail,
@@ -279,31 +277,21 @@ export function Buyer({
       </section>
     );
   const paid = status === 'PAID';
+  const simpleCheckout = !salesClosed && ['LOCKED', 'LOADING'].includes(status);
   const remainingMinutes = expiresAt
     ? Math.max(0, Math.ceil((Date.parse(expiresAt) - now) / 60000))
     : 0;
   return (
     <>
       <div className="buyer-heading">
-        <img
-          className="buyer-brand-mark"
-          src="/hidn-arrow-mark.svg"
-          alt=""
-          width={64}
-          height={64}
-        />
-        <div className="eyebrow">A private content drop</div>
         <h1>{drop.title}</h1>
         {drop.description && (
           <p className="drop-description">{drop.description}</p>
         )}
         <p>
           {assets.length} files ·{' '}
-          {fileSize(assets.reduce((n, a) => n + a.size_bytes, 0))} · One
-          collection ·{' '}
-          {accountSaved
-            ? 'Saved in your private library.'
-            : '72-hour guest access. Save to an account for ongoing access.'}
+          {fileSize(assets.reduce((n, a) => n + a.size_bytes, 0))}
+          {accountSaved && ' · Saved to your library'}
         </p>
       </div>
       <div className={`buyer-layout${paid ? ' buyer-paid' : ''}`}>
@@ -315,61 +303,44 @@ export function Buyer({
             download={download}
           />
         ) : (
-          <div className="image-grid">
-            {assets.map((asset, index) =>
-              asset.is_public_preview ? (
-                <FreePreview key={asset.id} asset={asset} />
-              ) : (
-                <article className="image-card" key={asset.id}>
-                  <img
-                    src={asset.preview_url}
-                    alt={`Locked preview ${index + 1}`}
-                    width={800}
-                    height={600}
-                  />
-                  <div className="image-caption">
-                    <span>
-                      {asset.mime_type?.startsWith('video/')
-                        ? 'Video'
-                        : 'Photo'}{' '}
-                      {String(index + 1).padStart(2, '0')} ·{' '}
-                      {fileSize(asset.size_bytes)}
-                    </span>
-                    <LockKeyhole size={14} color="#8a829f" />
-                  </div>
-                </article>
-              ),
-            )}
-          </div>
+          <BuyerPreviewGallery assets={assets} />
         )}
-        <aside className="panel checkout-panel">
-          <div className="status-icon">
-            {paid ? <Check /> : <LockKeyhole />}
-          </div>
-          <span className={`badge ${paid ? 'paid' : ''}`}>
-            {paid
-              ? 'Payment confirmed'
-              : status === 'PENDING'
-                ? 'Awaiting confirmation'
+        <aside
+          className={`panel checkout-panel ${simpleCheckout ? 'checkout-compact' : ''}`}
+        >
+          {!simpleCheckout && (
+            <div className="status-icon">
+              {paid ? <Check /> : <LockKeyhole />}
+            </div>
+          )}
+          {!simpleCheckout && (
+            <span className={`badge ${paid ? 'paid' : ''}`}>
+              {paid
+                ? 'Payment confirmed'
+                : status === 'PENDING'
+                  ? 'Awaiting confirmation'
+                  : status === 'VERIFICATION_REQUIRED'
+                    ? 'Verify to open'
+                    : status === 'EXPIRED'
+                      ? 'Access expired'
+                      : status === 'REFUNDED'
+                        ? 'Payment refunded'
+                        : 'Locked collection'}
+            </span>
+          )}
+          {!simpleCheckout && (
+            <h2 style={{ marginTop: 18 }}>
+              {paid
+                ? 'It’s all yours.'
                 : status === 'VERIFICATION_REQUIRED'
-                  ? 'Verify to open'
+                  ? 'Your purchase, protected.'
                   : status === 'EXPIRED'
-                    ? 'Access expired'
-                    : status === 'REFUNDED'
-                      ? 'Payment refunded'
-                      : 'Locked collection'}
-          </span>
-          <h2 style={{ marginTop: 18 }}>
-            {paid
-              ? 'It’s all yours.'
-              : status === 'VERIFICATION_REQUIRED'
-                ? 'Your purchase, protected.'
-                : status === 'EXPIRED'
-                  ? 'Your access window has ended.'
-                  : salesClosed
-                    ? 'This drop is closed.'
-                    : 'Unlock the originals.'}
-          </h2>
+                    ? 'Your access window has ended.'
+                    : salesClosed
+                      ? 'This drop is closed.'
+                      : 'Unlock the originals.'}
+            </h2>
+          )}
           {paid ? (
             <p className="hint">
               Tap a photo to view it full size, or play a video. Download your
@@ -391,15 +362,11 @@ export function Buyer({
             </p>
           ) : (
             <>
-              <div className="price">
-                {money(drop.price_cents)} <small>USD</small>
+              <div className="checkout-terms">
+                <span>One-time payment · No account needed</span>
+                <strong>72-hour guest access</strong>
+                <span>Save to an account for ongoing access.</span>
               </div>
-              <p className="hint">
-                One-time payment. All {assets.length} files ·{' '}
-                {fileSize(assets.reduce((n, a) => n + a.size_bytes, 0))} total.{' '}
-                No login needed. View and download for 72 hours as a guest, or
-                save to an account for ongoing access.
-              </p>
             </>
           )}
           {paid && expiresAt && (
@@ -422,16 +389,6 @@ export function Buyer({
               files.
             </p>
           )}
-          <hr className="divider" />
-          <div className="benefit">
-            <ImageIcon size={16} /> Full-resolution originals
-          </div>
-          <div className="benefit">
-            <Download size={16} /> Individual files + ZIP download
-          </div>
-          <div className="benefit">
-            <ShieldCheck size={16} /> Secure, private delivery
-          </div>
           <div style={{ marginTop: 24 }}>
             {paid ? (
               <>
@@ -558,7 +515,9 @@ export function Buyer({
             ) : (
               <button
                 className="primary full"
-                disabled={salesClosed || !!busy || status === 'LOADING'}
+                disabled={
+                  previewOnly || salesClosed || !!busy || status === 'LOADING'
+                }
                 onClick={checkout}
               >
                 {salesClosed
@@ -569,7 +528,7 @@ export function Buyer({
                       ? 'Opening checkout…'
                       : status === 'PENDING'
                         ? 'Resume checkout'
-                        : `Unlock for ${money(drop.price_cents)}`}
+                        : `Unlock · ${money(drop.price_cents)} USD`}
               </button>
             )}
           </div>
@@ -606,15 +565,17 @@ export function Buyer({
               {error}
             </div>
           )}
-          <p className="payment-note">
-            {paid
-              ? accountSaved
-                ? 'Saved purchases require your login. Downloads are yours to keep.'
-                : 'Guest access lasts 72 hours. Save to your account for ongoing access.'
-              : status === 'EXPIRED'
-                ? 'The original payment deadline cannot be extended by copying or emailing a link.'
-                : 'No account needed · Secure checkout by Stripe'}
-          </p>
+          {!simpleCheckout && (
+            <p className="payment-note">
+              {paid
+                ? accountSaved
+                  ? 'Saved purchases require your login. Downloads are yours to keep.'
+                  : 'Guest access lasts 72 hours. Save to your account for ongoing access.'
+                : status === 'EXPIRED'
+                  ? 'The original payment deadline cannot be extended by copying or emailing a link.'
+                  : 'No account needed · Secure checkout by Stripe'}
+            </p>
+          )}
         </aside>
       </div>
     </>

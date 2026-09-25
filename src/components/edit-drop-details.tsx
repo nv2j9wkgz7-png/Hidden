@@ -21,14 +21,13 @@ export function EditDropDetails({
     return (
       <section className="panel review-details">
         <div className="review-details-heading">
-          <h2>Drop details</h2>
+          <h2>Details</h2>
           <Link className="text-button" href={`/new?drop=${drop.id}`}>
             Edit details ↗
           </Link>
         </div>
         <p className="drop-description">
-          {drop.description ||
-            'Add an optional description so buyers know what’s included.'}
+          {drop.description || 'No description'}
         </p>
         <EarningsEstimate cents={drop.price_cents} />
       </section>
@@ -36,7 +35,7 @@ export function EditDropDetails({
   return (
     <section className="panel review-details">
       <div className="review-details-heading">
-        <h2>Drop details</h2>
+        <h2>Details</h2>
         <button
           type="button"
           className="text-button"
@@ -137,8 +136,7 @@ export function EditDropDetails({
       ) : (
         <>
           <p className="drop-description">
-            {drop.description ||
-              'Add an optional description so buyers know what’s included.'}
+            {drop.description || 'No description'}
           </p>
           <EarningsEstimate cents={drop.price_cents} />
         </>

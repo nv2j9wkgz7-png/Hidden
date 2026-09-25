@@ -38,8 +38,10 @@ export default async function BuyerPreview({
   return (
     <>
       <div className="owner-preview">
-        Buyer preview · Checkout is disabled.{' '}
-        <Link href={`/dashboard/drops/${slug}/share`}>← Back to your drop</Link>
+        <Link href={`/dashboard/drops/${slug}/share`}>← Back</Link>
+        <span>
+          Buyer preview <small>· Checkout off</small>
+        </span>
       </div>
       {previews.length ? (
         <Buyer drop={details} assets={previews} previewOnly />

@@ -12,6 +12,7 @@ type Image = {
   url: string;
   mime?: string;
   thumbnailUrl?: string;
+  freePreview?: boolean;
 };
 
 export function CreatorGallery({
@@ -72,6 +73,9 @@ export function CreatorGallery({
               aria-label={`View file ${index + 1}: ${asset.name}`}
               onClick={() => openImage(index)}
             >
+              {asset.freePreview && (
+                <span className="gallery-free-label">Free preview</span>
+              )}
               {asset.mime?.startsWith('video/') && !asset.thumbnailUrl ? (
                 <>
                   <video

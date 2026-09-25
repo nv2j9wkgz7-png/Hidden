@@ -68,9 +68,6 @@ export function FreePreview({
           <Download size={18} />
         </a>
       </div>
-      <p className="hint free-preview-note">
-        Included in this package. No payment needed for this file.
-      </p>
     </article>
   );
 }
