@@ -10,6 +10,7 @@ import { uploadWithProgress } from '@/lib/upload-progress';
 import { SortableFiles } from './sortable-files';
 import { uploadMime, droppedFiles } from '@/lib/upload-files';
 import { CreatorGallery } from './creator-gallery';
+import { MediaTypeBadge } from './media-type-badge';
 import { EarningsEstimate } from './earnings-estimate';
 import { useEffect, useRef, useState } from 'react';
 import { UploadCloud, ImageIcon, X, ShieldCheck, Check } from 'lucide-react';
@@ -575,7 +576,7 @@ export function NewDropForm({
                     <button
                       type="button"
                       className="upload-thumbnail"
-                      aria-label={`View ${item.name}`}
+                      aria-label={`View ${item.mime.startsWith('video/') ? 'video' : 'photo'}: ${item.name}`}
                       onClick={() =>
                         openImage(
                           previewImages.findIndex(
@@ -584,6 +585,7 @@ export function NewDropForm({
                         )
                       }
                     >
+                      <MediaTypeBadge mime={item.mime} />
                       {item.mime.startsWith('video/') &&
                       !item.preview.startsWith('/api/creator/media') ? (
                         <>
@@ -593,7 +595,6 @@ export function NewDropForm({
                             playsInline
                             preload="metadata"
                           />
-                          <span className="video-badge">▶</span>
                         </>
                       ) : (
                         <img

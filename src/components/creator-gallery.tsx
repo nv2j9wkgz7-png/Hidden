@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { fileSize } from '@/lib/format';
+import { MediaTypeBadge } from './media-type-badge';
 
 type Image = {
   id: string;
@@ -70,9 +71,10 @@ export function CreatorGallery({
               type="button"
               className="creator-thumbnail"
               key={asset.id}
-              aria-label={`View file ${index + 1}: ${asset.name}`}
+              aria-label={`View ${asset.mime?.startsWith('video/') ? 'video' : 'photo'} ${index + 1}: ${asset.name}`}
               onClick={() => openImage(index)}
             >
+              <MediaTypeBadge mime={asset.mime} />
               {asset.freePreview && (
                 <span className="gallery-free-label">Free preview</span>
               )}
@@ -84,7 +86,6 @@ export function CreatorGallery({
                     playsInline
                     preload="metadata"
                   />
-                  <span className="video-badge">▶</span>
                 </>
               ) : (
                 <img
