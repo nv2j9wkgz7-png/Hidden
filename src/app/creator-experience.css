@@ -466,7 +466,10 @@
 .studio-share-bar .primary,
 .studio-publish-bar .primary,
 .checkout-compact button.primary {
-  color: #241329;
+  color: #fff;
+  text-shadow:
+    0 1px 2px #431781,
+    0 0 1px #431781;
   background-color: #f8b2d1;
   background-image: var(--hidn-ribbon-surface);
   box-shadow:
@@ -477,7 +480,7 @@
 .studio-share-bar .primary:hover,
 .studio-publish-bar .primary:hover,
 .checkout-compact button.primary:hover {
-  color: #241329;
+  color: #fff;
   background-image: var(--hidn-ribbon-surface);
 }
 @media (max-width: 700px) {
@@ -743,7 +746,7 @@
 :is(.gallery-free-label, .free-preview-label),
 .file-row .file-preview-toggle[aria-pressed='true'],
 .studio-settings-actions > .preview-settings-button {
-  color: #241329;
+  color: #fff;
   background: var(--hidn-ribbon-surface);
   border: 1px solid #edd7ff;
   box-shadow:
@@ -751,7 +754,9 @@
     inset 0 -1px 0 #4b0b3580,
     0 0 0 1px #b587db66,
     0 2px 5px #0004;
-  text-shadow: 0 1px 0 #ffffff4d;
+  text-shadow:
+    0 1px 2px #431781,
+    0 0 1px #431781;
   font-weight: 700;
   letter-spacing: 0.01em;
 }
