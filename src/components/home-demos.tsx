@@ -542,7 +542,7 @@ export function LinkControlDemo() {
       >
         {stopped ? (
           <>
-            <Play size={15} /> Replay demo
+            <Play size={15} /> Start sales
           </>
         ) : (
           <>

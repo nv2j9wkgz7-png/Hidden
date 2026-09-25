@@ -21,7 +21,7 @@ test('homepage demos explain sharing and sales without changing real drops', asy
   await expect(
     page.getByText('Paid buyers keep their existing access.', { exact: true }),
   ).toBeVisible();
-  await page.getByRole('button', { name: 'Replay demo' }).click();
+  await page.getByRole('button', { name: 'Start sales' }).click();
   await expect(
     page.getByText('Your link. Your call.', { exact: true }),
   ).toBeVisible();
