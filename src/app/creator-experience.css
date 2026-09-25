@@ -1031,12 +1031,18 @@
   padding: 8px 0;
   border: 0;
   background: transparent;
-  color: var(--muted);
+  color: #c62b43;
   font-size: 13px;
   font-weight: 500;
 }
 .creator-studio .stop-sales-trigger:hover {
-  color: #d53855;
+  color: #a91d34;
+}
+[data-theme='blackout'] .creator-studio .stop-sales-trigger {
+  color: #ff687c;
+}
+[data-theme='blackout'] .creator-studio .stop-sales-trigger:hover {
+  color: #ff91a0;
 }
 .creator-studio .media-type-badge {
   box-shadow: none;
