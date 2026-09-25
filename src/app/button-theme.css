@@ -1,3 +1,42 @@
+/* A shared clock keeps newly mounted buttons in phase. The color layer uses
+   horizontal percentage stops so narrow and wide buttons show the same pink. */
+@property --hidn-button-shimmer {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 150%;
+}
+:root {
+  --hidn-button-pink: linear-gradient(
+    90deg,
+    #ffd1e9 0%,
+    #ff88c8 22%,
+    #ef4da8 47%,
+    #ffc5d6 69%,
+    #ff91c8 86%,
+    #ed64b2 100%
+  );
+  --hidn-button-surface:
+    linear-gradient(90deg, transparent 42%, #ffffff30 50%, transparent 58%),
+    var(--hidn-button-pink);
+  animation: hidn-button-shimmer-clock 10s ease-in-out infinite;
+}
+@keyframes hidn-button-shimmer-clock {
+  0%,
+  20% {
+    --hidn-button-shimmer: 150%;
+  }
+  80%,
+  100% {
+    --hidn-button-shimmer: -150%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    animation: none;
+    --hidn-button-surface: var(--hidn-button-pink);
+  }
+}
+
 /* One shared action style, based on the Free previews button. Media tiles,
    text navigation, theme switches, and destructive actions keep their roles. */
 :root
@@ -16,21 +55,21 @@
   ):not(.danger-button, .stop-sales-trigger) {
   color: #fff;
   background-color: #ef4da8;
-  background-image: var(--hidn-preview-surface);
+  background-image: var(--hidn-button-surface);
   background-repeat: no-repeat;
   background-size:
     250% 100%,
-    140% 140%;
+    100% 100%;
   background-position:
-    150% 50%,
-    35% 40%;
+    var(--hidn-button-shimmer) 50%,
+    center;
   border: 1px solid #f49ccd;
   border-radius: 12px;
   box-shadow: none;
   text-shadow: 0 1px 2px #6c144d80;
   font-weight: 600;
   letter-spacing: -0.02em;
-  animation: hidn-ribbon-shimmer 10s ease-in-out infinite;
+  animation: none;
   transition:
     filter 120ms ease,
     transform 120ms ease;
@@ -38,14 +77,14 @@
   &:hover {
     color: #fff;
     background-color: #ef4da8;
-    background-image: var(--hidn-preview-surface);
+    background-image: var(--hidn-button-surface);
     box-shadow: none;
-    filter: brightness(1.06);
+    filter: none;
     transform: none;
   }
   &:active {
     color: #fff;
-    background-image: var(--hidn-preview-surface);
+    background-image: var(--hidn-button-surface);
     transform: translateY(1px);
   }
   &:focus-visible {
