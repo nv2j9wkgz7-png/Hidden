@@ -17,6 +17,7 @@ import './utility.css';
 import './guide.css';
 import './creator-experience.css';
 import './button-theme.css';
+import './creator-home.css';
 const outfit = localFont({
   src: [
     {
