@@ -1,6 +1,6 @@
 import sharp, { type OverlayOptions } from 'sharp';
-import { publicDrop } from '@/lib/public-drop';
 import { freePreviewBadge } from '@/lib/preview-badge';
+import { publicDrop } from '@/lib/public-drop';
 import { admin } from '@/lib/supabase/admin';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -31,9 +31,12 @@ export async function GET(
   }
   if (drop.freePreviewCount > 0) {
     layers.push({
-      input: await freePreviewBadge(drop.freePreviewCount),
-      left: 160,
-      top: 760,
+      input: await sharp(await freePreviewBadge(drop.freePreviewCount))
+        .resize(300, 66)
+        .png()
+        .toBuffer(),
+      left: 350,
+      top: 918,
     });
   }
   const output = await sharp({

@@ -36,16 +36,20 @@ export async function freePreviewBadge(count: number) {
       right: 12,
       background: '#00000000',
     })
-    .blur(10)
+    .tint('#24122e')
+    .blur(4)
     .png()
     .toBuffer();
   const left = Math.round((680 - info.width) / 2),
     top = Math.round((150 - info.height) / 2);
-  return sharp(
-    Buffer.from(
-      '<svg width="680" height="150" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="1" width="678" height="148" rx="42" fill="#190e24" fill-opacity=".90" stroke="#fface2" stroke-opacity=".45" stroke-width="2"/></svg>',
-    ),
-  )
+  return sharp({
+    create: {
+      width: 680,
+      height: 150,
+      channels: 4,
+      background: '#00000000',
+    },
+  })
     .composite([
       { input: glow, left: left - 12, top: top - 12 },
       { input: lettering, left, top },
