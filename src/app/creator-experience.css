@@ -543,3 +543,182 @@
   width: 12px;
   height: 12px;
 }
+
+/* Settings open as focused editors instead of nested disclosure panels. */
+.studio-settings-actions {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+.studio-settings-actions > :is(button, a) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface, #fff);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+}
+.studio-settings-actions > button > span {
+  color: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.studio-settings-actions > :is(button, a):hover {
+  background: var(--accent-light);
+}
+.studio-settings-saved {
+  font-size: 13px;
+  color: var(--muted);
+}
+.studio-settings-dialog {
+  color: var(--ink);
+  background: var(--surface, #fff);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 0;
+  width: min(540px, calc(100vw - 32px));
+  max-height: 85dvh;
+  overflow-y: auto;
+  box-shadow: 0 24px 90px #0006;
+}
+.studio-settings-dialog::backdrop {
+  background: #000a;
+}
+.studio-settings-heading {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px;
+  background: var(--surface, #fff);
+  border-bottom: 1px solid var(--line);
+}
+.creator-studio .studio-settings-heading h2 {
+  font-size: 22px;
+  line-height: 1.2;
+  margin: 0;
+}
+.studio-settings-heading button {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.studio-settings-body {
+  padding: 20px;
+}
+.studio-settings-dialog .public-preview-settings {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.studio-settings-dialog .preview-explanation {
+  margin: 0 0 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.preview-selection-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+.preview-selection-status button {
+  min-height: 44px;
+  padding: 8px 12px;
+}
+.preview-empty {
+  font-size: 13px;
+  margin: 0;
+}
+.studio-settings-dialog .public-preview-options {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 12px 0 20px;
+  gap: 10px;
+}
+.studio-settings-dialog .public-preview-options label {
+  padding: 7px;
+  gap: 7px;
+  border-radius: 14px;
+}
+.studio-settings-dialog .public-preview-options :is(img, video) {
+  height: auto;
+  aspect-ratio: 1;
+}
+.studio-settings-dialog .public-preview-options input {
+  top: 14px;
+  left: 14px;
+}
+.studio-settings-dialog .public-preview-options label > span:last-child {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+}
+.studio-settings-dialog .public-preview-options .media-type-badge {
+  top: 14px;
+  right: 14px;
+}
+.studio-settings-dialog .public-preview-consent {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.studio-settings-dialog :is(form > button, fieldset > button) {
+  width: 100%;
+  min-height: 48px;
+}
+@media (max-width: 600px) {
+  .studio-settings-dialog {
+    margin: auto 0 0;
+    width: 100%;
+    max-width: none;
+    max-height: 88dvh;
+    border-radius: 24px 24px 0 0;
+    border-bottom: 0;
+  }
+  .studio-settings-body {
+    padding: 18px 20px max(24px, env(safe-area-inset-bottom));
+  }
+}
+
+.studio-settings-dialog .preview-save-actions {
+  position: sticky;
+  bottom: -20px;
+  z-index: 3;
+  padding: 12px 0 20px;
+  border-top: 1px solid var(--line);
+  background: var(--surface, #fff);
+}
+.studio-settings-dialog .preview-save-actions > button {
+  width: 100%;
+  min-height: 48px;
+}
+.studio-settings-dialog .preview-save-actions .public-preview-consent {
+  margin: 4px 0 14px;
+}
+.studio-settings-dialog form > button {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+}

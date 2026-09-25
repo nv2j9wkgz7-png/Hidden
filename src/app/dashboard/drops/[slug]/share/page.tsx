@@ -1,6 +1,6 @@
 import { NavigationLink as Link } from '@/components/navigation-link';
 import { notFound, redirect } from 'next/navigation';
-import { EditDropDetails } from '@/components/edit-drop-details';
+import { StudioSettings } from '@/components/studio-settings';
 import { supabase } from '@/lib/supabase/server';
 import { admin } from '@/lib/supabase/admin';
 import { appUrl, configured } from '@/lib/env';
@@ -10,14 +10,7 @@ import { ReviewActions } from '@/components/review-actions';
 import { PublishDrop } from '@/components/publish-drop';
 import { CreatorGallery } from '@/components/creator-gallery';
 import { ShareDrop } from '@/components/share-drop';
-import { PublicPreviewSettings } from '@/components/public-preview-settings';
-import {
-  Eye,
-  Pencil,
-  ChartNoAxesColumn,
-  ChevronDown,
-  SlidersHorizontal,
-} from 'lucide-react';
+import { Eye, Pencil, ChartNoAxesColumn } from 'lucide-react';
 import { EarningsEstimate } from '@/components/earnings-estimate';
 import { StopSales } from '@/components/stop-sales';
 
@@ -104,42 +97,20 @@ export default async function SharePage({
         <CreatorGallery images={originals} />
       </section>
       <EarningsEstimate cents={drop.price_cents} />
-      <details className="studio-disclosure">
-        <summary>
-          <Pencil size={18} aria-hidden="true" />
-          <span>Edit details</span>
-          <ChevronDown size={16} aria-hidden="true" />
-        </summary>
-        <EditDropDetails
-          draft={drop.status === 'DRAFT'}
-          drop={{
-            id: drop.id,
-            title: drop.title,
-            description: drop.description,
-            price_cents: drop.price_cents,
-          }}
-        />
-      </details>
-      {['DRAFT', 'PUBLISHED'].includes(drop.status) && originals.length > 0 && (
-        <details className="studio-disclosure">
-          <summary>
-            <SlidersHorizontal size={18} aria-hidden="true" />
-            <span>Free previews</span>
-            <small>
-              {originals.filter((a) => a.freePreview).length} selected
-            </small>
-            <ChevronDown size={16} aria-hidden="true" />
-          </summary>
-          <PublicPreviewSettings
-            dropId={drop.id}
-            published={drop.status === 'PUBLISHED'}
-            assets={originals}
-            selectedIds={drop.assets
-              .filter((a) => a.is_public_preview)
-              .map((a) => a.id)}
-          />
-        </details>
-      )}
+      <StudioSettings
+        drop={{
+          id: drop.id,
+          title: drop.title,
+          description: drop.description,
+          price_cents: drop.price_cents,
+        }}
+        draft={drop.status === 'DRAFT'}
+        allowPreviews={
+          ['DRAFT', 'PUBLISHED'].includes(drop.status) && originals.length > 0
+        }
+        assets={originals}
+        selectedIds={originals.filter((a) => a.freePreview).map((a) => a.id)}
+      />
       {drop.status === 'DRAFT' ? (
         <div className="studio-publish-bar">
           <PublishDrop id={drop.id} />
