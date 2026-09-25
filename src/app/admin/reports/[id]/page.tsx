@@ -55,7 +55,7 @@ export default async function Review({
     throw assetError || auditError || cleanupError;
   return (
     <>
-      <Link className="back" href="/admin">
+      <Link restoreScroll className="back" href="/admin">
         ← Reports
       </Link>
       <div className="eyebrow">Private report · {r.status.toLowerCase()}</div>

@@ -52,7 +52,7 @@ export default async function AnalyticsPage({
     });
   return (
     <div className="drop-analytics">
-      <Link className="back" href="/dashboard">
+      <Link restoreScroll className="back" href="/dashboard">
         ← My drops
       </Link>
       <div className="page-heading analytics-heading">

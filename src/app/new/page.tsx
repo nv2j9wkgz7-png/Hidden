@@ -65,7 +65,7 @@ export default async function NewDrop({
   }
   return (
     <>
-      <Link className="back" href="/dashboard">
+      <Link restoreScroll className="back" href="/dashboard">
         ← My drops
       </Link>
       <div className="page-heading">

@@ -21,7 +21,7 @@ export default async function ManageDrop({
   if (!drop) notFound();
   return (
     <>
-      <Link className="back" href="/dashboard">
+      <Link restoreScroll className="back" href="/dashboard">
         ← My drops
       </Link>
       <h1>{drop.title}</h1>

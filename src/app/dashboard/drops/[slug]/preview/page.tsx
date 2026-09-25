@@ -38,7 +38,9 @@ export default async function BuyerPreview({
   return (
     <>
       <div className="owner-preview">
-        <Link href={`/dashboard/drops/${slug}/share`}>← Back</Link>
+        <Link restoreScroll href={`/dashboard/drops/${slug}/share`}>
+          ← Back
+        </Link>
         <span>
           Buyer preview <small>· Checkout off</small>
         </span>

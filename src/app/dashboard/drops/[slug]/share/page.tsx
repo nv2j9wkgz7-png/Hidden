@@ -53,7 +53,7 @@ export default async function SharePage({
     }));
   return (
     <div className="share-page creator-studio">
-      <Link className="back" href="/dashboard">
+      <Link restoreScroll className="back" href="/dashboard">
         ← My drops
       </Link>
       <header className="creator-heading">

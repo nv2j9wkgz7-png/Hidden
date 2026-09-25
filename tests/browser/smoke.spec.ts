@@ -83,3 +83,49 @@ test('API denies cross-origin checkout and downloads before contacting services'
     expect(response.status()).toBe(403);
   }
 });
+
+test('in-app Back restores the previous page position', async ({ page }) => {
+  await page.goto('/help');
+  const recovery = page.locator('.site-footer').getByRole('link', {
+    name: 'Recover a purchase',
+    exact: true,
+  });
+  await recovery.scrollIntoViewIfNeeded();
+  const previousY = await page.evaluate(() => window.scrollY);
+  expect(previousY).toBeGreaterThan(100);
+  await recovery.click();
+  await expect(page).toHaveURL(/\/purchases\/recover$/);
+  await page.getByRole('link', { name: 'Back to Help' }).click();
+  await expect(page).toHaveURL(/\/help$/);
+  await expect
+    .poll(async () =>
+      Math.abs((await page.evaluate(() => window.scrollY)) - previousY),
+    )
+    .toBeLessThan(5);
+});
+
+test('browser Back restores the page position', async ({ page }) => {
+  await page.goto('/');
+  const help = page.locator('.site-footer').getByRole('link', {
+    name: 'Help',
+    exact: true,
+  });
+  await help.scrollIntoViewIfNeeded();
+  const previousY = await page.evaluate(() => window.scrollY);
+  await help.click();
+  await expect(page).toHaveURL(/\/help$/);
+  await page.goBack();
+  await expect(page).toHaveURL('/');
+  await expect
+    .poll(async () =>
+      Math.abs((await page.evaluate(() => window.scrollY)) - previousY),
+    )
+    .toBeLessThan(5);
+});
+
+test('Back from a direct visit uses the destination top', async ({ page }) => {
+  await page.goto('/purchases/recover');
+  await page.getByRole('link', { name: 'Back to Help' }).click();
+  await expect(page).toHaveURL(/\/help$/);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+});

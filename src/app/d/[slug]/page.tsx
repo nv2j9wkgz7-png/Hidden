@@ -105,7 +105,9 @@ export default async function DropPage({
       {owner && (
         <div className="owner-preview">
           You’re previewing what buyers see.{' '}
-          <Link href={`/dashboard/drops/${slug}/share`}>← Back to sharing</Link>
+          <Link restoreScroll href={`/dashboard/drops/${slug}/share`}>
+            ← Back to sharing
+          </Link>
         </div>
       )}
       <Buyer

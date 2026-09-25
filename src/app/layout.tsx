@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { NavigationLink as Link } from '@/components/navigation-link';
 import { Suspense } from 'react';
 import localFont from 'next/font/local';
+import { ScrollRestoration } from '@/components/scroll-restoration';
 import { PageMotion } from '@/components/page-motion';
 import { AccountMenu } from '@/components/account-menu';
 import { CopyToast } from '@/components/toast';
@@ -51,6 +52,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <Suspense fallback={null}>
           <ThemeNavigation />
+          <ScrollRestoration />
         </Suspense>
         <header className="site-header">
           <Link className="brand" href="/" aria-label="Hidn home">

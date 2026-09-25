@@ -78,7 +78,9 @@ export function SavePurchase({
         </p>
       )}
       <p>
-        <Link href={`/d/${slug}?preview=buyer`}>Back to your purchase</Link>
+        <Link restoreScroll href={`/d/${slug}?preview=buyer`}>
+          Back to your purchase
+        </Link>
       </p>
     </section>
   );

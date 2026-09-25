@@ -5,7 +5,7 @@ import { CollectionArtwork } from './utility-art';
 export function RecoveryFrame({ children }: { children: ReactNode }) {
   return (
     <section className="utility-page purchase-recovery-page">
-      <Link className="utility-back" href="/help">
+      <Link restoreScroll className="utility-back" href="/help">
         <ArrowLeft size={16} /> Back to Help
       </Link>
       <div className="purchase-recovery-layout">
