@@ -384,7 +384,7 @@ export function SalesDashboardDemo() {
       <header className="sales-demo-header">
         <div>
           <img src="/hidn-arrow-mark.svg" width={26} height={26} alt="" />
-          <strong>Your studio</strong>
+          <strong>Maya’s studio</strong>
         </div>
         <span>DEMO DATA</span>
       </header>
@@ -469,17 +469,29 @@ export function SalesDashboardDemo() {
           <span>Sales / revenue</span>
         </div>
         {[
-          ['maya', 'After hours', 18],
-          ['jay', 'Off the record', 24],
-          ['nina', 'Backstage, vol. 02', 15],
-        ].map(([person, title, price], i) => (
+          { cover: 'maya', title: 'After hours', price: 18 },
+          { cover: 'maya-weekend', title: 'Sunday morning', price: 24 },
+          {
+            cover: 'maya-behind-scenes',
+            title: 'Behind the scenes',
+            price: 15,
+          },
+        ].map(({ cover, title, price }, i) => (
           <div className="sales-table-row" key={title}>
-            <CreatorPortrait person={person as 'maya' | 'jay' | 'nina'} />
+            <img
+              className="creator-portrait"
+              src={`/creators/${cover}.webp`}
+              width={192}
+              height={192}
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
             <div>
               <strong>{title}</strong>
               <small>{data.rows[i]} sales</small>
             </div>
-            <b>${(data.rows[i] * Number(price)).toLocaleString('en-US')}</b>
+            <b>${(data.rows[i] * price).toLocaleString('en-US')}</b>
           </div>
         ))}
       </div>
