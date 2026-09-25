@@ -125,7 +125,7 @@ export default async function SharePage({
           bytes={drop.assets.reduce((n, a) => n + a.size_bytes, 0)}
         />
       )}
-      <ReviewActions draft={drop.status === 'DRAFT'} />
+      {drop.status === 'DRAFT' && <ReviewActions draft />}
       {drop.status !== 'DRAFT' && (
         <StopSales dropId={drop.id} status={drop.status} compact />
       )}

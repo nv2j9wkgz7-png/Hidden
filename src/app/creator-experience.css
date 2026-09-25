@@ -32,6 +32,16 @@
   max-width: 820px;
   margin: 0 auto;
   padding-bottom: 28px;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.015em;
+  --studio-control: #f1f1f4;
+  --studio-border: #dedee5;
+}
+[data-theme='blackout'] .creator-studio {
+  --studio-control: #19191e;
+  --studio-border: #2c2c34;
 }
 .creator-studio .back {
   display: inline-flex;
@@ -132,9 +142,14 @@
   margin: 16px 0 0;
   padding: 0;
   border-radius: 0;
-  border-bottom: 1px solid var(--line);
-  background: transparent !important;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 0 18px;
+  background: var(--surface, #fff) !important;
   display: block;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  font-variant-numeric: tabular-nums;
 }
 .earnings-disclosure summary {
   display: flex;
@@ -147,16 +162,40 @@
   font-size: 14px;
   color: var(--muted);
 }
+.earnings-label {
+  display: grid;
+  gap: 3px;
+  color: var(--ink);
+  font-weight: 500;
+}
+.earnings-label small {
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
 .earnings-disclosure summary strong {
   margin-left: auto;
   color: var(--ink);
-  font-size: 16px;
+  font-size: 28px;
   font-weight: 600;
+  letter-spacing: -1px;
+  line-height: 1;
 }
 .earnings-disclosure .fee-breakdown {
   display: grid;
-  gap: 6px;
-  padding: 0 0 18px;
+  gap: 10px;
+  padding: 16px 0 18px;
+  border-top: 1px solid var(--line);
+}
+.earnings-disclosure .fee-breakdown > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+.earnings-disclosure .fee-breakdown > small {
+  max-width: 36ch;
+  line-height: 1.5;
 }
 .earnings-disclosure .fee-breakdown small {
   font-size: 12px;
@@ -914,5 +953,99 @@
     animation: none;
     background-size: 100% 100%;
     background-position: center;
+  }
+}
+
+/* Creator controls share one quiet surface and a consistent type scale. */
+.creator-studio :is(button, input, textarea, select) {
+  font-family: inherit;
+}
+.creator-studio .studio-toolbar a,
+.creator-studio
+  .studio-settings-actions
+  > :is(button, a):not(.preview-settings-button),
+.creator-studio .studio-share-bar .secondary {
+  background: var(--studio-control);
+  border: 1px solid var(--studio-border);
+  box-shadow: none;
+  text-shadow: none;
+  color: var(--ink);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+.creator-studio .studio-settings-actions {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  gap: 10px;
+  margin: 12px 0 0;
+}
+.creator-studio .studio-settings-actions > :is(button, a) {
+  min-height: 50px;
+  padding: 10px;
+  gap: 7px;
+  font-size: 14px;
+  border-radius: 12px;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+.creator-studio .studio-settings-actions > .preview-settings-button {
+  border: 1px solid #f49ccd;
+  box-shadow: none;
+  text-shadow: 0 1px 2px #6c144d80;
+}
+.creator-studio .studio-settings-actions > .preview-settings-button > span {
+  border: 0;
+  box-shadow: none;
+  background: #630d4430;
+  border-radius: 20px;
+  min-width: 20px;
+  height: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.creator-studio .studio-share-bar button,
+.creator-studio .studio-publish-bar .primary {
+  min-height: 48px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.creator-studio .studio-share-bar .primary,
+.creator-studio .studio-publish-bar .primary {
+  border: 1px solid #d6a9e3;
+  box-shadow: none;
+  text-shadow: 0 1px 2px #491b6980;
+}
+.creator-studio .stop-sales-compact {
+  border: 0;
+  padding: 0;
+}
+.creator-studio .stop-sales-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+.creator-studio .stop-sales-trigger:hover {
+  color: #d53855;
+}
+.creator-studio .media-type-badge {
+  box-shadow: none;
+  border-color: #ffffff30;
+}
+@media (max-width: 700px) {
+  .creator-studio .studio-share-bar,
+  .creator-studio .studio-publish-bar {
+    padding: 10px 20px max(10px, env(safe-area-inset-bottom));
+    box-shadow: none;
   }
 }

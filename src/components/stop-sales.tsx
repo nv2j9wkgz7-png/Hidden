@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { CircleStop } from 'lucide-react';
 import { api } from '@/lib/client-api';
 export function StopSales({
   dropId,
@@ -88,7 +89,11 @@ export function StopSales({
             </div>
           </div>
         ) : (
-          <button className="danger-button" onClick={() => setConfirm(true)}>
+          <button
+            className={compact ? 'stop-sales-trigger' : 'danger-button'}
+            onClick={() => setConfirm(true)}
+          >
+            {compact && <CircleStop size={16} aria-hidden="true" />}
             Stop sales
           </button>
         ))}
