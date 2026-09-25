@@ -38,7 +38,7 @@ export async function generateMetadata({
       type: 'website',
       images: [
         {
-          url: `${url}/card?v=13-${drop.freePreviewCount}`,
+          url: `${url}/card?v=14-${drop.freePreviewCount}`,
           width: 1000,
           height: 1000,
           alt: drop.freePreviewCount
@@ -51,7 +51,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title: socialTitle,
       description,
-      images: [`${url}/card?v=13-${drop.freePreviewCount}`],
+      images: [`${url}/card?v=14-${drop.freePreviewCount}`],
     },
   };
 }

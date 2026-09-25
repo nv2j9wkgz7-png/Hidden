@@ -31,12 +31,9 @@ export async function GET(
   }
   if (drop.freePreviewCount > 0) {
     layers.push({
-      input: await sharp(await freePreviewBadge(drop.freePreviewCount))
-        .resize(300, 66)
-        .png()
-        .toBuffer(),
-      left: 350,
-      top: 918,
+      input: await freePreviewBadge(drop.freePreviewCount),
+      left: 0,
+      top: 924,
     });
   }
   const output = await sharp({

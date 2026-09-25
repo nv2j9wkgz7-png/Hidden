@@ -10,7 +10,7 @@ test('social badge omits zero previews and renders singular/plural with the bund
   for (const count of [1, 20]) {
     const result = await freePreviewBadge(count);
     const metadata = await sharp(result).metadata();
-    assert.equal(metadata.width, 680);
-    assert.equal(metadata.height, 150);
+    assert.equal(metadata.width, 1000);
+    assert.equal(metadata.height, 76);
   }
 });

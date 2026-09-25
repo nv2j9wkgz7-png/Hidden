@@ -9,12 +9,12 @@ export function previewBadgeLabel(count: number) {
 export async function freePreviewBadge(count: number) {
   const label = previewBadgeLabel(count);
   if (!label) throw new Error('A preview badge requires 1–20 free files.');
-  // Bundle the same font as the site; don't depend on fonts installed on the host.
+  // Render this narrow footer once at build time, using the site's own font.
   const { data: mask, info } = await sharp({
     text: {
-      text: label,
-      font: 'Outfit SemiBold 76',
-      fontfile: join(process.cwd(), 'public/fonts/outfit-semibold.ttf'),
+      text: `<span letter_spacing="1800">${label.toUpperCase()}</span>`,
+      font: 'Outfit 32',
+      fontfile: join(process.cwd(), 'public/fonts/outfit-regular.ttf'),
       rgba: true,
     },
   })
@@ -22,37 +22,33 @@ export async function freePreviewBadge(count: number) {
     .toBuffer({ resolveWithObject: true });
   const lettering = await sharp(
     Buffer.from(
-      `<svg width="${info.width}" height="${info.height}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="pink" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff4fc"/><stop offset=".38" stop-color="#ffbfea"/><stop offset=".47" stop-color="#fff2fc"/><stop offset=".53" stop-color="#ed70c1"/><stop offset="1" stop-color="#ffb1e5"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#pink)"/></svg>`,
+      `<svg width="${info.width}" height="${info.height}" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="pink" x1="0" y1="0" x2="0.3" y2="1"><stop offset="0" stop-color="#f18dbd"/><stop offset=".38" stop-color="#ffc8e5"/><stop offset=".46" stop-color="#fff0f8"/><stop offset=".52" stop-color="#df629f"/><stop offset="1" stop-color="#f69dc8"/></linearGradient></defs><rect width="100%" height="100%" fill="url(#pink)"/></svg>`,
     ),
   )
     .composite([{ input: mask, blend: 'dest-in' }])
     .png()
     .toBuffer();
-  const glow = await sharp(lettering)
-    .extend({
-      top: 12,
-      bottom: 12,
-      left: 12,
-      right: 12,
-      background: '#00000000',
-    })
-    .tint('#24122e')
-    .blur(4)
-    .png()
-    .toBuffer();
-  const left = Math.round((680 - info.width) / 2),
-    top = Math.round((150 - info.height) / 2);
+  const sparkle = Buffer.from(
+    `<svg width="26" height="30" xmlns="http://www.w3.org/2000/svg"><path d="M10 7L12 14L19 16L12 18L10 25L8 18L1 16L8 14Z" fill="#fbd4e8"/><path d="M22 1L23 4L26 5L23 6L22 9L21 6L18 5L21 4Z" fill="#e989b8"/></svg>`,
+  );
   return sharp({
     create: {
-      width: 680,
-      height: 150,
+      width: 1000,
+      height: 76,
       channels: 4,
-      background: '#00000000',
+      background: '#080709',
     },
   })
     .composite([
-      { input: glow, left: left - 12, top: top - 12 },
-      { input: lettering, left, top },
+      {
+        input: Buffer.from(
+          '<svg width="1000" height="1" xmlns="http://www.w3.org/2000/svg"><rect width="1000" height="1" fill="#422735"/></svg>',
+        ),
+        left: 0,
+        top: 0,
+      },
+      { input: lettering, left: 40, top: Math.round((76 - info.height) / 2) },
+      { input: sparkle, left: 40 + info.width + 16, top: 23 },
     ])
     .png()
     .toBuffer();
