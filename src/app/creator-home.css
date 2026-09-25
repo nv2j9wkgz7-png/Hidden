@@ -137,7 +137,8 @@ body:has(.launch-home) main {
 .launch-home .hero-scene-grid {
   position: absolute;
   z-index: -1;
-  inset: 12% -12% 8% -9%;
+  inset: 12% 0 8% -9%;
+  overflow: clip;
   border-radius: 50%;
   background: radial-gradient(ellipse at 60% 30%, #ecc8ec88, transparent 68%);
 }

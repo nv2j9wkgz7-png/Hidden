@@ -54,10 +54,9 @@ test('mobile social examples align after navigation and do not overflow', async 
   for (const width of [320, 390, 760, 1024, 1440]) {
     await page.setViewportSize({ width, height: 844 });
     expect(
-      await page.evaluate(
-        () => document.documentElement.scrollWidth <= innerWidth,
-      ),
-    ).toBe(true);
+      await page.evaluate(() => document.documentElement.scrollWidth),
+      `Page overflows at ${width}px`,
+    ).toBeLessThanOrEqual(width);
   }
 });
 
