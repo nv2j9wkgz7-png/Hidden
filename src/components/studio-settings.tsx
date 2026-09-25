@@ -59,7 +59,11 @@ export function StudioSettings({
           </button>
         )}
         {allowPreviews && (
-          <button type="button" onClick={() => open('previews')}>
+          <button
+            type="button"
+            className="preview-settings-button"
+            onClick={() => open('previews')}
+          >
             <Eye size={18} aria-hidden="true" />
             Free previews <span>{savedIds.length}</span>
           </button>

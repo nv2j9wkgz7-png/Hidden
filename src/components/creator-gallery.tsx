@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Eye, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { fileSize } from '@/lib/format';
 import { MediaTypeBadge } from './media-type-badge';
@@ -76,7 +76,10 @@ export function CreatorGallery({
             >
               <MediaTypeBadge mime={asset.mime} />
               {asset.freePreview && (
-                <span className="gallery-free-label">Free preview</span>
+                <span className="gallery-free-label">
+                  <Eye size={12} aria-hidden="true" />
+                  Free preview
+                </span>
               )}
               {asset.mime?.startsWith('video/') && !asset.thumbnailUrl ? (
                 <>

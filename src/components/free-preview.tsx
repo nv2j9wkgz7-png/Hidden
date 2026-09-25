@@ -57,7 +57,11 @@ export function FreePreview({
       )}
       <div className="image-caption">
         <span>
-          <Eye size={14} /> Free preview · {fileSize(asset.size_bytes)}
+          <span className="free-preview-label">
+            <Eye size={14} aria-hidden="true" />
+            Free preview
+          </span>
+          <span>{fileSize(asset.size_bytes)}</span>
         </span>
         <a
           href={url}
