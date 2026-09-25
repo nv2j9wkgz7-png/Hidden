@@ -38,25 +38,17 @@ export default async function SharePage({
     .maybeSingle();
   if (error) throw error;
   if (!drop) notFound();
-  // Ownership was verified above; only this creator page may receive original URLs.
-  const originals = await Promise.all(
-    drop.assets
-      .filter((a) => a.status === 'READY')
-      .sort((a, b) => a.sort_order - b.sort_order)
-      .map(async (asset) => {
-        const { data, error } = await admin()
-          .storage.from('originals')
-          .createSignedUrl(asset.storage_path, 60);
-        if (error) throw error;
-        return {
-          id: asset.id,
-          name: asset.original_filename,
-          size: asset.size_bytes,
-          url: data.signedUrl,
-          mime: asset.mime_type,
-        };
-      }),
-  );
+  const originals = drop.assets
+    .filter((a) => a.status === 'READY')
+    .sort((a, b) => a.sort_order - b.sort_order)
+    .map((asset) => ({
+      id: asset.id,
+      name: asset.original_filename,
+      size: asset.size_bytes,
+      url: `/api/creator/media?asset_id=${asset.id}&view=original`,
+      thumbnailUrl: `/api/creator/media?asset_id=${asset.id}`,
+      mime: asset.mime_type,
+    }));
   return (
     <div className="share-page">
       <Link className="back" href="/dashboard">

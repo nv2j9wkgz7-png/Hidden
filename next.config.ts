@@ -6,6 +6,10 @@ const config: NextConfig = {
       './public/hidn-arrow-mark.svg',
       './public/free-preview-badges/*.png',
     ],
+    '/api/creator/media': [
+      './public/hidn-arrow-mark.svg',
+      './node_modules/ffmpeg-static/ffmpeg',
+    ],
     '/api/creator/finalize': [
       './public/hidn-arrow-mark.svg',
       './node_modules/ffmpeg-static/ffmpeg',

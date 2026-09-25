@@ -57,7 +57,7 @@ export async function createVideoPreview(original: Buffer, mime: string) {
       { timeout: 25000, killSignal: 'SIGKILL', maxBuffer: 256 * 1024 },
     );
     const result = await createPreview(await readFile(output));
-    return { preview: result.preview, mime };
+    return { preview: result.preview, thumbnail: result.thumbnail, mime };
   } finally {
     await rm(directory, { recursive: true, force: true });
   }

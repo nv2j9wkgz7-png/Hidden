@@ -11,6 +11,7 @@ type Image = {
   size: number;
   url: string;
   mime?: string;
+  thumbnailUrl?: string;
 };
 
 export function CreatorGallery({
@@ -24,6 +25,7 @@ export function CreatorGallery({
 }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  const [opened, setOpened] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const [selected, setSelected] = useState(0);
   const track = useRef<HTMLDivElement>(null);
@@ -38,10 +40,15 @@ export function CreatorGallery({
   }, [currentIndex]);
   function openImage(index: number) {
     setSelected(index);
+    setFailed(new Set());
+    setOpened(true);
+  }
+  useEffect(() => {
+    if (!opened) return;
     dialog.current?.showModal();
     if (track.current)
-      track.current.scrollLeft = index * track.current.clientWidth;
-  }
+      track.current.scrollLeft = selected * track.current.clientWidth;
+  }, [opened]);
   function move(offset: number) {
     const index = (currentIndex + offset + images.length) % images.length;
     track.current?.scrollTo({
@@ -65,7 +72,7 @@ export function CreatorGallery({
               aria-label={`View file ${index + 1}: ${asset.name}`}
               onClick={() => openImage(index)}
             >
-              {asset.mime?.startsWith('video/') ? (
+              {asset.mime?.startsWith('video/') && !asset.thumbnailUrl ? (
                 <>
                   <video
                     src={`${asset.url}#t=0.001`}
@@ -77,7 +84,7 @@ export function CreatorGallery({
                 </>
               ) : (
                 <img
-                  src={asset.url}
+                  src={asset.thumbnailUrl || asset.url}
                   alt={asset.name}
                   referrerPolicy="no-referrer"
                 />
@@ -92,7 +99,10 @@ export function CreatorGallery({
             ref={dialog}
             className="image-viewer"
             aria-label={label}
-            onClose={pauseVideos}
+            onClose={() => {
+              pauseVideos();
+              setOpened(false);
+            }}
             onKeyDown={(event) => {
               if ((event.target as HTMLElement).tagName === 'VIDEO') return;
               if (event.key === 'ArrowLeft') {
@@ -105,7 +115,7 @@ export function CreatorGallery({
               }
             }}
           >
-            {image && (
+            {opened && image && (
               <div className="image-viewer-content">
                 <header>
                   <span>
@@ -136,9 +146,11 @@ export function CreatorGallery({
                       );
                   }}
                 >
-                  {images.map((asset) => (
+                  {images.map((asset, index) => (
                     <div className="image-viewer-stage" key={asset.id}>
-                      {failed.has(asset.id) ? (
+                      {Math.abs(index - currentIndex) > 1 ? null : failed.has(
+                          asset.id,
+                        ) ? (
                         <p role="alert">
                           This file link has expired. Close the viewer and
                           refresh the page to try again.

@@ -6,6 +6,7 @@ export type StoredFile = {
   mime: string;
   id?: string;
   ready: boolean;
+  freePreview?: boolean;
   file?: File;
 };
 export type StoredDraft = {

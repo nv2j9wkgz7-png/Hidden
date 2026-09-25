@@ -1,3 +1,4 @@
+import { thumbnailPath } from '@/lib/previews';
 import { activeCreator } from '@/lib/moderation';
 import { z } from 'zod';
 import { admin } from '@/lib/supabase/admin';
@@ -17,7 +18,9 @@ export const POST = handler(async (request) => {
   if (error) throw error;
   if (data) {
     const results = await Promise.all([
-      db.storage.from('originals').remove([data.storage_path]),
+      db.storage
+        .from('originals')
+        .remove([data.storage_path, thumbnailPath(data.storage_path)]),
       db.storage.from('previews').remove([`${drop_id}/${asset_id}.jpg`]),
     ]);
     if (results.some((r) => r.error))

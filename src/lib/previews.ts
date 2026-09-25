@@ -1,4 +1,14 @@
 import sharp from 'sharp';
+export async function createThumbnail(original: Buffer) {
+  return sharp(original, { limitInputPixels: 50_000_000, failOn: 'warning' })
+    .rotate()
+    .resize(240, 240, { fit: 'inside', withoutEnlargement: true })
+    .jpeg({ quality: 72 })
+    .toBuffer();
+}
+export const thumbnailPath = (storagePath: string) =>
+  `${storagePath}.thumbnail.jpg`;
+
 export async function createPreview(original: Buffer) {
   const input = sharp(original, {
     limitInputPixels: 50_000_000,
@@ -48,6 +58,7 @@ export async function createPreview(original: Buffer) {
       ])
       .jpeg({ quality: 65 })
       .toBuffer(),
+    thumbnail: await createThumbnail(original),
     mime: `image/${metadata.format}`,
   };
 }

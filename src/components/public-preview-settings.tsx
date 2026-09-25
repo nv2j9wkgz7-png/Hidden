@@ -11,7 +11,13 @@ export function PublicPreviewSettings({
   published,
 }: {
   dropId: string;
-  assets: { id: string; name: string; url: string; mime: string }[];
+  assets: {
+    id: string;
+    name: string;
+    url: string;
+    thumbnailUrl?: string;
+    mime: string;
+  }[];
   selectedIds: string[];
   published: boolean;
 }) {
@@ -70,7 +76,7 @@ export function PublicPreviewSettings({
                 checked={selected.includes(asset.id)}
                 onChange={() => choose(asset.id)}
               />
-              {asset.mime.startsWith('video/') ? (
+              {asset.mime.startsWith('video/') && !asset.thumbnailUrl ? (
                 <video
                   src={`${asset.url}#t=0.001`}
                   muted
@@ -79,7 +85,11 @@ export function PublicPreviewSettings({
                   aria-hidden="true"
                 />
               ) : (
-                <img src={asset.url} alt="" referrerPolicy="no-referrer" />
+                <img
+                  src={asset.thumbnailUrl || asset.url}
+                  alt=""
+                  referrerPolicy="no-referrer"
+                />
               )}
               <span>{asset.name}</span>
             </label>

@@ -9,7 +9,7 @@ import {
   ownedDrop,
   sameOrigin,
 } from '@/lib/http';
-import { createPreview } from '@/lib/previews';
+import { createPreview, thumbnailPath } from '@/lib/previews';
 import { mediaLimit } from '@/lib/validation';
 import { createVideoPreview } from '@/lib/video-preview';
 export const runtime = 'nodejs';
@@ -53,6 +53,13 @@ export const POST = handler(async (request) => {
   }
   if (result.mime !== asset.mime_type)
     throw new HttpError(400, 'The file content does not match its file type.');
+  const { error: thumbnailError } = await db.storage
+    .from('originals')
+    .upload(thumbnailPath(asset.storage_path), result.thumbnail, {
+      contentType: 'image/jpeg',
+      upsert: true,
+    });
+  if (thumbnailError) throw thumbnailError;
   const previewPath = `${drop.id}/${asset.id}.jpg`;
   const { error: previewError } = await db.storage
     .from('previews')

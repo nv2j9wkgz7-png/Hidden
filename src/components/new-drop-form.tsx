@@ -28,6 +28,7 @@ export type Draft = {
     mime_type: string;
     status: string;
     preview_url?: string;
+    is_public_preview?: boolean;
   }[];
 };
 type Item = {
@@ -39,6 +40,7 @@ type Item = {
   id?: string;
   ready: boolean;
   preview?: string;
+  freePreview?: boolean;
   percent?: number;
   phase?: string;
   failure?: string;
@@ -83,6 +85,7 @@ export function NewDropForm({
       mime: a.mime_type,
       ready: a.status === 'READY',
       preview: a.preview_url,
+      freePreview: a.is_public_preview ?? false,
     })) || [],
   );
   const [busy, setBusy] = useState(false),
@@ -167,7 +170,13 @@ export function NewDropForm({
     description,
     price,
     dropId,
-    items.map((i) => [i.key, i.id, i.ready, !i.ready && !!i.file]),
+    items.map((i) => [
+      i.key,
+      i.id,
+      i.ready,
+      !i.ready && !!i.file,
+      !!i.freePreview,
+    ]),
   ]);
   const cloudSaved = useRef(
     draft && items.every((i) => i.ready) ? fingerprint : '',
@@ -205,6 +214,8 @@ export function NewDropForm({
               ...item,
               id: server?.id || item.id,
               ready: server ? server.status === 'READY' : item.ready,
+              freePreview:
+                item.freePreview ?? server?.is_public_preview ?? false,
               preview:
                 server?.preview_url ||
                 (item.file ? localPreview(item.file) : undefined),
@@ -220,6 +231,7 @@ export function NewDropForm({
                 mime: server.mime_type,
                 ready: server.status === 'READY',
                 preview: server.preview_url,
+                freePreview: server.is_public_preview ?? false,
               });
           setItems(recovered);
           if (stored.id && !draft)
@@ -251,7 +263,7 @@ export function NewDropForm({
       description: current.description,
       price: current.price,
       items: current.items.map(
-        ({ key, id, name, size, mime, ready, file }) => ({
+        ({ key, id, name, size, mime, ready, file, freePreview }) => ({
           key,
           id,
           name,
@@ -259,6 +271,7 @@ export function NewDropForm({
           mime,
           ready,
           file: ready ? undefined : file,
+          freePreview,
         }),
       ),
     };
@@ -401,12 +414,20 @@ export function NewDropForm({
         });
       const unfinished = working.some((item) => !item.ready);
       if (!unfinished)
+        await api('/api/creator/public-preview', {
+          drop_id: id,
+          asset_ids: working
+            .filter((item) => item.freePreview)
+            .map((item) => item.id),
+          confirmed: true,
+        });
+      if (!unfinished)
         cloudSaved.current = JSON.stringify([
           current.title,
           current.description,
           current.price,
           id,
-          working.map((i) => [i.key, i.id, i.ready, false]),
+          working.map((i) => [i.key, i.id, i.ready, false, !!i.freePreview]),
         ]);
       if (
         !unfinished &&
@@ -457,10 +478,12 @@ export function NewDropForm({
     item.preview
       ? [
           {
-            id: item.id || item.preview,
+            id: item.key,
             name: item.name,
             size: item.size,
-            url: item.preview,
+            url: item.preview.startsWith('/api/creator/media')
+              ? `${item.preview}&view=original`
+              : item.preview,
             mime: item.mime,
           },
         ]
@@ -556,12 +579,13 @@ export function NewDropForm({
                       onClick={() =>
                         openImage(
                           previewImages.findIndex(
-                            (image) => image.url === item.preview,
+                            (image) => image.id === item.key,
                           ),
                         )
                       }
                     >
-                      {item.mime.startsWith('video/') ? (
+                      {item.mime.startsWith('video/') &&
+                      !item.preview.startsWith('/api/creator/media') ? (
                         <>
                           <video
                             src={item.preview}
@@ -600,6 +624,32 @@ export function NewDropForm({
                             ? ` · ${item.phase}${item.phase === 'Uploading' ? ` ${item.percent || 0}%` : ''}`
                             : ' · Waiting to upload'}
                     </small>
+                    <button
+                      type="button"
+                      className="file-preview-toggle"
+                      aria-pressed={!!item.freePreview}
+                      disabled={busy || !hydrated}
+                      onClick={() => {
+                        if (
+                          !item.freePreview &&
+                          !window.confirm(
+                            `Make ${item.name} a free preview? Anyone with the published drop link can view and download this entire file without paying. It stays in the package.`,
+                          )
+                        )
+                          return;
+                        setItems((previous) =>
+                          previous.map((file) =>
+                            file.key === item.key
+                              ? { ...file, freePreview: !file.freePreview }
+                              : file,
+                          ),
+                        );
+                      }}
+                    >
+                      {item.freePreview
+                        ? '✓ Free preview · Remove'
+                        : '+ Make free preview'}
+                    </button>
                     {item.phase === 'Uploading' && (
                       <progress
                         aria-label={`Uploading ${item.name}`}
@@ -640,7 +690,8 @@ export function NewDropForm({
         <div className="tip">
           <ShieldCheck size={18} />
           <span>
-            Originals stay private. Buyers see blurred previews until they pay.
+            Files stay locked until payment, except files you choose as free
+            previews.
           </span>
         </div>
       </section>
