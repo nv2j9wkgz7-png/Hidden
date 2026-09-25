@@ -1,3 +1,19 @@
+/* Exact stops from the front ribbon (gradient h) in hidn-arrow-mark.svg.
+   SVG vector (7.54, 13.37) maps to a 150.6-degree CSS gradient. */
+:root {
+  --hidn-ribbon-surface:
+    linear-gradient(110deg, transparent 42%, #ffffff40 50%, transparent 58%),
+    var(--hidn-ribbon-gradient);
+  --hidn-ribbon-gradient: linear-gradient(
+    150.6deg,
+    #edd7ff 0%,
+    #b587db 22%,
+    #af7cd2 47%,
+    #fdc9d8 69%,
+    #f8b2d1 86%,
+    #d69ed5 100%
+  );
+}
 /* Photo-first studio: one action hierarchy, details on request. */
 .creator-studio {
   max-width: 820px;
@@ -451,8 +467,8 @@
 .studio-publish-bar .primary,
 .checkout-compact button.primary {
   color: #241329;
-  background-color: #e6a6da;
-  background-image: linear-gradient(115deg, #d4b5f5 0%, #eba1d0 85%);
+  background-color: #f8b2d1;
+  background-image: var(--hidn-ribbon-surface);
   box-shadow:
     0 5px 20px #d484c51a,
     inset 0 1px 0 #ffffff40;
@@ -462,7 +478,7 @@
 .studio-publish-bar .primary:hover,
 .checkout-compact button.primary:hover {
   color: #241329;
-  background-image: linear-gradient(115deg, #dec3fa, #efb0da);
+  background-image: var(--hidn-ribbon-surface);
 }
 @media (max-width: 700px) {
   .buyer-layout > .checkout-compact {
@@ -727,22 +743,15 @@
 :is(.gallery-free-label, .free-preview-label),
 .file-row .file-preview-toggle[aria-pressed='true'],
 .studio-settings-actions > .preview-settings-button {
-  color: #fff;
-  background: linear-gradient(
-    180deg,
-    #ee9bc8 0%,
-    #c2458d 12%,
-    #ab216e 47%,
-    #871953 51%,
-    #aa226d 100%
-  );
-  border: 1px solid #f9c9e4;
+  color: #241329;
+  background: var(--hidn-ribbon-surface);
+  border: 1px solid #edd7ff;
   box-shadow:
     inset 0 1px 0 #fff9,
     inset 0 -1px 0 #4b0b3580,
-    0 0 0 1px #a93a7866,
+    0 0 0 1px #b587db66,
     0 2px 5px #0004;
-  text-shadow: 0 1px 1px #420b36b3;
+  text-shadow: 0 1px 0 #ffffff4d;
   font-weight: 700;
   letter-spacing: 0.01em;
 }
@@ -790,14 +799,7 @@
   font-weight: 600;
 }
 .studio-settings-actions > .preview-settings-button:hover {
-  background: linear-gradient(
-    180deg,
-    #f6b5d9 0%,
-    #cb5599 12%,
-    #b3287a 47%,
-    #941d5f 51%,
-    #b82a7b 100%
-  );
+  background-image: var(--hidn-ribbon-surface);
 }
 .studio-settings-actions > :is(button, a),
 .studio-toolbar a {
@@ -829,5 +831,54 @@
   }
   .studio-settings-actions > :is(button, a):active {
     transform: none;
+  }
+}
+
+/* Gentle ribbon drift; paint only the small accent surfaces, never layout. */
+:is(.gallery-free-label, .free-preview-label),
+.file-row .file-preview-toggle[aria-pressed='true'],
+.studio-settings-actions > .preview-settings-button,
+.studio-share-bar .primary,
+.studio-publish-bar .primary,
+.checkout-compact button.primary {
+  background-size:
+    250% 100%,
+    140% 140%;
+  background-position:
+    150% 50%,
+    35% 40%;
+  animation: hidn-ribbon-shimmer 10s ease-in-out infinite;
+}
+@keyframes hidn-ribbon-shimmer {
+  0%,
+  20% {
+    background-position:
+      150% 50%,
+      35% 40%;
+  }
+  80% {
+    background-position:
+      -150% 50%,
+      65% 60%;
+  }
+  100% {
+    background-position:
+      -150% 50%,
+      35% 40%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --hidn-ribbon-surface: var(--hidn-ribbon-gradient);
+  }
+  :is(.gallery-free-label, .free-preview-label),
+  .file-row .file-preview-toggle[aria-pressed='true'],
+  .studio-settings-actions > .preview-settings-button,
+  .studio-share-bar .primary,
+  .studio-publish-bar .primary,
+  .checkout-compact button.primary {
+    animation: none;
+    background-size: 100% 100%;
+    background-position: center;
   }
 }
