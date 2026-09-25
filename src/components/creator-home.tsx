@@ -73,7 +73,16 @@ export function CreatorHome({ signedIn }: { signedIn: boolean }) {
           </div>
           <div className="hero-drop">
             <div className="hero-drop-photo">
-              <CreatorPortrait priority />
+              <img
+                className="creator-portrait portrait-maya"
+                src="/creators/maya-hero-selfie.webp"
+                width={800}
+                height={800}
+                alt="Maya taking a mirror selfie in a pink outfit"
+                decoding="async"
+                loading="eager"
+                fetchPriority="high"
+              />
               <div className="hero-drop-byline">
                 <span>MAYA LANE</span>
                 <span>
