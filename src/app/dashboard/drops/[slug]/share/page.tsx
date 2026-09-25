@@ -60,7 +60,7 @@ export default async function SharePage({
         <div className="studio-title-row">
           <h1>{drop.title}</h1>
           <span
-            className={`badge ${drop.status === 'PUBLISHED' ? 'paid' : ''}`}
+            className={`badge ${drop.status === 'PUBLISHED' ? 'paid drop-live-badge' : ''}`}
           >
             {drop.status === 'DRAFT'
               ? 'Draft'

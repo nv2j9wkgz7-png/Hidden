@@ -250,7 +250,7 @@ export default async function Dashboard({
                     : 'Open to view files'}
                 </span>
                 <span
-                  className={`badge ${drop.status !== 'DRAFT' ? 'paid' : ''}`}
+                  className={`badge ${drop.status !== 'DRAFT' ? 'paid' : ''} ${drop.status === 'PUBLISHED' && drop.moderation_state === 'ACTIVE' ? 'drop-live-badge' : ''}`}
                 >
                   {drop.moderation_state !== 'ACTIVE'
                     ? drop.moderation_state.toLowerCase()

@@ -1121,3 +1121,9 @@
     font-weight: 600;
   }
 }
+
+/* Keep the watermark clean: a bright outer glow can expose its filter bounds
+   on mobile Safari. A small dark shadow follows the H without a light halo. */
+.drop-grid .private-drop-cover .private-drop-mark {
+  filter: drop-shadow(0 2px 3px #160b2670);
+}

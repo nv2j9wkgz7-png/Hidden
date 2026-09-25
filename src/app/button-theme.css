@@ -56,7 +56,8 @@
     .studio-toolbar > a,
     .buyer-gallery-controls > button,
     .guide-gallery-controls > button,
-    .drop-sort > summary
+    .drop-sort > summary,
+    .drop-live-badge
   ):not(.danger-button, .stop-sales-trigger) {
   --button-palette: var(--hidn-button-brand);
   --button-fill: #af7cd2;
@@ -89,6 +90,24 @@
     --button-palette: var(--hidn-button-pink);
     --button-fill: #ef4da8;
     --button-edge: #f49ccd;
+  }
+
+  &.drop-live-badge {
+    --button-palette: linear-gradient(
+      90deg,
+      #80d3aa 0%,
+      #318864 45%,
+      #68bd96 75%,
+      #368d69 100%
+    );
+    --button-fill: #318864;
+    --button-edge: #82cda7;
+    border-radius: 6px;
+    text-shadow: 0 1px 2px #123c2c99;
+    cursor: default;
+    &:active {
+      transform: none;
+    }
   }
 
   &:hover {
