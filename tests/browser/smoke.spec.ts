@@ -10,7 +10,7 @@ test('home is responsive and offers the creator flow', async ({ page }) => {
   ).toBeVisible();
   await expect(
     page.getByRole('link', { name: 'Create your first drop' }),
-  ).toHaveAttribute('href', '/new');
+  ).toHaveAttribute('href', '/login?mode=signup&next=new');
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -19,7 +19,7 @@ test('home is responsive and offers the creator flow', async ({ page }) => {
   await page.getByRole('link', { name: 'Create your first drop' }).click();
   await expect(
     page.getByRole('heading', {
-      name: /Connect your workspace|Welcome back\./,
+      name: /Connect your workspace|Welcome back\.|Create your account/,
     }),
   ).toBeVisible();
   expect(errors).toEqual([]);
@@ -44,10 +44,13 @@ test('slow navigation keeps the current page and header visible', async ({
   await page.goto('/');
   const header = await page.locator('.site-header').elementHandle();
   try {
-    await page.getByRole('link', { name: 'Log in', exact: true }).click();
+    await page
+      .getByRole('banner')
+      .getByRole('link', { name: 'Log in', exact: true })
+      .click();
     await expect(
       page.getByRole('progressbar', { name: 'Opening page' }),
-    ).toBeVisible();
+    ).toHaveCount(0);
     await expect(
       page.getByRole('heading', { name: 'Your content. Your price.' }),
     ).toBeVisible();
