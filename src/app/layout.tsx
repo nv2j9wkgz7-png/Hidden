@@ -16,6 +16,7 @@ import './blackout.css';
 import './utility.css';
 import './guide.css';
 import './creator-experience.css';
+import './button-theme.css';
 const outfit = localFont({
   src: [
     {

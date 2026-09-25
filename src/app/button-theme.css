@@ -1,0 +1,72 @@
+/* One shared action style, based on the Free previews button. Media tiles,
+   text navigation, theme switches, and destructive actions keep their roles. */
+:root
+  :is(
+    .button,
+    button.primary,
+    a.primary,
+    button.secondary,
+    a.secondary,
+    .studio-settings-actions > button,
+    .studio-settings-actions > a,
+    .studio-toolbar > a,
+    .buyer-gallery-controls > button,
+    .guide-gallery-controls > button,
+    .drop-sort > summary
+  ):not(.danger-button, .stop-sales-trigger) {
+  color: #fff;
+  background-color: #ef4da8;
+  background-image: var(--hidn-preview-surface);
+  background-repeat: no-repeat;
+  background-size:
+    250% 100%,
+    140% 140%;
+  background-position:
+    150% 50%,
+    35% 40%;
+  border: 1px solid #f49ccd;
+  border-radius: 12px;
+  box-shadow: none;
+  text-shadow: 0 1px 2px #6c144d80;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  animation: hidn-ribbon-shimmer 10s ease-in-out infinite;
+  transition:
+    filter 120ms ease,
+    transform 120ms ease;
+
+  &:hover {
+    color: #fff;
+    background-color: #ef4da8;
+    background-image: var(--hidn-preview-surface);
+    box-shadow: none;
+    filter: brightness(1.06);
+    transform: none;
+  }
+  &:active {
+    color: #fff;
+    background-image: var(--hidn-preview-surface);
+    transform: translateY(1px);
+  }
+  &:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+  &:disabled,
+  &[aria-disabled='true'] {
+    opacity: 0.45;
+    filter: none;
+    transform: none;
+    animation: none;
+    cursor: not-allowed;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    transition: none;
+    background-size: 100% 100%;
+    background-position: center;
+    &:active {
+      transform: none;
+    }
+  }
+}
