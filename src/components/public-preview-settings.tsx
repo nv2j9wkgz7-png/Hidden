@@ -118,6 +118,11 @@ export function PublicPreviewSettings({
               All files are selected. The entire package will be free to view.
             </p>
           )}
+          {error && (
+            <p className="notice error" role="alert">
+              {error}
+            </p>
+          )}
           <button
             type="button"
             className="secondary"
@@ -150,11 +155,6 @@ export function PublicPreviewSettings({
           </button>
         </div>
       </fieldset>
-      {error && (
-        <p className="notice error" role="alert">
-          {error}
-        </p>
-      )}
     </section>
   );
 }
