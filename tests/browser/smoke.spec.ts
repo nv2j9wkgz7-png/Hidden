@@ -19,7 +19,7 @@ test('home is responsive and offers the creator flow', async ({ page }) => {
   await page.getByRole('link', { name: 'Create your first drop' }).click();
   await expect(
     page.getByRole('heading', {
-      name: /Connect your workspace|Welcome back\.|Create your account/,
+      name: /Connect your workspace|Welcome back\.|Make it yours\./,
     }),
   ).toBeVisible();
   expect(errors).toEqual([]);
