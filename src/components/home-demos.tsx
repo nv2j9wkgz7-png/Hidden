@@ -102,7 +102,7 @@ function MessageExample() {
       <div className="message-top">
         <ChevronLeft size={21} />
         <div>
-          <CreatorPortrait priority />
+          <CreatorPortrait avatar priority />
           <strong>
             Maya Lane <span>›</span>
           </strong>
@@ -152,7 +152,7 @@ function XExample() {
       </div>
       <div className="x-profile-body">
         <div className="x-avatar-line">
-          <CreatorPortrait person="nina" priority />
+          <CreatorPortrait person="nina" avatar priority />
           <span className="mock-follow">Follow</span>
         </div>
         <strong className="profile-name">
@@ -187,7 +187,7 @@ function XExample() {
         <span>Media</span>
       </div>
       <div className="x-post">
-        <CreatorPortrait person="nina" />
+        <CreatorPortrait person="nina" avatar />
         <div>
           <strong>
             Nina Park <small>@ninaparkmusic · 2h</small>
@@ -229,7 +229,7 @@ function KickExample() {
         </div>
       </div>
       <div className="kick-profile">
-        <CreatorPortrait person="jay" />
+        <CreatorPortrait person="jay" avatar />
         <div>
           <strong>
             JayLive <Check size={12} />
@@ -262,6 +262,20 @@ function KickExample() {
   );
 }
 
+function SharingPlatformLabel({ index }: { index: number }) {
+  if (index === 0) return <>iMessage</>;
+  const platform = index === 1 ? 'x' : 'kick';
+  return (
+    <span
+      className="sharing-platform-icon"
+      role="img"
+      aria-label={index === 1 ? 'X' : 'Kick'}
+    >
+      <span className={`sharing-platform-mark platform-mark-${platform}`} />
+    </span>
+  );
+}
+
 export function SharingShowcase() {
   const rail = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -289,11 +303,12 @@ export function SharingShowcase() {
         {names.map((name, i) => (
           <button
             key={name}
+            aria-label={name}
             aria-pressed={active === i}
             aria-controls={id}
             onClick={() => go(i)}
           >
-            {name}
+            <SharingPlatformLabel index={i} />
           </button>
         ))}
       </div>
@@ -324,7 +339,7 @@ export function SharingShowcase() {
           <div className="sharing-slide" key={names[i]}>
             <div className="sharing-card-label">
               <span>0{i + 1}</span>
-              {names[i]}
+              <SharingPlatformLabel index={i} />
             </div>
             {demo}
           </div>

@@ -1898,3 +1898,32 @@ html[data-theme='blackout'] .launch-home .profile-hidn-link {
 .launch-home .x-post p {
   color: var(--home-ink);
 }
+
+/* Brand marks replace the text labels while retaining spoken tab names. */
+.launch-home .sharing-mobile-tabs > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.launch-home .sharing-platform-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 29px;
+  height: 29px;
+  border-radius: 7px;
+  background: #111;
+  flex-shrink: 0;
+}
+.launch-home .sharing-platform-mark {
+  display: block;
+  width: 17px;
+  height: 17px;
+}
+.launch-home .platform-mark-x {
+  background: #fff;
+  mask: url('/platforms/x.svg') center / contain no-repeat;
+}
+.launch-home .platform-mark-kick {
+  background: #53fc18;
+  mask: url('/platforms/kick.svg') center / contain no-repeat;
+}

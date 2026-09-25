@@ -63,7 +63,7 @@ export function CreatorHome({ signedIn }: { signedIn: boolean }) {
           <div className="hero-scene-grid" aria-hidden="true" />
           <div className="hero-social-note">
             <span className="tiny-avatar">
-              <CreatorPortrait priority />
+              <CreatorPortrait avatar priority />
             </span>
             <div>
               <strong>Maya Lane</strong>
